@@ -16,6 +16,8 @@ import { TORTrip } from "./pages/TORTrip";
 import { TORViolation } from "./pages/TORViolation";
 import { TORTrouble } from "./pages/TORTrouble";
 import TestArea from "./pages/TestArea";
+import { Station } from "./pages/Station";
+import { EmployeeCard } from "./pages/EmployeeCard";
 
 function App() {
  
@@ -27,7 +29,7 @@ function App() {
     
           <Router>
             <Routes>
-              
+              <Route path ="/" element = { <TestLogin />} />
               <Route path ="/testarea" element ={<LogIn /> }/>
               <Route path ="/dashboard" element ={<Dashboard />} />
               <Route path ="/test" element ={<TestArea />}/> 
@@ -37,6 +39,8 @@ function App() {
               <Route path ="/employee" element = {<Employee />}/>
               <Route path ="/direction" element ={<Direction />} />
               <Route path ="/mastercard" element ={<MasterCard />} />
+              <Route path ="/station" element ={<Station />} />
+              <Route path = "/employeecard" element ={<EmployeeCard />} />
               <Route path ="/tormain" element ={ <TORMain /> } />
               <Route path ="/torticket" element= {<TORTicket />} />
               <Route path ="/torfuel" element = {<TORFuel />} />

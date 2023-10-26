@@ -1,20 +1,25 @@
+
+
+import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect, useState} from 'react'
+import {useEffect, useId, useState} from 'react'
 import Box from '@mui/material/Box';
-import {  Button, LinearProgress } from "@mui/material";
+import { Button, LinearProgress } from "@mui/material";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
-import HeaderCard from "../components/HeaderCard";
 
-
+            // "empNo": "7308",
+            // "cardId": "CBDF47D9",
+            // "createdAt": "2023-10-19T05:20:45.618Z",
+            // "updatedAt": "2023-10-19T05:20:45.618Z"
 
 const columns: GridColDef[] = [
   
   { 
-    field: 'riderId', 
-    headerName: 'RIDER ID', 
+    field: 'empNo', 
+    headerName: 'EMPLOYEE NUMBER', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
@@ -25,19 +30,17 @@ const columns: GridColDef[] = [
   },
 
   { 
-    field: 'balance', 
-    headerName: 'BALANCE', 
-    
+    field: 'cardId', 
+    headerName: 'CARD ID', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: false,
-    valueFormatter: (params) => `₱ ${params.value}`
-    
+    editable: true,
+   
   },
-
+  
 
   { 
     field: 'createdAt', 
@@ -67,7 +70,6 @@ const columns: GridColDef[] = [
 //     headerName: 'STATUS', 
 //     width: 180, 
 //     headerClassName: 'super-app-theme--header',
-
 //     editable: true,
 //     renderCell: (cellValues) => {
           
@@ -82,7 +84,6 @@ const columns: GridColDef[] = [
   //   headerName: 'ACTION', 
   //   width: 180, 
   //   headerClassName: 'super-app-theme--header',
-  
   //   editable: true,
   // },
   ];
@@ -91,10 +92,12 @@ const columns: GridColDef[] = [
    
   ];
 
+  //Toolbar
 
 
 
-export function MasterCard(){
+
+export function EmployeeCard(){
     const [tableRows, setTableRows] = useState(rows)
 
     useEffect(() =>{
@@ -122,19 +125,22 @@ export function MasterCard(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/mastercard`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employeecard`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
         })
             
             const response = await request.data;
-        
+
+         
+
             if(response.messages[0].code === '0'){
 
               setTableRows(
                 
                 response.response.map((data : any) =>{
+                  console.log(data.destination)
                   return {id: data._id, ...data}
                 })
               )
@@ -149,31 +155,25 @@ export function MasterCard(){
     }   
 
 
-    // "riderId" : "6535ee6209cc1d199faf2cbd",
-    // "cardId": "123456",
-    // "balance" : 100000
 
-    const [riderId, setRiderId] = useState("")
+    const [empNo, setEmpNo] = useState("")
 
     const [cardId, setCardId] = useState("")
 
-    const [balance, setBalance] = useState("")
-
     const [isModalOpen, setIsModalOpen] = useState(false)
-
-    async function RegisterCard() {
+    
+    async function RegisterEmployeeCard() {
       try {
 
-        event?.preventDefault()
+        event.preventDefault()
         // Define the request data as an object
         const requestData = {
-          riderId: riderId, // Assuming empNo and cardId are variables in your scope
+          empNo: empNo, // Assuming empNo and cardId are variables in your scope
           cardId: cardId,
-          balance: balance,
         };
     
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/mastercard`,
+          `${import.meta.env.VITE_BASE_URL}/employeecard`,
           requestData, // Use the requestData object as the request data
           {
             headers: {
@@ -207,7 +207,6 @@ export function MasterCard(){
           }}>
           Register card
         </Button>
-  
             <GridToolbarColumnsButton />
             <GridToolbarFilterButton />
             <GridToolbarDensitySelector />
@@ -221,10 +220,15 @@ export function MasterCard(){
   
   }   
 
+  useEffect(() =>{
+
+    return () =>{}
+
+  },[isModalOpen, empNo, cardId])
+
     return(<>
 
     <NavBar>
-
     {isModalOpen ? (   <div
         tabIndex={-1}
         aria-hidden="true"
@@ -242,14 +246,14 @@ export function MasterCard(){
             </button>
             <div className="px-6 py-6 lg:px-8">
                 <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Register Employee Card</h3>
-                <form className="space-y-6" onSubmit={RegisterCard}>
+                <form className="space-y-6" onSubmit={RegisterEmployeeCard}>
                     <div>
-                        <label htmlFor="riderId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rider Id</label>
-                        <input type="text" name="riderId" id="riderId" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
-                         value ={riderId}
+                        <label htmlFor="empNo" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Employee no</label>
+                        <input type="text" name="empNo" id="empNo" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
+                         value ={empNo}
 
                          onChange={(event) => {
-                          setRiderId(event.target.value);
+                          setEmpNo(event.target.value);
                         }}
                         
                         required
@@ -265,18 +269,6 @@ export function MasterCard(){
                         }} 
                         required />
                     </div>
-
-                    <div>
-                    <label htmlFor="cardId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Balance</label>
-                        <input type="text" name="balance" id="balance" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
-                        value ={balance}
-                      
-                        onChange={ (event) =>{
-                          setBalance(event.target.value)
-                        }} 
-                        required />
-                    </div>
-                    
                     
                     <button type="submit" className="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Register</button>
                    
@@ -285,8 +277,9 @@ export function MasterCard(){
         </div>
     </div>
 </div>) : (<></>)}
+ 
 
-    <HeaderCard title ="MASTER CARD" />
+    <HeaderCard title ="EMPLOYEE CARD" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
             <Box sx = {{
             '& .super-app-theme--header': {

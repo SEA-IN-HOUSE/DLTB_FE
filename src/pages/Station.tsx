@@ -1,20 +1,32 @@
+
+
+import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect, useState} from 'react'
+import {useEffect, useId, useState} from 'react'
 import Box from '@mui/material/Box';
-import {  Button, LinearProgress } from "@mui/material";
+import { Button, LinearProgress } from "@mui/material";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
-import HeaderCard from "../components/HeaderCard";
-
 
 
 const columns: GridColDef[] = [
   
   { 
-    field: 'riderId', 
-    headerName: 'RIDER ID', 
+    field: 'stationName', 
+    headerName: 'STATION NAME', 
+    flex: 1,
+        minWidth: 0,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: true,
+   
+  },
+  { 
+    field: 'km', 
+    headerName: 'KILOMETER', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
@@ -25,19 +37,28 @@ const columns: GridColDef[] = [
   },
 
   { 
-    field: 'balance', 
-    headerName: 'BALANCE', 
-    
+    field: 'viceVersaKM', 
+    headerName: 'VICE VERSA KM', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: false,
-    valueFormatter: (params) => `₱ ${params.value}`
-    
+    editable: true,
+   
   },
 
+  { 
+    field: 'routeId', 
+    headerName: 'ROUTE ID', 
+    flex: 1,
+        minWidth: 0,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: true,
+   
+  },
 
   { 
     field: 'createdAt', 
@@ -67,7 +88,6 @@ const columns: GridColDef[] = [
 //     headerName: 'STATUS', 
 //     width: 180, 
 //     headerClassName: 'super-app-theme--header',
-
 //     editable: true,
 //     renderCell: (cellValues) => {
           
@@ -82,7 +102,6 @@ const columns: GridColDef[] = [
   //   headerName: 'ACTION', 
   //   width: 180, 
   //   headerClassName: 'super-app-theme--header',
-  
   //   editable: true,
   // },
   ];
@@ -94,7 +113,9 @@ const columns: GridColDef[] = [
 
 
 
-export function MasterCard(){
+
+
+export function Station(){
     const [tableRows, setTableRows] = useState(rows)
 
     useEffect(() =>{
@@ -117,24 +138,28 @@ export function MasterCard(){
       },
     });
 
+
   
     async function GetAllData(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/mastercard`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/station`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
         })
             
             const response = await request.data;
-        
+
+         
+
             if(response.messages[0].code === '0'){
 
               setTableRows(
                 
                 response.response.map((data : any) =>{
+             
                   return {id: data._id, ...data}
                 })
               )
@@ -149,31 +174,35 @@ export function MasterCard(){
     }   
 
 
-    // "riderId" : "6535ee6209cc1d199faf2cbd",
-    // "cardId": "123456",
-    // "balance" : 100000
+    // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"}
 
-    const [riderId, setRiderId] = useState("")
+    
+const [stationName , setStationName] = useState("")
 
-    const [cardId, setCardId] = useState("")
+const [km, setKm] = useState("")
 
-    const [balance, setBalance] = useState("")
+const [viceVersaKM, setViceVersaKM] = useState("")
 
-    const [isModalOpen, setIsModalOpen] = useState(false)
+const [routeId, setRouteId] = useState("");
 
-    async function RegisterCard() {
+const [isModalOpen, setIsModalOpen] = useState(false)
+
+
+    async function AddStation() {
       try {
+      
 
-        event?.preventDefault()
+        event.preventDefault()
         // Define the request data as an object
         const requestData = {
-          riderId: riderId, // Assuming empNo and cardId are variables in your scope
-          cardId: cardId,
-          balance: balance,
+          stationName: stationName, // Assuming empNo and cardId are variables in your scope
+          km : km,
+          viceVersaKM : viceVersaKM,
+          routeId : routeId
         };
     
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/mastercard`,
+          `${import.meta.env.VITE_BASE_URL}/station`,
           requestData, // Use the requestData object as the request data
           {
             headers: {
@@ -197,6 +226,7 @@ export function MasterCard(){
       }
     }
 
+
     function CustomToolbar() {
 
       return (<>
@@ -205,7 +235,7 @@ export function MasterCard(){
           <Button variant="text" color="success" onClick={ () =>{
             setIsModalOpen(true)
           }}>
-          Register card
+          Add station
         </Button>
   
             <GridToolbarColumnsButton />
@@ -220,6 +250,14 @@ export function MasterCard(){
         );
   
   }   
+
+
+   // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"}
+  useEffect(() =>{
+
+    return () =>{}
+
+  },[isModalOpen, km, viceVersaKM, routeId ])
 
     return(<>
 
@@ -241,38 +279,52 @@ export function MasterCard(){
                 <span className="sr-only">Close modal</span>
             </button>
             <div className="px-6 py-6 lg:px-8">
-                <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Register Employee Card</h3>
-                <form className="space-y-6" onSubmit={RegisterCard}>
+{/* 
+            // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"} */}
+
+                <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add Station</h3>
+                <form className="space-y-6" onSubmit={AddStation}>
                     <div>
-                        <label htmlFor="riderId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rider Id</label>
-                        <input type="text" name="riderId" id="riderId" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
-                         value ={riderId}
+                        <label htmlFor="stationName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Station name</label>
+                        <input type="text" name="stationName" id="stationName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
+                         value ={stationName}
 
                          onChange={(event) => {
-                          setRiderId(event.target.value);
+                          setStationName(event.target.value);
                         }}
                         
                         required
                          />
                     </div>
                     <div>
-                    <label htmlFor="cardId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Card Id</label>
-                        <input type="text" name="cardId" id="cardId" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
-                        value ={cardId}
+                    <label htmlFor="km" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Km</label>
+                        <input type="text" name="km" id="km" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
+                        value ={km}
                       
                         onChange={ (event) =>{
-                          setCardId(event.target.value)
+                          setKm(event.target.value)
                         }} 
                         required />
                     </div>
 
                     <div>
-                    <label htmlFor="cardId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Balance</label>
-                        <input type="text" name="balance" id="balance" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
-                        value ={balance}
+                    <label htmlFor="viceVersaKM" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Vice versa km</label>
+                        <input type="text" name="viceVersaKM" id="viceVersaKM" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
+                        value ={viceVersaKM}
                       
                         onChange={ (event) =>{
-                          setBalance(event.target.value)
+                          setViceVersaKM(event.target.value)
+                        }} 
+                        required />
+                    </div>
+
+                    <div>
+                    <label htmlFor="routeId" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Route Id</label>
+                        <input type="text" name="routeId" id="routeId" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
+                        value ={routeId}
+                      
+                        onChange={ (event) =>{
+                          setRouteId(event.target.value)
                         }} 
                         required />
                     </div>
@@ -286,7 +338,7 @@ export function MasterCard(){
     </div>
 </div>) : (<></>)}
 
-    <HeaderCard title ="MASTER CARD" />
+    <HeaderCard title ="STATION" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
             <Box sx = {{
             '& .super-app-theme--header': {

@@ -1,8 +1,9 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsListTask, BsMenuButtonWide, BsPersonWorkspace, BsTicketPerforated, BsTicketPerforatedFill } from 'react-icons/bs';
+import { BsCreditCardFill, BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill, BsListTask, BsMenuButtonWide, BsPersonWorkspace, BsTicketPerforated, BsTicketPerforatedFill } from 'react-icons/bs';
 import NavList, { ProfileBoxList } from "./NavList";
 import NotificationBell from "./NotificationBell";
+import axios from "axios";
 interface NavBarProps {
     children: ReactNode;
 }
@@ -24,9 +25,10 @@ interface IUserInformation{
         
         {id: 1, pageName: "Dashboard", url: "/dashboard", iconUrl: <BsMenuButtonWide />},
         {id: 2, pageName: "Employee", url: "/employee", iconUrl: <BsPersonWorkspace />},
-        {id: 3, pageName: "Direction", url: "/direction", iconUrl: <BsFillMapFill />},
-        {id: 4, pageName: "Master Card", url :"/mastercard", iconUrl: <BsFillCreditCardFill />}
-      
+        {id: 3, pageName: "Employee Card", url :"/employeecard" , iconUrl: <BsFillCreditCard2FrontFill />},
+        {id: 4, pageName: "Master Card", url :"/mastercard", iconUrl: <BsFillCreditCardFill />},
+        {id: 5, pageName: "Route", url: "/direction", iconUrl: <BsFillMapFill />},
+        {id: 6, pageName: "Station", url :"/station" , iconUrl : <BsFillTruckFrontFill />}
     ]
 
     const ProfileDropdown = [
@@ -35,12 +37,15 @@ interface IUserInformation{
 
     const UserInformation : IUserInformation  = 
         {id: 1, firstname:"Emmanuel", middlename:"", lastname: "Zuniga", role: "Administrator", email: "admin@gmail.com", imageUrl: "https://flowbite.com/docs/images/people/profile-picture-5.jpg"} 
-    
+  
 
 export default function NavBar ({children} : NavBarProps) : JSX.Element{
     
+    
 
     const navigate = useNavigate();
+
+    const [user, setUser] = useState(UserInformation)
 
     const location = useLocation();
 
@@ -70,7 +75,37 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
     },[userInformation, isOpenProfileBox,isBurgerClicked,torIsOpen])
 
   
+    async function GetUserByEmail (){
+
+      const email = localStorage.getItem('token')
+
+      try{
+
+        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/${email}`,{
+          headers :{
+              Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+          }
+      })
+
+      const response = await request.data;
+
+      if(response){
+
+        setUserInformation((user) => user = response.data)
+
+      }
+
+      }catch(e){
+        console.log(`Error in getting user: ${e}`)
+      }
+
+    }
     
+    useEffect(() =>{
+     
+      return () =>{}
+    }, [user])
+
     return(
         <>
         <nav className="fixed top-0 z-50 w-full bg-gradient-to-r from-blue-900 to-[#161d6f] border-b border-gray-200 ">
@@ -107,8 +142,8 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
   <div>
     
     <button type="button" className="flex items-center text-sm bg-gray rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" onClick={handleBtnProfileBox}>
-        <img className="w-8 h-8 rounded-full mr-2" src={userInformation.imageUrl} alt="user photo" />
-        <p className="text-sm text-white dark:text-white flex-grow">{userInformation.firstname + " " + userInformation.middlename + " " + userInformation.lastname}</p>
+        <img className="w-8 h-8 rounded-full mr-2" src={user.imageUrl} alt="user photo" />
+        <p className="text-sm text-white dark:text-white flex-grow">{user.firstname + " " + user.middlename + " " + user.lastname}</p>
     </button>
     
 
@@ -116,10 +151,10 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
       <div className="absolute z-50 right-0 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
         <div className="px-4 py-3" role="none">
           <p className="text-sm text-gray-900 dark:text-white" role="none">
-            {userInformation.firstname + " " + userInformation.middlename + " " + userInformation.lastname}
+            {user.firstname + " " + user.middlename + " " + user.lastname}
           </p>
           <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-            {userInformation.email}
+            {user.email}
           </p>
         </div>
         <ul className="py-1" role="none">

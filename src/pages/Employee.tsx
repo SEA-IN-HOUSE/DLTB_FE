@@ -208,13 +208,18 @@ export function Employee(){
         })
             
             const response = await request.data;
-        
+            
             if(response.messages[0].code === '0'){
 
               setClientTableRows(
                 
                 response.response[0].map((employee : any ) =>{
-                  return {id: employee.fieldData[0]._id, ...employee.fieldData[0]}
+                  console.log(employee.fieldData[0])
+                  
+                  if(employee.fieldData[0]._id){
+                    return {id: employee.fieldData[0]._id, ...employee.fieldData[0]}
+                  }
+                  
                 })
               )
 

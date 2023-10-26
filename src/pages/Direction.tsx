@@ -48,6 +48,18 @@ const columns: GridColDef[] = [
   },
 
   { 
+    field: 'route_code', 
+    headerName: 'ROUTE CODE', 
+    flex: 1,
+    minWidth: 0,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: true,
+   
+  },
+
+  { 
     field: 'createdAt', 
     headerName: 'DATE CREATED', 
     flex: 1,
@@ -97,24 +109,7 @@ const columns: GridColDef[] = [
    
   ];
 
-  //Toolbar
-function CustomToolbar() {
 
-    return (<>
-        
-        <GridToolbarContainer>
-          {/* <Button variant="text"  color ="success" startIcon = {<PersonAddIcon />}> Add</Button> */}
-          <GridToolbarColumnsButton />
-          <GridToolbarFilterButton />
-          <GridToolbarDensitySelector />
-          <GridToolbarExport />
-          <GridToolbarQuickFilter />
-        </GridToolbarContainer>
-        {/* <AddEmployee  open ={formOpenType === 'employee'}/>  */}
-      </>
-      );
-
-}   
 
 
 
@@ -175,10 +170,170 @@ export function Direction(){
       
     }   
 
+  //   {
+  //     "bound": "SOUTH",
+  //     "origin" : "PITX",
+  //     "destination" : ""
+  // }
+
+  const [bound , setBound] = useState("")
+  const [origin, setOrigin] = useState("")
+  const [route_code, setRouteCode] = useState("")
+  const [destination, setDestination] = useState("")
+  
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  async function AddData() {
+    try {
+
+      event.preventDefault()
+      // Define the request data as an object
+      const requestData = {
+        bound: bound, // Assuming empNo and cardId are variables in your scope
+        origin: origin,
+        route_code : route_code,
+        destination: destination,
+      };
+  
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/directions`,
+        requestData, // Use the requestData object as the request data
+        {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+          },
+        }
+      );
+  
+      // Note that there's no need to use `await` on response.data directly
+      // as axios already returns the response data.
+      const responseData = response.data;
+        console.log(responseData)
+     if(responseData.messages){
+      setIsModalOpen(!isModalOpen)
+      GetAllData();
+     }
+   
+  
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() =>{
+
+    return() =>{}
+
+  },[isModalOpen, bound, origin, destination,route_code])
+
+  
+    function CustomToolbar() {
+
+      return (<>
+          
+          <GridToolbarContainer>
+          <Button variant="text" color="success" onClick={ () =>{
+            setIsModalOpen(true)
+          }}>
+          Add Route
+        </Button>
+  
+            <GridToolbarColumnsButton />
+            <GridToolbarFilterButton />
+            <GridToolbarDensitySelector />
+            <GridToolbarExport />
+            <GridToolbarQuickFilter />
+            
+          </GridToolbarContainer>
+         
+        </>
+        );
+      }
+
     return(<>
 
     <NavBar>
-    <HeaderCard title ="DIRECTION" />
+
+    {isModalOpen ? (   <div
+        tabIndex={-1}
+        aria-hidden="true"
+        className="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center p-4 overflow-x-hidden overflow-y-auto bg-opacity-80 bg-slate-400"
+      >
+        <div className="relative w-full max-w-md">
+          <div className="relative bg-gray-700 rounded-lg shadow ">
+            <button type="button" className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="authentication-modal" onClick ={
+              () => {setIsModalOpen(!isModalOpen)}
+            }>
+                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span className="sr-only">Close modal</span>
+            </button>
+            <div className="px-6 py-6 lg:px-8">
+                <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add Route</h3>
+
+                {/* //   {
+  //     "bound": "SOUTH",
+  //     "origin" : "PITX",
+  //     "destination" : ""
+  // } */}
+
+                <form className="space-y-6" onSubmit={AddData}>
+                    <div>
+                        <label htmlFor="bound" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bound</label>
+                        <input type="text" name="bound" id="bound" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
+                         value ={bound}
+
+                         onChange={(event) => {
+                          setBound(event.target.value);
+                        }}
+                        
+                        required
+                         />
+                    </div>
+                    <div>
+                    <label htmlFor="origin" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Origin</label>
+                        <input type="text" name="origin" id="origin" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
+                        value ={origin}
+                      
+                        onChange={ (event) =>{
+                          setOrigin(event.target.value)
+                        }} 
+                        required />
+                    </div>
+
+                    <div>
+                    <label htmlFor="destination" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Destination</label>
+                        <input type="text" name="destination" id="destination" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
+                        value ={destination}
+                      
+                        onChange={ (event) =>{
+                          setDestination(event.target.value)
+                        }} 
+                        required />
+                    </div>
+
+                    <div>
+                    <label htmlFor="route_code" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Route Code</label>
+                        <input type="text" name="route_code" id="route_code" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
+                        value ={route_code}
+                      
+                        onChange={ (event) =>{
+                          setRouteCode(event.target.value)
+                        }} 
+                        required />
+                    </div>
+                    
+                    
+                    <button type="submit" className="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Register</button>
+                   
+                </form>
+            </div>
+        </div>
+    </div>
+</div>) : (<></>)}
+
+    <HeaderCard title ="ROUTE" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
             <Box sx = {{
             '& .super-app-theme--header': {

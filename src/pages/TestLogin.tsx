@@ -30,12 +30,10 @@ export default function TestLogin() : JSX.Element {
     
         try{
 
-            const request = await axios.post('https://fms.dltbbus.com.ph/fmi/data/v1/databases/dltb%20company%20database/sessions', {}, {
-                auth: {
-                    username: username,
-                    password: password,
-                }
-            })
+            const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth`, {
+                "email" : username,
+                "password" : password
+            } ,{})
             
             const response = await request.data;
 
@@ -44,6 +42,7 @@ export default function TestLogin() : JSX.Element {
             if(response.messages[0].message === "OK"){
                 console.log(response.response.token)
                 localStorage.setItem('token', response.response.token)
+                console.log("pumasokdito")
                 if(localStorage.getItem('token')){
                     navigate('/employee')
                 }

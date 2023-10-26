@@ -49,6 +49,17 @@ export default function NavList(props : IListProps) : JSX.Element {
 }
 
 export function ProfileBoxList (props: IProfileBoxListProps) : JSX.Element {
+    const navigate = useNavigate();
+    useEffect(() =>{
+
+        if(props.id === 1){
+            localStorage.clear();
+            navigate("/login")
+        }
+
+        return () =>{}
+    },[props])
+  
 
     return(
         <>
