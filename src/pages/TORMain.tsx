@@ -1023,16 +1023,16 @@ export function TORMain(){
 
     },[])
 
-    const styles = (theme : any) => ({
-      activeSortIcon: {
-        opacity: 1,
-        color : 'blue',
-      },
-      inactiveSortIcon: {
-        opacity: 0.4,
-        color : 'green',
-      },
-    });
+    // const styles = (theme : any) => ({
+    //   activeSortIcon: {
+    //     opacity: 1,
+    //     color : 'blue',
+    //   },
+    //   inactiveSortIcon: {
+    //     opacity: 0.4,
+    //     color : 'green',
+    //   },
+    // });
 
     async function SyncData(){
       setIsSyncing(true);

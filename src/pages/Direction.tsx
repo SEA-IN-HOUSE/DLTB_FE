@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect, useId, useState} from 'react'
+import {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
 import { Button, LinearProgress } from "@mui/material";
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+//import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const columns: GridColDef[] = [
   
@@ -115,9 +117,12 @@ const columns: GridColDef[] = [
 
 export function Direction(){
     const [tableRows, setTableRows] = useState(rows)
-
+    const navigate = useNavigate()
     useEffect(() =>{
-      
+      console.log(localStorage.getItem('role'))
+    if(localStorage.getItem('role') !== "Administrator"){
+      navigate("/tormain")
+    }
         GetAllData();
         setTableRows(rows)
 
@@ -125,16 +130,16 @@ export function Direction(){
 
     },[])
 
-    const styles = (theme : any) => ({
-      activeSortIcon: {
-        opacity: 1,
-        color : 'blue',
-      },
-      inactiveSortIcon: {
-        opacity: 0.4,
-        color : 'green',
-      },
-    });
+    // const styles = (theme : any) => ({
+    //   activeSortIcon: {
+    //     opacity: 1,
+    //     color : 'blue',
+    //   },
+    //   inactiveSortIcon: {
+    //     opacity: 0.4,
+    //     color : 'green',
+    //   },
+    // });
 
   
     async function GetAllData(){
@@ -186,7 +191,7 @@ export function Direction(){
   async function AddData() {
     try {
 
-      event.preventDefault()
+      event?.preventDefault()
       // Define the request data as an object
       const requestData = {
         bound: bound, // Assuming empNo and cardId are variables in your scope

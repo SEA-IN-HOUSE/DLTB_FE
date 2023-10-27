@@ -1,18 +1,18 @@
 
 
 import HeaderCard from "../components/HeaderCard";
-import MuiDatagrid from "../components/MuiDatagrid";
+//import MuiDatagrid from "../components/MuiDatagrid";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
-import SearchInput from "../components/SearchInput";
+//import SearchInput from "../components/SearchInput";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, useGridApiContext, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer,  GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
 import { Button, Chip, LinearProgress } from "@mui/material";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { useDemoData } from '@mui/x-data-grid-generator';
+//import { useDemoData } from '@mui/x-data-grid-generator';
 
 
 const columns: GridColDef[] = [
@@ -192,16 +192,16 @@ export function Client(){
 
     },[])
 
-    const styles = (theme : any) => ({
-      activeSortIcon: {
-        opacity: 1,
-        color : 'blue',
-      },
-      inactiveSortIcon: {
-        opacity: 0.4,
-        color : 'green',
-      },
-    });
+    // const styles = (theme : any) => ({
+    //   activeSortIcon: {
+    //     opacity: 1,
+    //     color : 'blue',
+    //   },
+    //   inactiveSortIcon: {
+    //     opacity: 0.4,
+    //     color : 'green',
+    //   },
+    // });
 
     return(<>
     <NavBar>

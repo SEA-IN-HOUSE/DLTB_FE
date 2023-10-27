@@ -1,4 +1,4 @@
-import { Masonry } from 'react-masonry'
+
 
 
 export default function LoginGallery() : JSX.Element{

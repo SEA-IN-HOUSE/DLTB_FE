@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from 'react';
 import '../styles/MorphingPagination.css'; // Import your CSS file
 
 export default function PaginationTest(props : any){

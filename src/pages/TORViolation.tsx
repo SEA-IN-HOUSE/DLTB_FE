@@ -4,7 +4,7 @@ import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarCo
 import {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
 import { Button, LinearProgress } from "@mui/material";
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+//import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
 import SyncIcon from '@mui/icons-material/Sync';
@@ -319,23 +319,7 @@ const columns: GridColDef[] = [
   ];
 
   //Toolbar
-function CustomToolbar() {
 
-    return (<>
-        
-        <GridToolbarContainer>
-          {/* <Button variant="text"  color ="success" startIcon = {<PersonAddIcon />}> Add</Button> */}
-          <GridToolbarColumnsButton />
-          <GridToolbarFilterButton />
-          <GridToolbarDensitySelector />
-          <GridToolbarExport />
-          <GridToolbarQuickFilter />
-        </GridToolbarContainer>
-        {/* <AddEmployee  open ={formOpenType === 'employee'}/>  */}
-      </>
-      );
-
-}   
 
 
 
@@ -356,16 +340,16 @@ export function TORViolation(){
 
     },[])
 
-    const styles = (theme : any) => ({
-      activeSortIcon: {
-        opacity: 1,
-        color : 'blue',
-      },
-      inactiveSortIcon: {
-        opacity: 0.4,
-        color : 'green',
-      },
-    });
+    // const styles = (theme : any) => ({
+    //   activeSortIcon: {
+    //     opacity: 1,
+    //     color : 'blue',
+    //   },
+    //   inactiveSortIcon: {
+    //     opacity: 0.4,
+    //     color : 'green',
+    //   },
+    // });
 
   
     async function GetAllData(){

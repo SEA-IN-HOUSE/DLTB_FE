@@ -1,9 +1,10 @@
-import {useState} from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+//import {useState} from 'react';
 
-interface ISearchInputProps{
-    placeholder: string,
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
+// interface ISearchInputProps{
+//     placeholder: string,
+//     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+// }
 
 export default function SearchInput(props : any){
 

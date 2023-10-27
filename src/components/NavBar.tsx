@@ -1,21 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ReactNode, useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { BsCreditCardFill, BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill, BsListTask, BsMenuButtonWide, BsPersonWorkspace, BsTicketPerforated, BsTicketPerforatedFill } from 'react-icons/bs';
+//import { useNavigate, useLocation } from "react-router-dom";
+import { BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonWorkspace, BsTicketPerforatedFill } from 'react-icons/bs';
 import NavList, { ProfileBoxList } from "./NavList";
 import NotificationBell from "./NotificationBell";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 interface NavBarProps {
     children: ReactNode;
 }
 
 interface IUserInformation{
     id: number,
-    firstname: string,
-    middlename: string,
-    lastname: string,
+    firstName: string,
+    middleName: string,
+    lastName: string,
     email: string,
     role: string,
-    imageUrl: string,
+    profileImageUrl: string,
 }
 
     //////////////////////////////////////////////////////////////////
@@ -36,24 +39,24 @@ interface IUserInformation{
     ]
 
     const UserInformation : IUserInformation  = 
-        {id: 1, firstname:"Emmanuel", middlename:"", lastname: "Zuniga", role: "Administrator", email: "admin@gmail.com", imageUrl: "https://flowbite.com/docs/images/people/profile-picture-5.jpg"} 
+        {id: 1, firstName:"Emmanuel", middleName:"", lastName: "Zuiga", role: "Administrator", email: "admin@gmail.com", profileImageUrl: "https://flowbite.com/docs/images/people/profile-picture-5.jpg"} 
   
 
 export default function NavBar ({children} : NavBarProps) : JSX.Element{
     
     
-
+  
     const navigate = useNavigate();
 
     const [user, setUser] = useState(UserInformation)
 
-    const location = useLocation();
+    //const location = useLocation();
 
-    const [activePage, setActivePage] = useState<string>("");
+    //const [activePage, setActivePage] = useState<string>("");
 
     const [torIsOpen , setTorIsOpen] = useState(false);
 
-    const [userInformation, setUserInformation] = useState(UserInformation)
+    const [userInformation] = useState(UserInformation)
 
     const [isBurgerClicked, setIsBurgerClicked] = useState(false)
 
@@ -71,6 +74,10 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
     useEffect( () =>{
 
+      if(!localStorage.getItem('token')){
+      navigate("/login");
+      }
+
         return () => {}
     },[userInformation, isOpenProfileBox,isBurgerClicked,torIsOpen])
 
@@ -80,7 +87,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
       const email = localStorage.getItem('token')
 
       try{
-
+        console.log(email)
         const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/${email}`,{
           headers :{
               Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
@@ -88,21 +95,25 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
       })
 
       const response = await request.data;
+      console.log("Email ",email)
+      console.log("response:", response)
+      setUser(response.response)
 
-      if(response){
-
-        setUserInformation((user) => user = response.data)
-
-      }
-
+      localStorage.setItem('role' , response.response.role)
       }catch(e){
         console.log(`Error in getting user: ${e}`)
       }
 
     }
+
+    useEffect(() =>{
+      GetUserByEmail()
+    },[])
     
     useEffect(() =>{
-     
+      console.log(user)
+
+      
       return () =>{}
     }, [user])
 
@@ -142,8 +153,8 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
   <div>
     
     <button type="button" className="flex items-center text-sm bg-gray rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" onClick={handleBtnProfileBox}>
-        <img className="w-8 h-8 rounded-full mr-2" src={user.imageUrl} alt="user photo" />
-        <p className="text-sm text-white dark:text-white flex-grow">{user.firstname + " " + user.middlename + " " + user.lastname}</p>
+        <img className="w-8 h-8 rounded-full mr-2" src={user.profileImageUrl} alt="user photo" />
+        <p className="text-sm text-white dark:text-white flex-grow">{user.firstName + " " + user.middleName + " " + user.lastName}</p>
     </button>
     
 
@@ -151,7 +162,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
       <div className="absolute z-50 right-0 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
         <div className="px-4 py-3" role="none">
           <p className="text-sm text-gray-900 dark:text-white" role="none">
-            {user.firstname + " " + user.middlename + " " + user.lastname}
+            {user.firstName + " " + user.middleName + " " + user.lastName}
           </p>
           <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
             {user.email}
@@ -188,7 +199,9 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
      <div className="mt-32"></div>
       <ul className="space-y-2 font-medium p-0">
 
-        {NavBarPages.map((page) =>{
+
+        {
+        user.role === "Administrator" ? (NavBarPages.map((page) =>{
           return(
          <>
          
@@ -201,7 +214,8 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
             />
          </>
           ) 
-        })}
+        })) : (<></>)
+        }
 
         
 <li>

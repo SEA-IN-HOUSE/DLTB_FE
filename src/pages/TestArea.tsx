@@ -1,9 +1,9 @@
 import { BsMenuAppFill } from "react-icons/bs";
-import Carousel from "../components/Carousel";
-import CarouselLinks from "../components/CarouselLinks";
+// import Carousel from "../components/Carousel";
+// import CarouselLinks from "../components/CarouselLinks";
 import DashboardCard from "../components/DashboardCard";
-import HeaderCard from "../components/HeaderCard";
-import PaginationTest from "../components/PaginationTest";
+// import HeaderCard from "../components/HeaderCard";
+// import PaginationTest from "../components/PaginationTest";
 
 
 export default function TestArea(){

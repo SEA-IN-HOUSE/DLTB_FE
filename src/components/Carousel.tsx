@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
+
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import PaginationTest from './PaginationTest';
-import { Bs9CircleFill, BsFacebook, BsInstagram, BsLinkedin, BsTwitter, BsYoutube } from 'react-icons/bs';
+// import PaginationTest from './PaginationTest';
+// import { Bs9CircleFill, BsFacebook, BsInstagram, BsLinkedin, BsTwitter, BsYoutube } from 'react-icons/bs';
 import CarouselLinks from './CarouselLinks';
 import LoginGallery from './LoginGallery';
+//import PaginationTest from './PaginationTest';
+import '../styles/MorphingPagination.css'; // Import your CSS file
 
 export default function Carousel(): JSX.Element {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
@@ -14,6 +17,7 @@ export default function Carousel(): JSX.Element {
 
   useEffect(() => {
     // Update the screen height when it changes
+    console.log(screenHeight)
     const handleResize = () => {
       setScreenHeight(window.innerHeight);
     };
@@ -41,6 +45,7 @@ export default function Carousel(): JSX.Element {
     slidesToScroll: 1,
     autoplay: true,
     beforeChange: (current: number, next: number) => {
+      console.log(current)
       setCurrentSlide(next);
     },
     responsive: [
@@ -59,18 +64,18 @@ export default function Carousel(): JSX.Element {
     ],
   };
 
-  function handleNextPage() {
-     if (sliderRef.current) {
-      sliderRef.current.slickNext(); // Trigger the next slide
-    }
-  }
+  // function handleNextPage() {
+  //    if (sliderRef.current) {
+  //     sliderRef.current.slickNext(); 
+  //   }
+  // }
 
 
   const [activeButton, setActiveButton] = useState(0);
 
-    const buttons = [0, 1, 2]; // You can adjust the number of buttons as needed
+    const buttons = [0, 1, 2]; 
   
-    const switchToNext = (index : any) => {
+    const switchToNext = (index : number) => {
       if (index !== activeButton) {
         setActiveButton(index);
         if (sliderRef.current) {
@@ -184,6 +189,7 @@ export default function Carousel(): JSX.Element {
       <div style={{ display: 'flex', justifyContent: 'center'}}>
         {/* <PaginationTest currentSlide={currentSlide} 
         /> */}
+        
 
           <div className="container">
             {buttons.map((index) => (

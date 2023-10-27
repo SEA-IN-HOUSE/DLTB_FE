@@ -6,7 +6,8 @@ import Carousel from '../components/Carousel';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const defaultFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
 
@@ -18,7 +19,13 @@ export default function TestLogin() : JSX.Element {
 
     const navigate = useNavigate();
 
+    
+
     useEffect(() =>{
+
+        if(localStorage.getItem('token')){
+            navigate('/dashboard')
+        }
 
         return () =>{}
 
@@ -38,14 +45,27 @@ export default function TestLogin() : JSX.Element {
             const response = await request.data;
 
             console.log(response)
-
+            console.log("FUCK IT")
+            console.log(response.messages[0].message)
             if(response.messages[0].message === "OK"){
-                console.log(response.response.token)
-                localStorage.setItem('token', response.response.token)
+                console.log(response.response.email)
+                localStorage.setItem('token', response.response.email)
                 console.log("pumasokdito")
                 if(localStorage.getItem('token')){
                     navigate('/employee')
                 }
+            }else{
+               
+                toast.error(response.messages[0].message, {
+                    position: "top-left",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    });
             }
     
         }catch(e){
@@ -54,10 +74,25 @@ export default function TestLogin() : JSX.Element {
     
     }
 
+
+
     
 
     return(
         <>
+        <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+       
+        />
         <div className="divmain"
         style ={{
             width: '100%'

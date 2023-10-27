@@ -52,19 +52,30 @@ export function ProfileBoxList (props: IProfileBoxListProps) : JSX.Element {
     const navigate = useNavigate();
     useEffect(() =>{
 
-        if(props.id === 1){
-            localStorage.clear();
-            navigate("/login")
-        }
+        // if(props.id === 1){
+        //     localStorage.clear();
+        //     navigate("/login")
+        // }
 
         return () =>{}
     },[props])
   
+    function handleLogout(){
 
+        try{
+
+            localStorage.clear();
+            navigate("/login")
+
+        }catch(e){
+            console.log(e)
+        }
+
+    }
     return(
         <>
             <li>
-                <a href= {props.pageUrl} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem" key ={props.id}>{props.name}</a>
+                <a href= {props.pageUrl} onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem" key ={props.id}>{props.name}</a>
             </li>
         </>
     )

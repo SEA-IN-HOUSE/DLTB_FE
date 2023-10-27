@@ -10,9 +10,9 @@ export default function LogIn() : JSX.Element {
         statusMessage: '',    
     }
 
-    const [inputEmail , setInputEmail] = useState(inputInitialState)
+    const [inputEmail ] = useState(inputInitialState)
 
-    const [inputPassword, setInputPassword] = useState(inputInitialState)
+    //const [inputPassword, setInputPassword] = useState(inputInitialState)
 
     console.log(import.meta.env.VITE_ASSET_URL)
 
@@ -31,7 +31,7 @@ export default function LogIn() : JSX.Element {
                                 type="email"
                                 defaultValue=""
                                 isRequired = {true}
-                                onChange={(event) =>{}}
+                                onChange={() =>{}}
                                 placeHolder="Enter your email address here:"
                                 status="success"
                                 statusMessage=""
@@ -48,7 +48,7 @@ export default function LogIn() : JSX.Element {
                                 type="password"
                                 defaultValue=""
                                 isRequired = {true}
-                                onChange={(event) =>{}}
+                                onChange={() =>{}}
                                 placeHolder="Enter your password address here:"
                                 status="success"
                                 statusMessage=""

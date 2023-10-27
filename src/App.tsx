@@ -35,6 +35,7 @@ function App() {
               <Route path ="/test" element ={<TestArea />}/> 
               <Route path="/client" element ={<Client />} />
               <Route path ="/login" element = {<TestLogin />} />
+              <Route path ="/signout" element = {<TestLogin />} />
               <Route path ="/test" element = {<TestLogin />}/>
               <Route path ="/employee" element = {<Employee />}/>
               <Route path ="/direction" element ={<Direction />} />

@@ -6,8 +6,9 @@ import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
-import { Avatar,  LinearProgress, Stack } from "@mui/material";
+import { LinearProgress, Stack } from "@mui/material";
 import axios from 'axios';
+import {  useNavigate } from "react-router-dom";
 
 const columns: GridColDef[] = [
   // {
@@ -181,11 +182,17 @@ export function Employee(){
     const [clientTableRows, setClientTableRows] = useState(rows)
     const [isLoading ,setIsLoading ] = useState(false);
 
+    const navigate = useNavigate();
+
+   
+
     useEffect(() =>{
       
         GetAllEmployees();
         setClientTableRows(rows)
-
+        if(localStorage.getItem('role') !== "Administrator"){
+          navigate("/tormain")
+        }
         return () =>{}
 
     },[])
@@ -213,6 +220,7 @@ export function Employee(){
 
               setClientTableRows(
                 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 response.response[0].map((employee : any ) =>{
                   console.log(employee.fieldData[0])
                   
