@@ -5,7 +5,7 @@ import NavBar from "../components/NavBar";
 import axios from "axios";
 import DashboardCard from "../components/DashboardCard";
 import { BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillExclamationTriangleFill, BsFillFuelPumpFill, BsFillSignpostFill, BsTicketPerforatedFill } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+
 
 export function Dashboard() : JSX.Element{
 
@@ -201,13 +201,11 @@ export function Dashboard() : JSX.Element{
 
     }
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     useEffect(() =>{
 
-        if(localStorage.getItem('role') !== "Administrator"){
-            navigate("/tormain")
-          }
+       
 
         GetAllTORRemittance();
 

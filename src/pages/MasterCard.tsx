@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
-import {  Button, LinearProgress } from "@mui/material";
+import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
@@ -16,6 +17,18 @@ const columns: GridColDef[] = [
   { 
     field: 'riderId', 
     headerName: 'RIDER ID', 
+    flex: 1,
+        minWidth: 0,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: true,
+   
+  },
+
+  { 
+    field: 'cardId', 
+    headerName: 'CARD ID', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
@@ -106,7 +119,10 @@ export function MasterCard(){
     }
         GetAllData();
         setTableRows(rows)
-
+        if(localStorage.getItem('role') !== "Administrator"){
+          navigate("/tormain")
+        }
+    
         return () =>{}
 
     },[])
@@ -230,7 +246,7 @@ export function MasterCard(){
 
     <NavBar>
 
-    {isModalOpen ? (   <div
+    {/* {isModalOpen ? (   <div
         tabIndex={-1}
         aria-hidden="true"
         className="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center p-4 overflow-x-hidden overflow-y-auto bg-opacity-80 bg-slate-400"
@@ -289,7 +305,67 @@ export function MasterCard(){
             </div>
         </div>
     </div>
-</div>) : (<></>)}
+</div>) : (<></>)} */}
+
+
+
+<Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
+     <form onSubmit={RegisterCard}>
+        <DialogTitle>Add Card</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {/* To subscribe to this website, please enter your email address here. We
+            will send updates occasionally. */}
+          </DialogContentText>
+         
+          <TextField
+            autoFocus
+            margin="dense"
+            id="riderId"
+            name ="riderId"
+            label="Rider Id"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setRiderId(event.target.value)}
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="cardId"
+            name ="cardId"
+            label="Card Id"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setCardId(event.target.value)}
+            />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="balance"
+            name ="balance"
+            label="Balance"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setBalance(event.target.value)}
+          />
+
+        
+         
+        </DialogContent>
+        
+        <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
+        
+          <Button onClick={() => setIsModalOpen(!isModalOpen)}>Cancel</Button>
+          <Button type ="submit" variant="contained" color="success">Save</Button>
+        </DialogActions>
+        </form>
+  </Dialog>
+
 
     <HeaderCard title ="MASTER CARD" />
         <Paper style={{width: '100%', marginTop: '10px' }}>

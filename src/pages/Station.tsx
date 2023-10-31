@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 
 import HeaderCard from "../components/HeaderCard";
@@ -6,7 +7,7 @@ import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
-import { Button, LinearProgress } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
@@ -120,13 +121,13 @@ export function Station(){
     const [tableRows, setTableRows] = useState(rows)
     const navigate = useNavigate();
     useEffect(() =>{
-      console.log(localStorage.getItem('role'))
-    if(localStorage.getItem('role') !== "Administrator"){
-      navigate("/tormain")
-    }
+   
         GetAllData();
         setTableRows(rows)
-
+        console.log(localStorage.getItem('role'))
+        if(localStorage.getItem('role') !== "Administrator"){
+          navigate("/tormain")
+        }
         return () =>{}
 
     },[])
@@ -267,7 +268,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
 
     <NavBar>
 
-    {isModalOpen ? (   <div
+    {/* {isModalOpen ? (<div
         tabIndex={-1}
         aria-hidden="true"
         className="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center p-4 overflow-x-hidden overflow-y-auto bg-opacity-80 bg-slate-400"
@@ -283,10 +284,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
                 <span className="sr-only">Close modal</span>
             </button>
             <div className="px-6 py-6 lg:px-8">
-{/* 
-            // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"} */}
-
-                <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add Station</h3>
+               <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add Station</h3>
                 <form className="space-y-6" onSubmit={AddStation}>
                     <div>
                         <label htmlFor="stationName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Station name</label>
@@ -340,7 +338,76 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             </div>
         </div>
     </div>
-</div>) : (<></>)}
+</div>) : (<></>)} */}
+
+
+
+<Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
+     <form onSubmit={AddStation}>
+        <DialogTitle>Add Route</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {/* To subscribe to this website, please enter your email address here. We
+            will send updates occasionally. */}
+          </DialogContentText>
+         
+          <TextField
+            autoFocus
+            margin="dense"
+            id="stationName"
+            name ="stationName"
+            label="Station Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setStationName(event.target.value)}
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="km"
+            name ="km"
+            label="Km"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setKm(event.target.value)}
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="km"
+            name ="viceVersaKM"
+            label="Vice Versa Km"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setViceVersaKM(event.target.value)}
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="routeId"
+            name ="routeId"
+            label="Route Id"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setRouteId(event.target.value)}
+          />
+
+        </DialogContent>
+        
+        <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
+        
+          <Button onClick={() => setIsModalOpen(!isModalOpen)}>Cancel</Button>
+          <Button type ="submit" variant="contained" color="success">Save</Button>
+        </DialogActions>
+        </form>
+  </Dialog>
 
     <HeaderCard title ="STATION" />
         <Paper style={{width: '100%', marginTop: '10px' }}>

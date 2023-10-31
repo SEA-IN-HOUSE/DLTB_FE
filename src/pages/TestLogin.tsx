@@ -44,15 +44,14 @@ export default function TestLogin() : JSX.Element {
             
             const response = await request.data;
 
-            console.log(response)
-            console.log("FUCK IT")
+   
             console.log(response.messages[0].message)
             if(response.messages[0].message === "OK"){
-                console.log(response.response.email)
+                GetUserByEmail(response.response.email)
                 localStorage.setItem('token', response.response.email)
                 console.log("pumasokdito")
                 if(localStorage.getItem('token')){
-                    navigate('/employee')
+                    navigate('/dashboard')
                 }
             }else{
                
@@ -76,7 +75,39 @@ export default function TestLogin() : JSX.Element {
 
 
 
-    
+    async function GetUserByEmail (email : string){
+
+        //const email = localStorage.getItem('token')
+  
+        try{
+          console.log(email)
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/${email}`,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
+  
+        const response = await request.data;
+        console.log("Email ",email)
+        console.log("response:", response)
+       
+  
+        localStorage.setItem('role' , response.response.role)
+        localStorage.setItem('isTorMain' , response.response.
+        isAllowedToTorMain)
+        localStorage.setItem('isTorTicket' , response.response.isAllowedToTorTicket)
+        localStorage.setItem('isTorFuel' , response.response.isAllowedToTorFuel)
+        localStorage.setItem('isTorRemittance' , response.response.isAllowedToTorRemittance)
+        localStorage.setItem('isTorInspection' , response.response.isAllowedToTorInspection)
+        localStorage.setItem('isTorTrip' , response.response.isAllowedToTorTrip)
+        localStorage.setItem('isTorViolation' , response.response.isAllowedToTorViolation)
+        localStorage.setItem('isTorTrouble' , response.response.isAllowedToTorTrouble)
+        }catch(e){
+          console.log(`Error in getting user: ${e}`)
+        }
+  
+      }
+  
 
     return(
         <>

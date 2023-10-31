@@ -7,7 +7,7 @@ import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
-import { Button, LinearProgress } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
@@ -125,7 +125,10 @@ export function Direction(){
     }
         GetAllData();
         setTableRows(rows)
-
+        if(localStorage.getItem('role') !== "Administrator"){
+          navigate("/tormain")
+        }
+   
         return () =>{}
 
     },[])
@@ -259,7 +262,7 @@ export function Direction(){
 
     <NavBar>
 
-    {isModalOpen ? (   <div
+    {/* {isModalOpen ? (   <div
         tabIndex={-1}
         aria-hidden="true"
         className="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center p-4 overflow-x-hidden overflow-y-auto bg-opacity-80 bg-slate-400"
@@ -276,12 +279,6 @@ export function Direction(){
             </button>
             <div className="px-6 py-6 lg:px-8">
                 <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add Route</h3>
-
-                {/* //   {
-  //     "bound": "SOUTH",
-  //     "origin" : "PITX",
-  //     "destination" : ""
-  // } */}
 
                 <form className="space-y-6" onSubmit={AddData}>
                     <div>
@@ -336,7 +333,76 @@ export function Direction(){
             </div>
         </div>
     </div>
-</div>) : (<></>)}
+</div>) : (<></>)} */}
+
+
+<Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
+     <form onSubmit={AddData}>
+        <DialogTitle>Add Route</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {/* To subscribe to this website, please enter your email address here. We
+            will send updates occasionally. */}
+          </DialogContentText>
+         
+          <TextField
+            autoFocus
+            margin="dense"
+            id="bound"
+            name ="bound"
+            label="Bound"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setBound(event.target.value)}
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="origin"
+            name ="origin"
+            label="Origin"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setOrigin(event.target.value)}
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="route_code"
+            name ="route_code"
+            label="Route Code"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setRouteCode(event.target.value)}
+          />
+          
+          <TextField
+            autoFocus
+            margin="dense"
+            id="destination"
+            name ="destination"
+            label="Destination"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setDestination(event.target.value)}
+          />
+        
+         
+        </DialogContent>
+        
+        <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
+        
+          <Button onClick={() => setIsModalOpen(!isModalOpen)}>Cancel</Button>
+          <Button type ="submit" variant="contained" color="success">Save</Button>
+        </DialogActions>
+        </form>
+  </Dialog>
 
     <HeaderCard title ="ROUTE" />
         <Paper style={{width: '100%', marginTop: '10px' }}>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation,NavLink } from "react-router-dom";
 
 interface IListProps{
     id: number,
@@ -75,7 +75,8 @@ export function ProfileBoxList (props: IProfileBoxListProps) : JSX.Element {
     return(
         <>
             <li>
-                <a href= {props.pageUrl} onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem" key ={props.id}>{props.name}</a>
+                <NavLink to = {props.pageUrl} onClick={handleLogout} className=" no-underline block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" key ={props.id}> {props.name}</NavLink>
+                {/* <a href= {props.pageUrl} onClick={handleLogout} className=" no-underline block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" key ={props.id}>{props.name}</a> */}
             </li>
         </>
     )

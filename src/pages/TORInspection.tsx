@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
@@ -8,7 +9,7 @@ import { Button, LinearProgress } from "@mui/material";
 import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
 import SyncIcon from '@mui/icons-material/Sync';
-
+import { useNavigate } from "react-router-dom";
 const columns: GridColDef[] = [
   
   { 
@@ -409,6 +410,12 @@ export function TORInspection(){
     const [isLoading , setIsLoading] = useState(false);
 
     const [isSyncing, setIsSyncing] = useState(false);
+
+    const navigate = useNavigate();
+    if(localStorage.getItem('isTorTInspection') !== "true"){
+      navigate("/dashboard");
+    }
+
 
     useEffect(() =>{
       

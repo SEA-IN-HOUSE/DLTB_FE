@@ -9,7 +9,7 @@ import { Button, LinearProgress } from "@mui/material";
 import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
 import SyncIcon from '@mui/icons-material/Sync';
-
+import { useNavigate } from "react-router-dom";
 const columns: GridColDef[] = [
   
   { 
@@ -259,6 +259,12 @@ export function TORRemittance(){
     const [isLoading , setIsLoading] = useState(false);
 
     const [isSyncing, setIsSyncing] = useState(false);
+
+    const navigate = useNavigate();
+    if(localStorage.getItem('isTorTicket') !== "true"){
+      navigate("/dashboard");
+    }
+
 
     useEffect(() =>{
       

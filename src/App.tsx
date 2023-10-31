@@ -18,6 +18,7 @@ import { TORTrouble } from "./pages/TORTrouble";
 import TestArea from "./pages/TestArea";
 import { Station } from "./pages/Station";
 import { EmployeeCard } from "./pages/EmployeeCard";
+import { Staff } from "./pages/Staff";
 
 function App() {
  
@@ -38,6 +39,7 @@ function App() {
               <Route path ="/signout" element = {<TestLogin />} />
               <Route path ="/test" element = {<TestLogin />}/>
               <Route path ="/employee" element = {<Employee />}/>
+              <Route path ="/staff" element = {<Staff />} />
               <Route path ="/direction" element ={<Direction />} />
               <Route path ="/mastercard" element ={<MasterCard />} />
               <Route path ="/station" element ={<Station />} />
@@ -58,4 +60,15 @@ function App() {
   ) 
 }
 
+// function GetUserRole({children, redirectTo}) {
+
+//   let userRole : string = localStorage.getItem('role');
+  
+//   return userRole === 'Administator' ? children : <TestLogin />;
+// }
+
+// function RequireAuth({ children, redirectTo }) {
+//   let isAuthenticated = getAuth();
+//   return isAuthenticated ? children : <Navigate to={redirectTo} />;
+// }
 export default App

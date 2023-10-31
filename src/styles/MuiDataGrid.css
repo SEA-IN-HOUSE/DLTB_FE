@@ -1,0 +1,15 @@
+.MuiDataGrid-columnHeader:first-child {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100px;
+    z-index: 1;
+  }
+  
+  .MuiDataGrid-columnHeader:not(.MuiDataGrid-columnHeader:first-child) {
+    position: relative;
+  }
+  
+  .MuiDataGrid-virtualScroller {
+    overflow-x: scroll;
+  }

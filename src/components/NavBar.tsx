@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode,  useEffect, useState } from "react";
 //import { useNavigate, useLocation } from "react-router-dom";
-import { BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonWorkspace, BsTicketPerforatedFill } from 'react-icons/bs';
+import { BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace, BsTicketPerforatedFill } from 'react-icons/bs';
 import NavList, { ProfileBoxList } from "./NavList";
 import NotificationBell from "./NotificationBell";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, NavLink } from "react-router-dom";
+
 interface NavBarProps {
     children: ReactNode;
 }
@@ -26,12 +27,13 @@ interface IUserInformation{
     /////////////////////////////////////////////////////////////////
     const NavBarPages = [
         
-        {id: 1, pageName: "Dashboard", url: "/dashboard", iconUrl: <BsMenuButtonWide />},
+        
         {id: 2, pageName: "Employee", url: "/employee", iconUrl: <BsPersonWorkspace />},
-        {id: 3, pageName: "Employee Card", url :"/employeecard" , iconUrl: <BsFillCreditCard2FrontFill />},
-        {id: 4, pageName: "Master Card", url :"/mastercard", iconUrl: <BsFillCreditCardFill />},
-        {id: 5, pageName: "Route", url: "/direction", iconUrl: <BsFillMapFill />},
-        {id: 6, pageName: "Station", url :"/station" , iconUrl : <BsFillTruckFrontFill />}
+        {id: 3, pageName: "Staff", url: "/staff", iconUrl: <BsPersonFillLock /> },
+        {id: 4, pageName: "Employee Card", url :"/employeecard" , iconUrl: <BsFillCreditCard2FrontFill />},
+        {id: 5, pageName: "Master Card", url :"/mastercard", iconUrl: <BsFillCreditCardFill />},
+        {id: 6, pageName: "Route", url: "/direction", iconUrl: <BsFillMapFill />},
+        {id: 7, pageName: "Station", url :"/station" , iconUrl : <BsFillTruckFrontFill />}
     ]
 
     const ProfileDropdown = [
@@ -47,8 +49,10 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
     
   
     const navigate = useNavigate();
-
+    const location = useLocation();
     const [user, setUser] = useState(UserInformation)
+
+   
 
     //const location = useLocation();
 
@@ -67,17 +71,48 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
     const  [isOpenProfileBox, setIsOpenProfileBox] = useState(false);
 
    
-        
+    //if coop
+
+    // const [isAllowedToTorFuel ,setIsAllowedToTorFuel] = useState(false)
+    // const [isAllowedToTorInspection ,setIsAllowedToTorInspection] = useState(false)
+    // const [isAllowedToTorMain ,setIsAllowedToTorMain] = useState(false)
+    // const [isAllowedToTorRemittance ,setIsAllowedToTorRemittance] = useState(false)
+    // const [isAllowedToTorTicket ,setIsAllowedToTorTicket] = useState(false)
+    // const [isAllowedToTorTrip ,setIsAllowedToTorTrip] = useState(false)
+    // const [isAllowedToTorTrouble ,setIsAllowedToTorTrouble] = useState(false)
+    // const [isAllowedToTorViolation ,setIsAllowedToTorViolation] = useState(false)
+
+    
     function handleBtnProfileBox() : any{
         setIsOpenProfileBox(!isOpenProfileBox)
     }
 
-    useEffect( () =>{
+    useEffect(() =>{
 
+    
+     //setUserRole(localStorage.getItem('role') || "Coop");
+      // setIsAllowedToTorMain(localStorage.getItem('isTorMain') === "true" ? true : false)
+      // setIsAllowedToTorFuel(localStorage.getItem('isTorFuel') === "true" ? true : false)
+      // setIsAllowedToTorInspection(localStorage.getItem('isTorInspection') === "true" ? true : false)
+      // setIsAllowedToTorMain(localStorage.getItem('isTorMain') === "true" ? true : false)
+      // setIsAllowedToTorRemittance(localStorage.getItem('isTorRemittance') === "true" ? true : false)
+      // setIsAllowedToTorTicket(localStorage.getItem('isTorTicket') === "true" ? true : false)
+      // setIsAllowedToTorTrip(localStorage.getItem('isTorTrip') === "true" ? true : false)
+      // setIsAllowedToTorTrouble(localStorage.getItem('isTorTrouble') === "true" ? true : false)
+      // setIsAllowedToTorViolation(localStorage.getItem('isTorViolation') === "true" ? true : false)
+
+
+      return () =>{}
+
+    },[])
+
+    useEffect( () =>{
+    
       if(!localStorage.getItem('token')){
       navigate("/login");
       }
 
+      
         return () => {}
     },[userInformation, isOpenProfileBox,isBurgerClicked,torIsOpen])
 
@@ -154,22 +189,22 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
     
     <button type="button" className="flex items-center text-sm bg-gray rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" onClick={handleBtnProfileBox}>
         <img className="w-8 h-8 rounded-full mr-2" src={user.profileImageUrl} alt="user photo" />
-        <p className="text-sm text-white dark:text-white flex-grow">{user.firstName + " " + user.middleName + " " + user.lastName}</p>
+        <p className="text-sm text-white  flex-grow">{user.firstName + " " + user.middleName + " " + user.lastName}</p>
     </button>
     
 
     {isOpenProfileBox && (
       <div className="absolute z-50 right-0 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
         <div className="px-4 py-3" role="none">
-          <p className="text-sm text-gray-900 dark:text-white" role="none">
+          <p className="text-sm text-gray-900 " role="none">
             {user.firstName + " " + user.middleName + " " + user.lastName}
           </p>
-          <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+          <p className="text-sm font-medium text-gray-900 truncate " role="none">
             {user.email}
           </p>
         </div>
         <ul className="py-1" role="none">
-
+       
 
           {ProfileDropdown.map((list) => {
             return (
@@ -199,9 +234,25 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
      <div className="mt-32"></div>
       <ul className="space-y-2 font-medium p-0">
 
-
-        {
-        user.role === "Administrator" ? (NavBarPages.map((page) =>{
+      <li>
+            <a
+                onClick={() => navigate("/dashboard")}
+                className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+                location.pathname === "/dashboard" ? 'bg-indigo-700 pl-4' : ''
+                }`}
+            >
+                {location.pathname === "/dashboard" && (
+                <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+                )}
+                <div className="mr-4"></div>
+                <BsMenuButtonWide />
+                <span className="ml-3">Dashboard</span>
+                
+            </a>
+          </li>
+      
+      {
+        localStorage.getItem("role") === "Administrator" ? (NavBarPages.map((page) =>{
           return(
          <>
          
@@ -216,6 +267,8 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
           ) 
         })) : (<></>)
         }
+      
+      
 
         
 <li>
@@ -224,36 +277,80 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
             <div className="mr-4"></div>
                  <BsFillFileEarmarkBarGraphFill className ="text-2xl" />
                   <span className="flex-1 ml-3 text-left whitespace-nowrap text-2xl ">TOR</span>
-                  <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                  </svg>
-            </button>
-            <ul id="dropdown-example" className= {`py-2 space-y-2 ${torIsOpen ? "" : "hidden"}`}>
+                      <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+                      </svg>
+                  </button>
+                  <ul id="dropdown-example" className= {`py-2 space-y-2 ${torIsOpen ? "" : "hidden"}`}>
+             
+                    {
+                    localStorage.getItem('isTorMain') === "true" ? ( 
+                  
                   <li>
-                    
-                     <a href="/tormain" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 text-2xl mt-4"><BsFileEarmarkTextFill className ="mr-4" />Main</a>
+                    <NavLink to= "/tormain" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsFileEarmarkTextFill className ="mr-4"  />Main </NavLink>
+                    {/* <a href="/tormain" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 text-2xl mt-4"><BsFileEarmarkTextFill className ="mr-4" />Main</a> */}
+                 </li>) : (<></>)
+              }
+                 
+                 {
+                localStorage.getItem('isTorTicket') === "true" ? (
+                   <li>
+                    <NavLink to= "/torticket" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsTicketPerforatedFill className ="mr-4"  />Ticket </NavLink>
+                   {/* <a href="/torticket" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsTicketPerforatedFill className ="mr-4" /> Ticket</a> */}
                   </li>
-                  <li>
-                     <a href="/torticket" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsTicketPerforatedFill className ="mr-4" /> Ticket</a>
+                 ) : (<></>)}
+
+                 {
+                 localStorage.getItem('isTorFuel') === "true" ? (
+                    <li>
+                      <NavLink to= "/torfuel" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsFillFuelPumpFill className ="mr-4"  />Fuel </NavLink>
+                    {/* <a href="/torfuel" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsFillFuelPumpFill className ="mr-4"/> Fuel</a> */}
+                 </li>
+                 ) : (<></>)}
+                  
+                  {
+                  localStorage.getItem('isTorRemittance') === "true" ? (
+                      <li>
+                        <NavLink to= "/torremittance" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsCurrencyExchange className ="mr-4"  />Remittance </NavLink>
+                      {/* <a href="/torremittance" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"><BsCurrencyExchange className ="mr-4"/> Remittance</a> */}
+                   </li>
+                  ) :(<></>)}
+                  
+                  {
+                  localStorage.getItem('isTorTrip') === "true" ? (
+                    <li>
+                        <NavLink to= "/tortrip" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsFillSignpostFill className ="mr-4"  />Trip </NavLink>
+                     {/* <a href="/tortrip" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"><BsFillSignpostFill className ="mr-4"/> Trip</a> */}
                   </li>
+                  ) : (<></>)}
+
+                  {
+                  localStorage.getItem('isTorInspection') === "true" ? (   
                   <li>
-                     <a href="/torfuel" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsFillFuelPumpFill className ="mr-4"/> Fuel</a>
-                  </li>
-                  <li>
-                     <a href="/torremittance" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"><BsCurrencyExchange className ="mr-4"/> Remittance</a>
-                  </li>
-                  <li>
-                     <a href="/tortrip" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"><BsFillSignpostFill className ="mr-4"/> Trip</a>
-                  </li>
-                  <li>
-                     <a href="/torinspection" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"><BsFillClipboardCheckFill className ="mr-4" /> Inspection</a>
-                  </li>
-                  <li>
-                     <a href="/torviolation" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsFillExclamationTriangleFill className="mr-4"/> Violation</a>
-                  </li> 
-                  <li>
-                     <a href="/tortrouble" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"><BsEmojiDizzyFill className ="mr-4"/> Trouble</a>
-                  </li>
+                     <NavLink to= "/torinspection" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsFillClipboardCheckFill className ="mr-4"  />Inspection </NavLink>
+                     {/* <a href="/torinspection" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"><BsFillClipboardCheckFill className ="mr-4" /> Inspection</a> */}
+                  </li>):( <></>)}
+                  
+                  {
+                  localStorage.getItem('isTorViolation') === "true" ? (
+                    <li>
+                      <NavLink to= "/torviolation" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsFillExclamationTriangleFill className ="mr-4"  />Violation </NavLink>
+                    {/* <a href="/torviolation" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsFillExclamationTriangleFill className="mr-4"/> Violation</a> */}
+                 </li>
+                  ) :(<></>)}
+                  
+                  {
+                  localStorage.getItem('isTorTrouble') === "true" ? 
+                  (
+                    <li>
+                      <NavLink to= "/tortrouble" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"> <BsEmojiDizzyFill className ="mr-4"  />Trouble </NavLink>
+                    {/* <a href="/tortrouble" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950 dark:text-white text-2xl mt-4"><BsEmojiDizzyFill className ="mr-4"/> Trouble</a> */}
+                 </li>
+
+                  ) :(<> </>)
+                  }
+                   
+                  
             </ul>
          </li>
       </ul>
