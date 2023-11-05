@@ -11,7 +11,27 @@ import 'react-toastify/dist/ReactToastify.css';
 const defaultFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
 
-
+interface IUserInformation{
+    _id : string,
+    company : string,
+    email: string,
+    firstName: string,
+    middleName : string,
+    lastName : string,
+    isAllowedToTorFuel : boolean,
+    isAllowedToTorInspection: boolean,
+    isAllowedToTorMain : boolean,
+    isAllowedToTorRemittance : boolean,
+    isAllowedToTorTicket: boolean,
+    isAllowedToTorTrip: boolean,
+    isAllowedToTorTrouble: boolean,
+    isAllowedToTorViolation: boolean,
+    isEmailVerified: boolean,
+    password: string,
+    role: string,
+    profileImageUrl: string,
+    updatedAt: Date,
+}
 
 export default function TestLogin() : JSX.Element {
     const [username, setUsername] = useState(''); 
@@ -47,7 +67,7 @@ export default function TestLogin() : JSX.Element {
    
             console.log(response.messages[0].message)
             if(response.messages[0].message === "OK"){
-                GetUserByEmail(response.response.email)
+                InsertToStorage(response.response)
                 localStorage.setItem('token', response.response.email)
                 console.log("pumasokdito")
                 if(localStorage.getItem('token')){
@@ -75,33 +95,25 @@ export default function TestLogin() : JSX.Element {
 
 
 
-    async function GetUserByEmail (email : string){
+    async function InsertToStorage (data : IUserInformation){
 
-        //const email = localStorage.getItem('token')
-  
-        try{
-          console.log(email)
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/${email}`,{
-            headers :{
-                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-            }
-        })
-  
-        const response = await request.data;
-        console.log("Email ",email)
-        console.log("response:", response)
        
   
-        localStorage.setItem('role' , response.response.role)
-        localStorage.setItem('isTorMain' , response.response.
-        isAllowedToTorMain)
-        localStorage.setItem('isTorTicket' , response.response.isAllowedToTorTicket)
-        localStorage.setItem('isTorFuel' , response.response.isAllowedToTorFuel)
-        localStorage.setItem('isTorRemittance' , response.response.isAllowedToTorRemittance)
-        localStorage.setItem('isTorInspection' , response.response.isAllowedToTorInspection)
-        localStorage.setItem('isTorTrip' , response.response.isAllowedToTorTrip)
-        localStorage.setItem('isTorViolation' , response.response.isAllowedToTorViolation)
-        localStorage.setItem('isTorTrouble' , response.response.isAllowedToTorTrouble)
+        try{
+   
+        console.log("Email ",data.email)
+
+  
+        localStorage.setItem('role' , data.role)
+        localStorage.setItem('isTorMain' , data.
+        isAllowedToTorMain.toString())
+        localStorage.setItem('isTorTicket' , data.isAllowedToTorTicket.toString())
+        localStorage.setItem('isTorFuel' , data.isAllowedToTorFuel.toString())
+        localStorage.setItem('isTorRemittance' , data.isAllowedToTorRemittance.toString())
+        localStorage.setItem('isTorInspection' , data.isAllowedToTorInspection.toString())
+        localStorage.setItem('isTorTrip' , data.isAllowedToTorTrip.toString())
+        localStorage.setItem('isTorViolation' , data.isAllowedToTorViolation.toString())
+        localStorage.setItem('isTorTrouble' , data.isAllowedToTorTrouble.toString())
         }catch(e){
           console.log(`Error in getting user: ${e}`)
         }

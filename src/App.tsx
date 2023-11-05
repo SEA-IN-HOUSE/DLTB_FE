@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import LogIn from "./pages/LogIn";
 import TestLogin from "./pages/TestLogin";
 import { Dashboard } from "./pages/Dashboard";
 import { Client } from "./pages/Client";
@@ -19,10 +18,13 @@ import TestArea from "./pages/TestArea";
 import { Station } from "./pages/Station";
 import { EmployeeCard } from "./pages/EmployeeCard";
 import { Staff } from "./pages/Staff";
-
+import styles from 'styles/LogIn.css'
+import { useEffect } from "react";
 function App() {
  
+  useEffect(() =>{
 
+  },[])
 
   return (
     <>
@@ -31,7 +33,7 @@ function App() {
           <Router>
             <Routes>
               <Route path ="/" element = { <TestLogin />} />
-              <Route path ="/testarea" element ={<LogIn /> }/>
+              <Route path ="/testarea" element ={<TestArea /> }/>
               <Route path ="/dashboard" element ={<Dashboard />} />
               <Route path ="/test" element ={<TestArea />}/> 
               <Route path="/client" element ={<Client />} />
@@ -39,7 +41,7 @@ function App() {
               <Route path ="/signout" element = {<TestLogin />} />
               <Route path ="/test" element = {<TestLogin />}/>
               <Route path ="/employee" element = {<Employee />}/>
-              <Route path ="/staff" element = {<Staff />} />
+              <Route path ="/user" element = {<Staff />} />
               <Route path ="/direction" element ={<Direction />} />
               <Route path ="/mastercard" element ={<MasterCard />} />
               <Route path ="/station" element ={<Station />} />
@@ -60,15 +62,4 @@ function App() {
   ) 
 }
 
-// function GetUserRole({children, redirectTo}) {
-
-//   let userRole : string = localStorage.getItem('role');
-  
-//   return userRole === 'Administator' ? children : <TestLogin />;
-// }
-
-// function RequireAuth({ children, redirectTo }) {
-//   let isAuthenticated = getAuth();
-//   return isAuthenticated ? children : <Navigate to={redirectTo} />;
-// }
 export default App

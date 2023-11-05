@@ -106,8 +106,8 @@ export function EmployeeCard(){
       
         GetAllData();
         setTableRows(rows)
-        if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/tormain")
+        if(localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "UserAdmin"){
+          navigate("/dashboard")
         }
       
         return () =>{}

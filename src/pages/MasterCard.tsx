@@ -114,30 +114,18 @@ export function MasterCard(){
     
     useEffect(() =>{
       console.log(localStorage.getItem('role'))
-    if(localStorage.getItem('role') !== "Administrator"){
-      navigate("/tormain")
-    }
+   
         GetAllData();
         setTableRows(rows)
         if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/tormain")
+          navigate("/dashboard")
         }
     
         return () =>{}
 
     },[])
 
-    // const styles = (theme : any) => ({
-    //   activeSortIcon: {
-    //     opacity: 1,
-    //     color : 'blue',
-    //   },
-    //   inactiveSortIcon: {
-    //     opacity: 0.4,
-    //     color : 'green',
-    //   },
-    // });
-
+  
   
     async function GetAllData(){
 

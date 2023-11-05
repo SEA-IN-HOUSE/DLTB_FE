@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ReactNode,  useEffect, useState } from "react";
+import { ReactNode,  useEffect, useState, useLayoutEffect } from "react";
 //import { useNavigate, useLocation } from "react-router-dom";
 import { BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace, BsTicketPerforatedFill } from 'react-icons/bs';
 import NavList, { ProfileBoxList } from "./NavList";
@@ -29,7 +29,7 @@ interface IUserInformation{
         
         
         {id: 2, pageName: "Employee", url: "/employee", iconUrl: <BsPersonWorkspace />},
-        {id: 3, pageName: "Staff", url: "/staff", iconUrl: <BsPersonFillLock /> },
+        {id: 3, pageName: "User", url: "/user", iconUrl: <BsPersonFillLock /> },
         {id: 4, pageName: "Employee Card", url :"/employeecard" , iconUrl: <BsFillCreditCard2FrontFill />},
         {id: 5, pageName: "Master Card", url :"/mastercard", iconUrl: <BsFillCreditCardFill />},
         {id: 6, pageName: "Route", url: "/direction", iconUrl: <BsFillMapFill />},
@@ -41,7 +41,7 @@ interface IUserInformation{
     ]
 
     const UserInformation : IUserInformation  = 
-        {id: 1, firstName:"Emmanuel", middleName:"", lastName: "Zuiga", role: "Administrator", email: "admin@gmail.com", profileImageUrl: "https://flowbite.com/docs/images/people/profile-picture-5.jpg"} 
+        {id: 1, firstName:"", middleName:"", lastName: "", role: "", email: "", profileImageUrl: ""} 
   
 
 export default function NavBar ({children} : NavBarProps) : JSX.Element{
@@ -51,12 +51,6 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(UserInformation)
-
-   
-
-    //const location = useLocation();
-
-    //const [activePage, setActivePage] = useState<string>("");
 
     const [torIsOpen , setTorIsOpen] = useState(false);
 
@@ -70,41 +64,10 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
     const  [isOpenProfileBox, setIsOpenProfileBox] = useState(false);
 
-   
-    //if coop
-
-    // const [isAllowedToTorFuel ,setIsAllowedToTorFuel] = useState(false)
-    // const [isAllowedToTorInspection ,setIsAllowedToTorInspection] = useState(false)
-    // const [isAllowedToTorMain ,setIsAllowedToTorMain] = useState(false)
-    // const [isAllowedToTorRemittance ,setIsAllowedToTorRemittance] = useState(false)
-    // const [isAllowedToTorTicket ,setIsAllowedToTorTicket] = useState(false)
-    // const [isAllowedToTorTrip ,setIsAllowedToTorTrip] = useState(false)
-    // const [isAllowedToTorTrouble ,setIsAllowedToTorTrouble] = useState(false)
-    // const [isAllowedToTorViolation ,setIsAllowedToTorViolation] = useState(false)
-
-    
     function handleBtnProfileBox() : any{
         setIsOpenProfileBox(!isOpenProfileBox)
     }
 
-    useEffect(() =>{
-
-    
-     //setUserRole(localStorage.getItem('role') || "Coop");
-      // setIsAllowedToTorMain(localStorage.getItem('isTorMain') === "true" ? true : false)
-      // setIsAllowedToTorFuel(localStorage.getItem('isTorFuel') === "true" ? true : false)
-      // setIsAllowedToTorInspection(localStorage.getItem('isTorInspection') === "true" ? true : false)
-      // setIsAllowedToTorMain(localStorage.getItem('isTorMain') === "true" ? true : false)
-      // setIsAllowedToTorRemittance(localStorage.getItem('isTorRemittance') === "true" ? true : false)
-      // setIsAllowedToTorTicket(localStorage.getItem('isTorTicket') === "true" ? true : false)
-      // setIsAllowedToTorTrip(localStorage.getItem('isTorTrip') === "true" ? true : false)
-      // setIsAllowedToTorTrouble(localStorage.getItem('isTorTrouble') === "true" ? true : false)
-      // setIsAllowedToTorViolation(localStorage.getItem('isTorViolation') === "true" ? true : false)
-
-
-      return () =>{}
-
-    },[])
 
     useEffect( () =>{
     
@@ -130,8 +93,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
       })
 
       const response = await request.data;
-      console.log("Email ",email)
-      console.log("response:", response)
+
       setUser(response.response)
 
       localStorage.setItem('role' , response.response.role)
@@ -141,11 +103,11 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
     }
 
-    useEffect(() =>{
+    useLayoutEffect(() =>{
       GetUserByEmail()
     },[])
     
-    useEffect(() =>{
+    useLayoutEffect(() =>{
       console.log(user)
 
       
@@ -186,11 +148,16 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
 <NotificationBell />
   <div>
-    
-    <button type="button" className="flex items-center text-sm bg-gray rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" onClick={handleBtnProfileBox}>
+   
+      <div role="status" className = {user.id ===1 ? "max-w-sm animate-pulse" : ""}>
+         <button type="button" className="flex items-center text-sm bg-gray rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" onClick={handleBtnProfileBox}>
         <img className="w-8 h-8 rounded-full mr-2" src={user.profileImageUrl} alt="user photo" />
         <p className="text-sm text-white  flex-grow">{user.firstName + " " + user.middleName + " " + user.lastName}</p>
-    </button>
+       </button>
+      </div>
+     
+
+  
     
 
     {isOpenProfileBox && (

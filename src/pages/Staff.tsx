@@ -128,6 +128,17 @@ export function Staff(){
       editable: false,
      
     },
+    { 
+      field: 'company', 
+      headerName: 'COMPANY', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+     
+    },
   
     { 
       field: 'createdAt', 
@@ -191,7 +202,7 @@ export function Staff(){
         GetAllData();
         setTableRows(rows)
         if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/tormain")
+          navigate("/dashboard")
         }
         return () =>{}
 
@@ -350,7 +361,7 @@ return(<>
  
  <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
      <form onSubmit={RegisterEmployeeCard}>
-        <DialogTitle>Add Staff</DialogTitle>
+        <DialogTitle>Add User</DialogTitle>
         <DialogContent>
           <DialogContentText>
          </DialogContentText>
@@ -411,7 +422,8 @@ return(<>
             <em>None</em>
           </MenuItem>
           <MenuItem value={"Administrator"}>Administrator</MenuItem>
-          <MenuItem value={"Coop"}>Coop</MenuItem>
+          <MenuItem value={"UserAdmin"}>User Admin</MenuItem>
+          <MenuItem value={"User"}>User</MenuItem>
         </Select>
         {/* <FormHelperText>With label + helper text</FormHelperText> */}
       </FormControl>
@@ -524,7 +536,8 @@ return(<>
             <em>None</em>
           </MenuItem>
           <MenuItem value={"Administrator"}>Administrator</MenuItem>
-          <MenuItem value={"Coop"}>Coop</MenuItem>
+          <MenuItem value={"UserAdmin"}>UserAdmin</MenuItem>
+          <MenuItem value={"User"}>User</MenuItem>
         </Select>
         {/* <FormHelperText>With label + helper text</FormHelperText> */}
       </FormControl>
@@ -622,7 +635,7 @@ return(<>
         </form>
   </Dialog>
 
-    <HeaderCard title ="STAFF" />
+    <HeaderCard title ="USER" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
             <Box sx = {{
             '& .super-app-theme--header': {
