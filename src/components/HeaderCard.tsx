@@ -6,8 +6,15 @@ export default function HeaderCard(props : IHeaderCard){
 
     return(
         <>
+         {/* <Helmet>
+        <link
+          rel="stylesheet"
+          href="../node_modules/bootstrap/dist/css/bootstrap.min.css"
+        />
+      </Helmet> */}
+
         {console.log(props.title)}
-        <div className="relative block mt-10  p-12 bg-white border  rounded-lg shadow border-gray-700 hover:bg-gray-700"
+        <div className="relative block mt-10  p-12 bg-white border border-gray-200 rounded-lg shadow-lg"
         style ={{
             height: 'auto'
         }}

@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import 'bootstrap/dist/css/bootstrap.min.css'
+// import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/LogIn.css'
-import { FormEvent } from 'react';
+import { FormEvent} from 'react';
 import Carousel from '../components/Carousel';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
@@ -10,7 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const defaultFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
-
+import { Helmet } from "react-helmet";
 
 
 export default function TestLogin() : JSX.Element {
@@ -67,8 +68,18 @@ export default function TestLogin() : JSX.Element {
                     });
             }
     
-        }catch(e){
+        }catch(e : any){
             console.error("Error in login ",e );
+            toast.error("Connection error", {
+                position: "top-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+        });
         }
     
     }
@@ -78,7 +89,7 @@ export default function TestLogin() : JSX.Element {
     async function GetUserByEmail (email : string){
 
         //const email = localStorage.getItem('token')
-  
+        console.log(import.meta.env.VITE_BASE_URL)
         try{
           console.log(email)
           const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/${email}`,{
@@ -107,10 +118,17 @@ export default function TestLogin() : JSX.Element {
         }
   
       }
-  
 
     return(
-        <>
+        <div>
+        
+        <Helmet>
+        <link
+          rel="stylesheet"
+          href="../node_modules/bootstrap/dist/css/bootstrap.min.css"
+        />
+      </Helmet>
+
         <ToastContainer
         position="bottom-right"
         autoClose={5000}
@@ -151,8 +169,8 @@ export default function TestLogin() : JSX.Element {
                             <div className="form-group" style={{}}>
                                 <label htmlFor="exampleInputEmail1" style={{marginBottom: '0.5rem', 
                                 
-                                fontFamily:defaultFont}}>Username</label>
-                                <input type="text" className="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter your username" required
+                                fontFamily:defaultFont}}>Email</label>
+                                <input type="email" className="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter your email" required
                                 style={{marginBottom: '1em'}}
                                 onChange={(event) => setUsername(event.target.value)}
                                 /> 
@@ -205,7 +223,7 @@ export default function TestLogin() : JSX.Element {
 
 
     </div>
-        </>
+        </div>
     )
 
 }

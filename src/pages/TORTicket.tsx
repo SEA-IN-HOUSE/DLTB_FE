@@ -343,18 +343,6 @@ export function TORTicket(){
 
     },[])
 
-    // const styles = (theme : any) => ({
-    //   activeSortIcon: {
-    //     opacity: 1,
-    //     color : 'blue',
-    //   },
-    //   inactiveSortIcon: {
-    //     opacity: 0.4,
-    //     color : 'green',
-    //   },
-    // });
-
-  
     async function GetAllData(){
 
       setIsLoading(true);
@@ -443,11 +431,11 @@ function CustomToolbar() {
       <GridToolbarContainer>
         {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
         <Button variant="text"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <GridToolbarExport />
-        <GridToolbarQuickFilter />
+            <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
+            <GridToolbarFilterButton style ={{color:"#161d6f"}} />
+            <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
+            <GridToolbarExport style ={{color:"#161d6f"}} />
+            <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
       </GridToolbarContainer>
     </>
   );
@@ -455,8 +443,11 @@ function CustomToolbar() {
 }   
 
 
-    return(<>
-
+    return(
+      <div  style={{
+        backgroundColor: '#f1f5f9',
+        height:'100vh'
+      }}>
     <NavBar>
       <HeaderCard title ="TOR TICKET" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
@@ -494,7 +485,7 @@ function CustomToolbar() {
  
        
     </NavBar>
-    </>)
+    </div>)
 }
 
 

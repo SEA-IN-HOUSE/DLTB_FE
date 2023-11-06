@@ -15,7 +15,8 @@ import styles from '../styles/MuiDataGrid.css'
 import moment from 'moment';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
   //Toolbar
 
@@ -27,6 +28,7 @@ interface IEditState{
   lastName: string,
   email: string,
   role: string,
+  company: string,
   isAllowedToTorFuel: boolean,
   isAllowedToTorInspection: boolean,
   isAllowedToTorMain: boolean,
@@ -51,6 +53,7 @@ export function Staff(){
     lastName: "",
     email: "",
     role: "",
+    company: "",
     isAllowedToTorFuel: true,
     isAllowedToTorInspection: true,
     isAllowedToTorMain: true,
@@ -128,6 +131,18 @@ export function Staff(){
       editable: false,
      
     },
+    { 
+      field: 'company', 
+      headerName: 'COMPANY', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+     
+    },
+    
   
     { 
       field: 'createdAt', 
@@ -139,7 +154,7 @@ export function Staff(){
       align: 'center',
       editable: false,
       valueFormatter: (params) => {
-        return moment(params.value).format('MM/DD/YYYY');
+        return moment(params.value).format('MMMM D, YYYY');
       },
     },
     {
@@ -180,6 +195,7 @@ export function Staff(){
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("");
     const [password, setPassword] = useState("");
+    const [company, setCompany] = useState("");
 
 
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -246,7 +262,8 @@ export function Staff(){
           lastName : lastName,
           email : email,
           role : role,
-          password : password
+          password : password,
+          company : company
         };
     
         const response = await axios.post(
@@ -263,14 +280,47 @@ export function Staff(){
         // as axios already returns the response data.
         const responseData = response.data;
           console.log(responseData)
-       if(responseData.messages){
-        setIsModalOpen(!isModalOpen)
-        GetAllData();
-       }
-     
+          if(responseData.messages[0].code === "0"){
+          
+            GetAllData();
+        
+            toast.success("Successfully added!", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              });
+           }else{
+            toast.warning("Invalid fields!", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              });
+           }
     
       } catch (error) {
         console.error(error);
+        toast.error(`Action failed error: ${error}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }finally{
+        setIsModalOpen(!isModalOpen)
       }
     }
 
@@ -289,15 +339,48 @@ export function Staff(){
         const response = await request.data;
 
         if(response.messages[0].code === '0'){
-          setIsModalEditOpen(!isModalEditOpen)
-          GetAllData();
+          
+          
+          toast.success("Successfully updated!", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
         }else{
-          setIsModalEditOpen(!isModalEditOpen)
-          GetAllData();
+  
+          
+          toast.success("Invalid fields!", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
         }
 
-      }catch(error){
+      }catch (error) {
         console.error(error);
+        toast.error(`Action failed error: ${error}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }finally{
+        setIsModalEditOpen(!isModalEditOpen)
+        GetAllData();
       }
 
     }
@@ -310,13 +393,13 @@ export function Staff(){
           <Button variant="text" color="success" onClick={ () =>{
             setIsModalOpen(true)
           }}>
-          Add Staff
+          Add User
         </Button>
-            <GridToolbarColumnsButton />
-            <GridToolbarFilterButton />
-            <GridToolbarDensitySelector />
-            <GridToolbarExport />
-            <GridToolbarQuickFilter />
+            <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
+            <GridToolbarFilterButton style ={{color:"#161d6f"}} />
+            <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
+            <GridToolbarExport style ={{color:"#161d6f"}} />
+            <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
             
           </GridToolbarContainer>
          
@@ -335,7 +418,7 @@ export function Staff(){
 
     return () =>{}
 
-  },[isModalOpen, firstName, middleName, lastName, email, role, password])
+  },[isModalOpen, firstName, middleName, lastName, email, role, password,company])
 
   
   useEffect(() =>{
@@ -343,15 +426,50 @@ export function Staff(){
   return () =>{}
   },[editData]  )
 
-return(<>
-
+return(
+  <div  style={{
+    backgroundColor: '#f1f5f9',
+    height:'100vh'
+  }}>
+<ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        style={
+          {
+            width: "100%",
+          }
+        }
+        />
     <NavBar>
 
  
  <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
      <form onSubmit={RegisterEmployeeCard}>
-        <DialogTitle>Add Staff</DialogTitle>
-        <DialogContent>
+     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Add User
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={() => setIsModalOpen(!isModalOpen)}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+      
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers>
           <DialogContentText>
          </DialogContentText>
           <TextField
@@ -411,10 +529,31 @@ return(<>
             <em>None</em>
           </MenuItem>
           <MenuItem value={"Administrator"}>Administrator</MenuItem>
-          <MenuItem value={"Coop"}>Coop</MenuItem>
+          <MenuItem value={"User Admin"}>User Admin</MenuItem>
+          <MenuItem value={"User"}>User</MenuItem>
         </Select>
         {/* <FormHelperText>With label + helper text</FormHelperText> */}
       </FormControl>
+
+      <FormControl fullWidth sx ={{marginTop: 1}}>
+        <InputLabel id="demo-simple-select-helper-label">Company</InputLabel>
+        <Select
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
+          value={company}
+          label="Company"
+          required
+          onChange={(event) => setCompany(event.target.value)}
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={"Seapps-inc"}>Seapps-inc</MenuItem>
+          <MenuItem value={"DLTB"}>DLTB</MenuItem>
+        </Select>
+        {/* <FormHelperText>With label + helper text</FormHelperText> */}
+      </FormControl>
+          
           
         <TextField
               autoFocus
@@ -442,7 +581,7 @@ return(<>
   <Dialog open={isModalEditOpen} onClose={() => setIsModalEditOpen(!isModalEditOpen)} fullWidth>
      <form onSubmit={UpdateDataInformation}>
      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Edit Staff Information
+          Edit User Information
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -508,7 +647,7 @@ return(<>
               defaultValue={editData.email}
               onChange = {(event) => setEditData({...editData, email: event.target.value})}
             />
-<FormControl fullWidth sx ={{marginTop: 1}}>
+      <FormControl fullWidth sx ={{marginTop: 1}}>
         <InputLabel id="demo-simple-select-helper-label">Role</InputLabel>
         <Select
           labelId="demo-simple-select-helper-label"
@@ -524,13 +663,35 @@ return(<>
             <em>None</em>
           </MenuItem>
           <MenuItem value={"Administrator"}>Administrator</MenuItem>
-          <MenuItem value={"Coop"}>Coop</MenuItem>
+          <MenuItem value={"User Admin"}>User Admin</MenuItem>
+          <MenuItem value={"User"}>User</MenuItem>
+        </Select>
+        {/* <FormHelperText>With label + helper text</FormHelperText> */}
+      </FormControl>
+
+      <FormControl fullWidth sx ={{marginTop: 1}}>
+        <InputLabel id="demo-simple-select-helper-label">Company</InputLabel>
+        <Select
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
+          value={editData.company}
+          label="Company"
+          required
+          defaultValue={editData.company}
+          
+          onChange={(event) => setEditData({...editData, company: event.target.value})}
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+            <MenuItem value={"Seapps-inc"}>Seapps-inc</MenuItem>
+            <MenuItem value={"DLTB"}>DLTB</MenuItem>
         </Select>
         {/* <FormHelperText>With label + helper text</FormHelperText> */}
       </FormControl>
         
         </DialogContent>
-        {editData.role !== "Administrator" ? 
+        {editData.role === "User" || editData.role ==="User Admin" ? 
         (
           <DialogContent dividers >
     
@@ -622,7 +783,7 @@ return(<>
         </form>
   </Dialog>
 
-    <HeaderCard title ="STAFF" />
+    <HeaderCard title ="USER" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
             <Box sx = {{
             '& .super-app-theme--header': {
@@ -659,7 +820,7 @@ return(<>
  
        
     </NavBar>
-    </>)
+    </div>)
 }
 
 

@@ -31,7 +31,7 @@ export default function NavList(props : IListProps) : JSX.Element {
             <a
                 onClick={() => navigate(props.url)}
                 className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
-                activePage === props.url ? 'bg-indigo-700 pl-4' : ''
+                activePage === props.url ? 'bg-indigo-700' : ''
                 }`}
             >
                 {activePage === props.url && (

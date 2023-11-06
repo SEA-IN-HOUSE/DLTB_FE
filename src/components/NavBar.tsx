@@ -4,7 +4,7 @@ import { ReactNode,  useEffect, useState } from "react";
 //import { useNavigate, useLocation } from "react-router-dom";
 import { BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace, BsTicketPerforatedFill } from 'react-icons/bs';
 import NavList, { ProfileBoxList } from "./NavList";
-import NotificationBell from "./NotificationBell";
+// import NotificationBell from "./NotificationBell";
 import axios from "axios";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 
@@ -26,14 +26,13 @@ interface IUserInformation{
     ///////// MOCK DATA
     /////////////////////////////////////////////////////////////////
     const NavBarPages = [
-        
-        
-        {id: 2, pageName: "Employee", url: "/employee", iconUrl: <BsPersonWorkspace />},
-        {id: 3, pageName: "Staff", url: "/staff", iconUrl: <BsPersonFillLock /> },
-        {id: 4, pageName: "Employee Card", url :"/employeecard" , iconUrl: <BsFillCreditCard2FrontFill />},
-        {id: 5, pageName: "Master Card", url :"/mastercard", iconUrl: <BsFillCreditCardFill />},
-        {id: 6, pageName: "Route", url: "/direction", iconUrl: <BsFillMapFill />},
-        {id: 7, pageName: "Station", url :"/station" , iconUrl : <BsFillTruckFrontFill />}
+    
+        {id: 1, pageName: "Employee Card", url :"/employeecard" , iconUrl: <BsFillCreditCard2FrontFill />},
+        {id: 2, pageName: "Master Card", url :"/mastercard", iconUrl: <BsFillCreditCardFill />},
+        {id: 3, pageName: "Route", url: "/direction", iconUrl: <BsFillMapFill />},
+        {id: 4, pageName: "Station", url :"/station" , iconUrl : <BsFillTruckFrontFill />},
+        {id: 5, pageName: "Employee", url: "/employee", iconUrl: <BsPersonWorkspace />},
+        // {id: 6, pageName: "User", url: "/user", iconUrl: <BsPersonFillLock /> },
     ]
 
     const ProfileDropdown = [
@@ -70,41 +69,12 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
     const  [isOpenProfileBox, setIsOpenProfileBox] = useState(false);
 
-   
-    //if coop
-
-    // const [isAllowedToTorFuel ,setIsAllowedToTorFuel] = useState(false)
-    // const [isAllowedToTorInspection ,setIsAllowedToTorInspection] = useState(false)
-    // const [isAllowedToTorMain ,setIsAllowedToTorMain] = useState(false)
-    // const [isAllowedToTorRemittance ,setIsAllowedToTorRemittance] = useState(false)
-    // const [isAllowedToTorTicket ,setIsAllowedToTorTicket] = useState(false)
-    // const [isAllowedToTorTrip ,setIsAllowedToTorTrip] = useState(false)
-    // const [isAllowedToTorTrouble ,setIsAllowedToTorTrouble] = useState(false)
-    // const [isAllowedToTorViolation ,setIsAllowedToTorViolation] = useState(false)
 
     
     function handleBtnProfileBox() : any{
         setIsOpenProfileBox(!isOpenProfileBox)
     }
 
-    useEffect(() =>{
-
-    
-     //setUserRole(localStorage.getItem('role') || "Coop");
-      // setIsAllowedToTorMain(localStorage.getItem('isTorMain') === "true" ? true : false)
-      // setIsAllowedToTorFuel(localStorage.getItem('isTorFuel') === "true" ? true : false)
-      // setIsAllowedToTorInspection(localStorage.getItem('isTorInspection') === "true" ? true : false)
-      // setIsAllowedToTorMain(localStorage.getItem('isTorMain') === "true" ? true : false)
-      // setIsAllowedToTorRemittance(localStorage.getItem('isTorRemittance') === "true" ? true : false)
-      // setIsAllowedToTorTicket(localStorage.getItem('isTorTicket') === "true" ? true : false)
-      // setIsAllowedToTorTrip(localStorage.getItem('isTorTrip') === "true" ? true : false)
-      // setIsAllowedToTorTrouble(localStorage.getItem('isTorTrouble') === "true" ? true : false)
-      // setIsAllowedToTorViolation(localStorage.getItem('isTorViolation') === "true" ? true : false)
-
-
-      return () =>{}
-
-    },[])
 
     useEffect( () =>{
     
@@ -152,6 +122,8 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
       return () =>{}
     }, [user])
 
+    
+
     return(
         <>
         <nav className="fixed top-0 z-50 w-full bg-gradient-to-r from-blue-900 to-[#161d6f] border-b border-gray-200 ">
@@ -164,11 +136,6 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
             </svg>
          </button>
-         
-             {/* <a href= "#" className="no-underline flex ml-2 md:mr-24">
-                <span className="self-center text-white text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">FILIPAY / DLTB</span>
-             </a> */}
-             
              <div className="bg-white w-full rounded-lg p-2 shadow-md">
             <img
               className="w-full h-16 rounded-lg "
@@ -184,7 +151,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
 <div className="z-50 flex items-center relative ml-3">
 
-<NotificationBell />
+{/* <NotificationBell /> */}
   <div>
     
     <button type="button" className="flex items-center text-sm bg-gray rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" onClick={handleBtnProfileBox}>
@@ -238,7 +205,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
             <a
                 onClick={() => navigate("/dashboard")}
                 className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
-                location.pathname === "/dashboard" ? 'bg-indigo-700 pl-4' : ''
+                location.pathname === "/dashboard" ? 'bg-indigo-700' : ''
                 }`}
             >
                 {location.pathname === "/dashboard" && (
@@ -249,10 +216,13 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                 <span className="ml-3">Dashboard</span>
                 
             </a>
-          </li>
+      </li>
+      
+
+          
       
       {
-        localStorage.getItem("role") === "Administrator" ? (NavBarPages.map((page) =>{
+        localStorage.getItem("role") === "Administrator" || localStorage.getItem("role") === "User Admin" ? (NavBarPages.map((page) =>{
           return(
          <>
          
@@ -267,8 +237,30 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
           ) 
         })) : (<></>)
         }
-      
-      
+      {
+        localStorage.getItem("role") === "Administrator" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/user")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/user" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/user" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsPersonFillLock />
+              <span className="ml-3">User</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+      }
+    
 
         
 <li>

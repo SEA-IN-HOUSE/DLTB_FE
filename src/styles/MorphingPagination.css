@@ -19,9 +19,9 @@
     cursor: auto;
   }
   
-  .container {
+  .containerd {
     margin: 0;
-    position: absolute;
+    position: fixed;
     bottom: 14%;
     right: 0;
     left: 0;

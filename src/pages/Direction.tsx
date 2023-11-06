@@ -7,10 +7,14 @@ import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, TextField } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import CloseIcon from '@mui/icons-material/Close';
+import moment from "moment";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const columns: GridColDef[] = [
   
@@ -70,7 +74,9 @@ const columns: GridColDef[] = [
     headerAlign: 'center',
     align: 'center',
     editable: true,
-   
+    valueFormatter: (params) => {
+      return moment(params.value).format('MMMM D, YYYY');
+    },
   },
 
   { 
@@ -82,29 +88,11 @@ const columns: GridColDef[] = [
     headerAlign: 'center',
     align: 'center',
     editable: true,
-   
+    valueFormatter: (params) => {
+      return moment(params.value).format('MMMM D, YYYY');
+    },
   }
- 
-//   { field: 'status', 
-//     headerName: 'STATUS', 
-//     width: 180, 
-//     headerClassName: 'super-app-theme--header',
-//     editable: true,
-//     renderCell: (cellValues) => {
-          
-//         return(
-//         <>
-//       {cellValues.value === "Active" ? (<Chip icon={<CheckIcon/>} label="active  " color ="success" size = "small" variant = "outlined"/>) : (<Chip icon={<CloseIcon/>} label="inactive" color ="error" size = "small" variant = "outlined"/>)}
-//         </>
-//         );
-//       }
-//   },
-  // { field: 'action', 
-  //   headerName: 'ACTION', 
-  //   width: 180, 
-  //   headerClassName: 'super-app-theme--header',
-  //   editable: true,
-  // },
+
   ];
   
   const rows: GridRowsProp = [
@@ -133,16 +121,6 @@ export function Direction(){
 
     },[])
 
-    // const styles = (theme : any) => ({
-    //   activeSortIcon: {
-    //     opacity: 1,
-    //     color : 'blue',
-    //   },
-    //   inactiveSortIcon: {
-    //     opacity: 0.4,
-    //     color : 'green',
-    //   },
-    // });
 
   
     async function GetAllData(){
@@ -216,16 +194,51 @@ export function Direction(){
       // Note that there's no need to use `await` on response.data directly
       // as axios already returns the response data.
       const responseData = response.data;
-        console.log(responseData)
-     if(responseData.messages){
-      setIsModalOpen(!isModalOpen)
-      GetAllData();
-     }
+      
+
+        if(responseData.messages[0].code === "0"){
+          
+          GetAllData();
+      
+          toast.success("Success", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+         }else{
+          toast.warning(responseData.messages[0].message, {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+         }
    
   
-    } catch (error) {
-      console.error(error);
-    }
+    }catch (error) {
+        console.error(error);
+        toast.error(`Action failed error: ${error}`, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }finally{
+        setIsModalOpen(!isModalOpen)
+      }
   }
 
   useEffect(() =>{
@@ -246,116 +259,88 @@ export function Direction(){
           Add Route
         </Button>
   
-            <GridToolbarColumnsButton />
-            <GridToolbarFilterButton />
-            <GridToolbarDensitySelector />
-            <GridToolbarExport />
-            <GridToolbarQuickFilter />
-            
+        <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
+            <GridToolbarFilterButton style ={{color:"#161d6f"}} />
+            <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
+            <GridToolbarExport style ={{color:"#161d6f"}} />
+            <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
           </GridToolbarContainer>
          
         </>
         );
       }
 
-    return(<>
-
+    return(
+      <div  style={{
+        backgroundColor: '#f1f5f9',
+        height:'100vh'
+      }}>
+          <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        style={
+          {
+            width: "100%",
+          }
+        }
+        />
     <NavBar>
 
-    {/* {isModalOpen ? (   <div
-        tabIndex={-1}
-        aria-hidden="true"
-        className="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center p-4 overflow-x-hidden overflow-y-auto bg-opacity-80 bg-slate-400"
-      >
-        <div className="relative w-full max-w-md">
-          <div className="relative bg-gray-700 rounded-lg shadow ">
-            <button type="button" className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="authentication-modal" onClick ={
-              () => {setIsModalOpen(!isModalOpen)}
-            }>
-                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                </svg>
-                <span className="sr-only">Close modal</span>
-            </button>
-            <div className="px-6 py-6 lg:px-8">
-                <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add Route</h3>
-
-                <form className="space-y-6" onSubmit={AddData}>
-                    <div>
-                        <label htmlFor="bound" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bound</label>
-                        <input type="text" name="bound" id="bound" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
-                         value ={bound}
-
-                         onChange={(event) => {
-                          setBound(event.target.value);
-                        }}
-                        
-                        required
-                         />
-                    </div>
-                    <div>
-                    <label htmlFor="origin" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Origin</label>
-                        <input type="text" name="origin" id="origin" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
-                        value ={origin}
-                      
-                        onChange={ (event) =>{
-                          setOrigin(event.target.value)
-                        }} 
-                        required />
-                    </div>
-
-                    <div>
-                    <label htmlFor="destination" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Destination</label>
-                        <input type="text" name="destination" id="destination" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
-                        value ={destination}
-                      
-                        onChange={ (event) =>{
-                          setDestination(event.target.value)
-                        }} 
-                        required />
-                    </div>
-
-                    <div>
-                    <label htmlFor="route_code" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Route Code</label>
-                        <input type="text" name="route_code" id="route_code" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="" 
-                        value ={route_code}
-                      
-                        onChange={ (event) =>{
-                          setRouteCode(event.target.value)
-                        }} 
-                        required />
-                    </div>
-                    
-                    
-                    <button type="submit" className="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Register</button>
-                   
-                </form>
-            </div>
-        </div>
-    </div>
-</div>) : (<></>)} */}
 
 
 <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
      <form onSubmit={AddData}>
-        <DialogTitle>Add Route</DialogTitle>
-        <DialogContent>
+     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Add Route
+        </DialogTitle>
+      
+        <IconButton
+          aria-label="close"
+          onClick={() => setIsModalOpen(!isModalOpen)}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+      
+          <CloseIcon />
+        </IconButton>
+
+        <DialogContent dividers>
           <DialogContentText>
             {/* To subscribe to this website, please enter your email address here. We
             will send updates occasionally. */}
           </DialogContentText>
          
-          <TextField
-            autoFocus
-            margin="dense"
-            id="bound"
-            name ="bound"
-            label="Bound"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setBound(event.target.value)}
-          />
+          <FormControl fullWidth sx ={{marginTop: 1}}>
+        <InputLabel id="demo-simple-select-helper-label">Bound</InputLabel>
+        <Select
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
+          value={bound}
+          label="Bound"
+          required
+          defaultValue={""}        
+          onChange={(event) => setBound(event.target.value)}
+        >
+          <MenuItem value={"NORTH"}>NORTH</MenuItem>
+          <MenuItem value={"EAST"}>EAST</MenuItem>
+          <MenuItem value={"WEST"}>WEST</MenuItem>
+          <MenuItem value={"SOUTH"}>SOUTH</MenuItem>
+            
+        </Select>
+        {/* <FormHelperText>With label + helper text</FormHelperText> */}
+      </FormControl>
 
           <TextField
             autoFocus
@@ -439,7 +424,7 @@ export function Direction(){
  
        
     </NavBar>
-    </>)
+    </div>)
 }
 
 

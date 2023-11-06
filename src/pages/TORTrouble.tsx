@@ -345,8 +345,11 @@ function CustomToolbar() {
 
 } 
 
-    return(<>
-
+    return(
+      <div  style={{
+        backgroundColor: '#f1f5f9',
+        height:'100vh'
+      }}>
     <NavBar>
       <HeaderCard title="TOR TROUBLE"/>
         <Paper style={{width: '100%', marginTop: '10px' }}>
@@ -384,7 +387,7 @@ function CustomToolbar() {
  
        
     </NavBar>
-    </>)
+    </div>)
 }
 
 
