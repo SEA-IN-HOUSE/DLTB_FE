@@ -36,11 +36,21 @@ export default {
         },
         gradientColors: {
           'custom': {
-            'start': '#FFD700', // Start color
-            'end': '#161d6f',   // End color
+            'start': '#FFD700',
+            'end': '#161d6f',   
           },
         },
+        colors: {
+          'custom-blue': '#67e8f9', 
+        },
 
+    },
+  },
+
+  variants: {
+    extend: {
+      borderColor: ['focus'],
+      ringColor: ['focus'],
     },
   },
   plugins: [],
