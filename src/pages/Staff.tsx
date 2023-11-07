@@ -17,7 +17,7 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import CloseIcon from '@mui/icons-material/Close';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import AddIcon from '@mui/icons-material/PersonAdd';
   //Toolbar
 
 interface IEditState{
@@ -389,8 +389,13 @@ export function Staff(){
 
       return (<>
           
-          <GridToolbarContainer>
-          <Button variant="text" color="success" onClick={ () =>{
+          <GridToolbarContainer
+          style=
+          {{
+            marginBottom: '2px',
+          }}
+          >
+          <Button variant="contained"  startIcon = {<AddIcon />} color="success"  onClick={ () =>{
             setIsModalOpen(true)
           }}>
           Add User

@@ -23,7 +23,7 @@ export default function LoginForm(): JSX.Element {
             <label htmlFor="terms" className="ml-2 text-sm font-medium text-gray-900">keep me logged in</label>
 
             
-            <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Read more</a>      
+            <a href="#" className="font-medium text-blue-600 hover:underline">Read more</a>      
     
           </div>
           

@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
+// import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {  Route, Routes, HashRouter} from "react-router-dom";
 import LogIn from "./pages/LogIn";
 import TestLogin from "./pages/TestLogin";
 import { Dashboard } from "./pages/Dashboard";
@@ -25,10 +26,8 @@ function App() {
 
 
   return (
-    <>
-   
-    
-          <Router>
+    <>   
+          <HashRouter basename="/">
             <Routes>
               <Route path ="/" element = { <TestLogin />} />
               <Route path ="/testarea" element ={<LogIn /> }/>
@@ -53,7 +52,7 @@ function App() {
               <Route path ="/torviolation" element ={<TORViolation />} />
               <Route path ="/tortrouble" element = {<TORTrouble /> } />       
             </Routes>
-          </Router>
+          </HashRouter>
 
     
     </>

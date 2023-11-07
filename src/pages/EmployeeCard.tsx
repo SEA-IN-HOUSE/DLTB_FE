@@ -5,10 +5,9 @@ import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect,  useState} from 'react'
+import {useEffect,  useLayoutEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
 import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,  IconButton,  LinearProgress,  TextField } from "@mui/material";
-//import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
@@ -16,11 +15,7 @@ import moment from "moment";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-// import Snackbar from '@mui/material/Snackbar';
-// import Slide from '@mui/material/Slide';
-
-// type AlertColor = 'success' | 'info' | 'warning' | 'error' | undefined;
+import AddIcon from '@mui/icons-material/AddCard';
 
 const columns: GridColDef[] = [
   
@@ -145,8 +140,64 @@ export function EmployeeCard(){
 
     const [isModalOpen, setIsModalOpen] = useState(false)
 
+    const [employee, setEmployee] = useState<any>([]);
+
     // const [snackBarStatus, setSnackBarStatus] = useState<AlertColor>('success')
     
+    async function GetAllEmployees(){
+
+      // setIsLoading(true)
+
+        try{
+          
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee`,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
+            
+            const response = await request.data;
+            
+            // console.log(` GetAllEmployees response: ${JSON.stringify(response)}`)
+
+            if(response.messages[0].code === '0'){
+
+              response.response[0].map((employee : any ) =>{
+              
+                // console.log(employee.fieldData[0]);
+
+                // if(employee.fieldData[0]._id){
+                //   setEmployee((employee : any) => [...employee, {id: employee.fieldData[0]._id, ...employee.fieldData[0]}])
+                // }
+                if(employee.fieldData[0].empNo !== undefined && employee.fieldData[0].empNo !== null && employee.fieldData[0].empNo !== "" && employee.fieldData[0]._id !== undefined && employee.fieldData[0]._id !== null && employee.fieldData[0]._id !== ""){
+                  
+                  // console.log("EMP: " + employee.fieldData[0].empNo)
+                  if(employee.fieldData[0].empNo === undefined){
+                    console.log("TEST")
+                  }
+                  // setEmployee((employee : any) => [...employee, {id: employee.fieldData[0].empNo, ...employee.fieldData[0]}])
+                  setEmployee((employee : any) => [...employee, {empNo: employee.fieldData[0].empNo}])
+                }
+              
+              })
+
+            }
+       
+        }catch(e){
+            console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
+      
+        }
+      
+    } 
+    
+    useLayoutEffect(() =>{
+
+      GetAllEmployees();
+
+      return () => { }
+    },[])
+
+
     async function RegisterEmployeeCard() {
       try {
 
@@ -219,11 +270,14 @@ export function EmployeeCard(){
     function CustomToolbar() {
 
       return (<>
-          
-          <GridToolbarContainer>
-          <Button variant="text" color="success" onClick={ () =>{
-            setIsModalOpen(true)
-          }}>
+          <GridToolbarContainer style=
+          {{
+            marginBottom: '2px',
+          }}
+          >
+          <Button variant="contained"  startIcon = {<AddIcon />} color="success" onClick={ () =>{
+            setIsModalOpen(true) 
+          } }>
           Register card
         </Button>
             <GridToolbarColumnsButton style ={{color:"#161d6f"}} />

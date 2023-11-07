@@ -8,7 +8,7 @@ export default function LoginGallery() : JSX.Element{
         
 <div className="relative grid grid-cols-2 md:grid-cols-4 gap-4">
     <div className="grid gap-4">
-        <div className="max-w-md h-auto p-6  rounded-lg shadow dark:bg-gray-800"
+        <div className="max-w-md h-auto p-6  rounded-lg shadow"
             style ={{
                 background: 'rgba(255, 255, 255, 0.276)'
             }}
@@ -31,7 +31,7 @@ export default function LoginGallery() : JSX.Element{
      </div>
 
      <div className="grid gap-4">
-        <div className="max-h-48 p-6 rounded-lg shadow dark:bg-gray-800"
+        <div className="max-h-48 p-6 rounded-lg shadow"
             style ={{
                 width:'460px',
                 background: 'rgba(255, 255, 255, 0.276)'

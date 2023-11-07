@@ -13,6 +13,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AddIcon from '@mui/icons-material/AddCard';
 
 const columns: GridColDef[] = [
   
@@ -229,8 +230,13 @@ export function MasterCard(){
 
       return (<>
           
-          <GridToolbarContainer>
-          <Button variant="text" color="success" onClick={ () =>{
+          <GridToolbarContainer
+          style=
+          {{
+            marginBottom: '2px',
+          }}
+          >
+          <Button variant="contained"  startIcon = {<AddIcon />} color="success" onClick={ () =>{
             setIsModalOpen(true)
           }}>
           Register card

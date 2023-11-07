@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AddIcon from '@mui/icons-material/AddHomeWork';
 
 const columns: GridColDef[] = [
   
@@ -246,8 +247,13 @@ const [isModalOpen, setIsModalOpen] = useState(false)
 
       return (<>
           
-          <GridToolbarContainer>
-          <Button variant="text" color="success" onClick={ () =>{
+          <GridToolbarContainer
+          style=
+          {{
+            marginBottom: '2px',
+          }}
+          >
+          <Button variant="contained"  startIcon = {<AddIcon />} color="success"  onClick={ () =>{
             setIsModalOpen(true)
           }}>
           Add station

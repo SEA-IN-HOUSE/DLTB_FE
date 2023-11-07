@@ -1116,9 +1116,14 @@ export function TORMain(){
     return (
       <>
        
-        <GridToolbarContainer>
+        <GridToolbarContainer
+          style=
+          {{
+            marginBottom: '2px',
+          }}
+        >
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
-          <Button variant="text"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
+          <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
           <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
             <GridToolbarFilterButton style ={{color:"#161d6f"}} />
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
