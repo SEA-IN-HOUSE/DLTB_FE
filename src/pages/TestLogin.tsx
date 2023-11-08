@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import '../styles/LogIn.css'
-import { FormEvent } from 'react';
+// import 'bootstrap/dist/css/bootstrap.min.css'
+// import '../styles/LogIn.css'
+import { FormEvent} from 'react';
 import Carousel from '../components/Carousel';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
@@ -10,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const defaultFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
+<<<<<<< HEAD
 
 interface IUserInformation{
     _id : string,
@@ -32,6 +34,10 @@ interface IUserInformation{
     profileImageUrl: string,
     updatedAt: Date,
 }
+=======
+import { Helmet } from "react-helmet";
+
+>>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
 
 export default function TestLogin() : JSX.Element {
     const [username, setUsername] = useState(''); 
@@ -87,8 +93,18 @@ export default function TestLogin() : JSX.Element {
                     });
             }
     
-        }catch(e){
+        }catch(e : any){
             console.error("Error in login ",e );
+            toast.error("Connection error", {
+                position: "top-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+        });
         }
     
     }
@@ -97,6 +113,22 @@ export default function TestLogin() : JSX.Element {
 
     async function InsertToStorage (data : IUserInformation){
 
+<<<<<<< HEAD
+=======
+        //const email = localStorage.getItem('token')
+        console.log(import.meta.env.VITE_BASE_URL)
+        try{
+          console.log(email)
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/${email}`,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
+  
+        const response = await request.data;
+        console.log("Email ",email)
+        console.log("response:", response)
+>>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
        
   
         try{
@@ -119,10 +151,21 @@ export default function TestLogin() : JSX.Element {
         }
   
       }
-  
 
     return(
-        <>
+        <div>
+        
+        <Helmet>
+        <link
+            rel="stylesheet"
+            href="../node_modules/bootstrap/dist/css/bootstrap.min.css"
+        />
+        <link
+            rel ="stylesheet"
+            href ="../styles/LogIn.css'"
+        />
+      </Helmet>
+
         <ToastContainer
         position="bottom-right"
         autoClose={5000}
@@ -152,32 +195,60 @@ export default function TestLogin() : JSX.Element {
             border: '5px solid whitesmoke',
             height: 'auto', 
             }} onSubmit={handleSubmitLoggedIn} >
-                        <img src={import.meta.env.VITE_ASSET_URL+"/assets/Filipay-logo.png"} alt=""  />
-                      
+                       
+                       {/* <img src={import.meta.env.VITE_ASSET_URL+"/assets/Filipay-logo.png"} alt=""  /> */}
                     
-                        <div className="loginInputs">
-                            <div className="signinlabel">
+                       <div className="loginInputs" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+        
+                        <img src={import.meta.env.VITE_ASSET_URL+"/assets/Filipay-logo.png"} alt="" className='w-44 m-auto mb-0 mt-0' />
+                            <div className="signinlabel"  >
+                                
                                 <span className="mb-1" style ={{fontFamily:defaultFont}}>Sign In</span>
                             </div>
 
                             <div className="form-group" style={{}}>
-                                <label htmlFor="exampleInputEmail1" style={{marginBottom: '0.5rem', 
+                                {/* <label htmlFor="exampleInputEmail1" style={{marginBottom: '0.5rem', 
                                 
-                                fontFamily:defaultFont}}>Username</label>
-                                <input type="text" className="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter your username" required
+                                fontFamily:defaultFont}}>Email</label>
+                                <input type="email" className="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter your email" required
                                 style={{marginBottom: '1em'}}
                                 onChange={(event) => setUsername(event.target.value)}
-                                /> 
-                              
-                    
-
+                                />  */}
+                               
                               </div>
                               <div className="form-group" style={{marginBottom: '16px'}}>
-                                <label htmlFor="password"  style={{marginBottom: '0.5rem', fontFamily:defaultFont}} >Password</label>
+                                {/* <label htmlFor="password"  style={{marginBottom: '0.5rem', fontFamily:defaultFont}} >Password</label>
                                 <input type="password" className="form-control" id="password" name="password" placeholder="Enter your password"
                                 style={{marginBottom: '1em'}}
                                 onChange={(event) => setPassword(event.target.value)}
-                                />
+                                /> */}
+                                   <label htmlFor="email" className="block mb-2 mt-4 text-lg font-medium text-gray-900 ">Email</label>
+                                  <input
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    className="bg-white mt-3 border shadow-sm border-slate-300  text-gray-900 sm:text-sm rounded-lg 
+                                    focus:outline-none
+                                    focus:ring-custom-blue focus:border-custom-blue block w-full p-2.5"
+                                    placeholder="name@company.com"
+                                    onChange={(event) => setUsername(event.target.value)}
+                                    required
+                                  />
+
+                                <label htmlFor="password" className="block mb-2 mt-4 text-lg font-medium text-gray-900 ">Password</label>
+                                  <input
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    className="bg-white mt-3 mb-4 border shadow-sm border-slate-300  text-gray-900 sm:text-sm rounded-lg 
+                                    focus:outline-none
+                                    focus:ring-custom-blue focus:border-custom-blue block w-full p-2.5"
+                                    placeholder="Enter your password"
+                                    onChange={(event) => setPassword(event.target.value)}
+                                    required
+                                  />
+                    
+
                                 <div className='flex justify-between' >
 
                                     <div className='flex-1'>
@@ -201,8 +272,10 @@ export default function TestLogin() : JSX.Element {
                               
                             </div>
                            
-                              <button type="submit" className="btn btn-primary mt-3 submitbtn" style = {{fontFamily:defaultFont}}>SIGN IN</button>
-                     
+                              {/* <button type="submit" className="btn btn-primary mt-3 submitbtn" style = {{fontFamily:defaultFont}}>SIGN IN</button>
+
+                               */}
+                              <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800  font-medium rounded-xl text-lg px-5 py-2.5  mb-2 mt-6 h-16">SIGN IN</button>
                         {/* <DefaultButton /> */}
                         </div>
                         <div className="msgicon">
@@ -217,7 +290,7 @@ export default function TestLogin() : JSX.Element {
 
 
     </div>
-        </>
+        </div>
     )
 
 }

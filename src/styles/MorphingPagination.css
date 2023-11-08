@@ -19,12 +19,11 @@
     cursor: auto;
   }
   
-  .container {
-    margin: 0;
+  .containerd {
     position: absolute;
-    bottom: 14%;
-    right: 0;
-    left: 0;
+    bottom: 10%;
+    right: 50%;
+    left: 50%;
     width: 180px;
     height: 20px;
     margin: 0 auto;

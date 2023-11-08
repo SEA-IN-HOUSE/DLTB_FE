@@ -535,16 +535,6 @@ const columns: GridColDef[] = [
     align: 'center',
   },
 
-  // { 
-  //   field: 'auto_commission_driver1_passenger', 
-  //   headerName: 'AUTO COMMISSION DRIVER1 PASSENGER', 
-  //    width: 180,
-  //   headerClassName: 'super-app-theme--header',
-  //   editable: true,
-  //  headerAlign: 'center',
-  //   align: 'center',
-  // },
-
   { 
     field: 'commission_driver1_baggage', 
     headerName: 'COMMISSION DRIVER1 BAGGAGE', 
@@ -1126,21 +1116,29 @@ export function TORMain(){
     return (
       <>
        
-        <GridToolbarContainer>
+        <GridToolbarContainer
+          style=
+          {{
+            marginBottom: '2px',
+          }}
+        >
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
-          <Button variant="text"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
-          <GridToolbarColumnsButton />
-          <GridToolbarFilterButton />
-          <GridToolbarDensitySelector />
-          <GridToolbarExport />
-          <GridToolbarQuickFilter />
+          <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
+          <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
+            <GridToolbarFilterButton style ={{color:"#161d6f"}} />
+            <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
+            <GridToolbarExport style ={{color:"#161d6f"}} />
+            <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
         </GridToolbarContainer>
       </>
     );
   }
 
-    return(<>
-
+    return(
+      <div  style={{
+        backgroundColor: '#f1f5f9',
+        height:'100vh'
+      }}>
     <NavBar>
       <HeaderCard title ="TOR MAIN"/>
         <Paper style={{width: '100%', marginTop: '10px' }}>
@@ -1178,7 +1176,7 @@ export function TORMain(){
  
        
     </NavBar>
-    </>)
+    </div>)
 }
 
 

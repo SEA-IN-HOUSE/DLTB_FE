@@ -6,18 +6,18 @@ export default function NotificationBell() : JSX.Element{
     return(
         <>
             
-<button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification" className="inline-flex items-center text-xl font-medium text-center text-slate-50 hover:text-slate-400 focus:outline-none dark:hover:text-white dark:text-gray-400" type="button"> 
+<button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification" className="inline-flex items-center text-xl font-medium text-center text-slate-50 hover:text-slate-400 focus:outline-none" type="button"> 
  <BsBell />
 <div className="relative flex">
-  <div className="relative inline-flex w-3 h-3 bg-green-400 border-2 border-green-300 rounded-full -top-2 right-3 dark:border-gray-900"></div>
+  <div className="relative inline-flex w-3 h-3 bg-green-400 border-2 border-green-300 rounded-full -top-2 right-"></div>
 </div>
 </button>
 
-<div id="dropdownNotification" className="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-800 dark:divide-gray-700" aria-labelledby="dropdownNotificationButton">
-  <div className="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
+<div id="dropdownNotification" className="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow" aria-labelledby="dropdownNotificationButton">
+  <div className="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50  ">
       Notifications
   </div>
-  <div className="divide-y divide-gray-100 dark:divide-gray-700">
+  <div className="divide-y divide-gray-10">
     <a href="#" className="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
       <div className="flex-shrink-0">
         <img className="rounded-full w-11 h-11" src="/docs/images/people/profile-picture-1.jpg" alt="Jese image" />
@@ -29,7 +29,7 @@ export default function NotificationBell() : JSX.Element{
         </div>
       </div>
       <div className="w-full pl-3">
-          <div className="text-gray-500 text-sm mb-1.5 dark:text-gray-400">New message from <span className="font-semibold text-gray-900 dark:text-white">Jese Leos</span>: "Hey, what's up? All set for the presentation?"</div>
+          <div className="text-gray-500 text-sm mb-1.5">New message from <span className="font-semibold text-gray-900 ">Jese Leos</span>: "Hey, what's up? All set for the presentation?"</div>
           <div className="text-xs text-blue-600 dark:text-blue-500">a few moments ago</div>
       </div>
     </a>
@@ -43,7 +43,7 @@ export default function NotificationBell() : JSX.Element{
         </div>
       </div>
       <div className="w-full pl-3">
-          <div className="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span className="font-semibold text-gray-900 dark:text-white">Joseph Mcfall</span> and <span className="font-medium text-gray-900 dark:text-white">5 others</span> started following you.</div>
+          <div className="text-gray-500 text-sm mb-1.5"><span className="font-semibold text-gray-900 ">Joseph Mcfall</span> and <span className="font-medium text-gray-900 ">5 others</span> started following you.</div>
           <div className="text-xs text-blue-600 dark:text-blue-500">10 minutes ago</div>
       </div>
     </a>
@@ -57,7 +57,7 @@ export default function NotificationBell() : JSX.Element{
         </div>
       </div>
       <div className="w-full pl-3">
-          <div className="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span className="font-semibold text-gray-900 dark:text-white">Bonnie Green</span> and <span className="font-medium text-gray-900 dark:text-white">141 others</span> love your story. See it and view more stories.</div>
+          <div className="text-gray-500 text-sm mb-1.5"><span className="font-semibold text-gray-900 ">Bonnie Green</span> and <span className="font-medium text-gray-900 ">141 others</span> love your story. See it and view more stories.</div>
           <div className="text-xs text-blue-600 dark:text-blue-500">44 minutes ago</div>
       </div>
     </a>
@@ -71,7 +71,7 @@ export default function NotificationBell() : JSX.Element{
         </div>
       </div>
       <div className="w-full pl-3">
-          <div className="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span className="font-semibold text-gray-900 dark:text-white">Leslie Livingston</span> mentioned you in a comment: <span className="font-medium text-blue-500">@bonnie.green</span> what do you say?</div>
+          <div className="text-gray-500 text-sm mb-1.5"><span className="font-semibold text-gray-900 ">Leslie Livingston</span> mentioned you in a comment: <span className="font-medium text-blue-500">@bonnie.green</span> what do you say?</div>
           <div className="text-xs text-blue-600 dark:text-blue-500">1 hour ago</div>
       </div>
     </a>
@@ -85,14 +85,14 @@ export default function NotificationBell() : JSX.Element{
         </div>
       </div>
       <div className="w-full pl-3">
-          <div className="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span className="font-semibold text-gray-900 dark:text-white">Robert Brown</span> posted a new video: Glassmorphism - learn how to implement the new design trend.</div>
+          <div className="text-gray-500 text-sm mb-1.5"><span className="font-semibold text-gray-900 ">Robert Brown</span> posted a new video: Glassmorphism - learn how to implement the new design trend.</div>
           <div className="text-xs text-blue-600 dark:text-blue-500">3 hours ago</div>
       </div>
     </a>
   </div>
-  <a href="#" className="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
+  <a href="#" className="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100  dark:hover:bg-gray-700 ">
     <div className="inline-flex items-center ">
-      <svg className="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
+      <svg className="w-4 h-4 mr-2 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
         <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
       </svg>
         View all

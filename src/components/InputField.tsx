@@ -16,16 +16,16 @@ interface PropsElement {
 
 function InputField(props: PropsElement) {
   const inputClassName = `bg-${props.status}-50 border border-${props.status}-500 text-${props.status}-900 ${
-    props.status === 'normal' ? 'text-gray-900' : 'dark:text-white'
+    props.status === 'normal' ? 'text-gray-900' : ''
   } placeholder-${props.status === 'normal' ? 'gray' : props.status}-700 text-sm rounded-lg focus:ring-${
     props.status === 'normal' ? 'blue' : props.status
   }-500 focus:border-${props.status} block w-full p-2.5 ${
-    props.status === 'normal' ? 'dark:bg-gray-600 dark:border-gray-500 text-white' : 'dark:bg-gray-700 dark:border-red-500'
+    props.status === 'normal' ? '' : ''
   }`;
 
   return (
     <>
-      <label htmlFor={props.id} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+      <label htmlFor={props.id} className="block mb-2 text-sm font-medium text-gray-900 ">
         {props.title}
       </label>
       <input
@@ -39,7 +39,7 @@ function InputField(props: PropsElement) {
         required={props.isRequired}
       />
       {props.status === 'error' && (
-        <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+        <p className="mt-2 text-sm text-red-600 ">
           {props.statusMessage}
         </p>
       )}

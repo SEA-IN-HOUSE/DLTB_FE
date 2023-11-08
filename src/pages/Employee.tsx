@@ -6,34 +6,19 @@ import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
-import { LinearProgress, Stack } from "@mui/material";
+import { Chip, LinearProgress} from "@mui/material";
 import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
+import NoRowBackGround from "../components/NoRowBackGround";
 
 const columns: GridColDef[] = [
-  // {
-  //   field: 'idPicture',
-  //   headerName: "ID Picture",
-  //   width: 180,
-  //   headerClassName: 'super-app-theme--header',
-  //   editable: true,
-  //   headerAlign: 'center',
-  //   align: 'center',
-  //   renderCell: (params) => {
-      
-  //     return (
-  //       <>
-  //         <Avatar src={params.value} />
-  //       </>
-  //     );
-  //   }
-  // },
+
   { 
     field: 'lastName', 
     headerName: 'LAST NAME', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
    
@@ -43,7 +28,7 @@ const columns: GridColDef[] = [
     headerName: 'FIRST NAME', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
@@ -51,7 +36,7 @@ const columns: GridColDef[] = [
     headerName: 'MIDDLE NAME', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
@@ -60,7 +45,7 @@ const columns: GridColDef[] = [
     headerName: 'SUFFIX', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
@@ -70,7 +55,7 @@ const columns: GridColDef[] = [
     type:'number', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
@@ -79,9 +64,19 @@ const columns: GridColDef[] = [
     headerName: 'STATUS', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
+    renderCell: (cellValues) => {
+          
+      return(
+      <>
+    {cellValues.value.includes("Active") ? (<Chip  label={cellValues.value} color ="success" size = "small" variant = "outlined"/>) : (<Chip label={cellValues.value} color ="error" size = "small" variant = "outlined"/>)}
+          
+    
+      </>
+      );
+    }
   },
 
   {
@@ -89,7 +84,7 @@ const columns: GridColDef[] = [
     headerName: 'EMPLOYEE TYPE', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
@@ -99,7 +94,7 @@ const columns: GridColDef[] = [
     headerName: 'ID Name', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
@@ -109,26 +104,16 @@ const columns: GridColDef[] = [
     headerName: 'DESIGNATION', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
-  
-  // {
-  //   field: 'idSignature',
-  //   headerName: "ID Signature",
-  //   width: 180,
-  //   headerClassName: 'super-app-theme--header',
-  //   editable: true,
-  //   headerAlign: 'center',
-  //   align: 'center',
-  // },
   {
     field: 'JTI_RFID',
     headerName: "JTI RFID",
     width: 180,
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
@@ -137,7 +122,7 @@ const columns: GridColDef[] = [
     headerName: "ACCESS PRIVILEGES",
     width: 180,
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
@@ -147,7 +132,7 @@ const columns: GridColDef[] = [
     headerName: "JTI RFID REQUEST DATE",
     width: 270,
     headerClassName: 'super-app-theme--header',
-    editable: true,
+    editable: false,
     headerAlign: 'center',
     align: 'center',
   },
@@ -165,11 +150,11 @@ function CustomToolbar() {
         
         <GridToolbarContainer>
           {/* <Button variant="text"  color ="success" startIcon = {<PersonAddIcon />}> Add</Button> */}
-          <GridToolbarColumnsButton />
-          <GridToolbarFilterButton />
-          <GridToolbarDensitySelector />
-          <GridToolbarExport />
-          <GridToolbarQuickFilter />
+          <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
+            <GridToolbarFilterButton style ={{color:"#161d6f"}} />
+            <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
+            <GridToolbarExport style ={{color:"#161d6f"}} />
+            <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
         </GridToolbarContainer>
         {/* <AddEmployee  open ={formOpenType === 'employee'}/>  */}
       </>
@@ -243,26 +228,22 @@ export function Employee(){
 
     function NoRowsOverlay() {
       return (
-        <Stack height="100%" alignItems="center" justifyContent="center">
-          No rows in DataGrid
-          <pre>(rows=&#123;[]&#125;)</pre>
-        </Stack>
+       <NoRowBackGround/>
       );
     }
     
     function NoResultsOverlay() {
       return (
-        <Stack height="100%" alignItems="center" justifyContent="center">
-          No results in DataGrid
-          <pre>(rows=&#123;rowData&#125;)</pre>
-          But local filter returns no result
-        </Stack>
+        <NoRowBackGround/>
       );
     }
     
 
-    return(<>
-
+    return(
+      <div  style={{
+        backgroundColor: '#f1f5f9',
+        height:'100vh'
+      }}>
     <NavBar>
     <HeaderCard title ="EMPLOYEE" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
@@ -272,10 +253,12 @@ export function Employee(){
             backgroundColor: '#161d6f',
             color:'white',
             },
-            height:'400'
+            minHeight: 400
             }}>
         
-            <DataGrid rows={clientTableRows} columns={columns}
+            <DataGrid rows={clientTableRows}
+            style={{minHeight: 400}}
+            columns={columns}
             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress, noResultsOverlay : NoResultsOverlay, noRowsOverlay: NoRowsOverlay}}
             slotProps={{
                 toolbar: {
@@ -306,7 +289,7 @@ export function Employee(){
         </Box>
         </Paper>
    </NavBar>
-    </>)
+    </div>)
 }
 
 

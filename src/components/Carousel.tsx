@@ -10,6 +10,8 @@ import LoginGallery from './LoginGallery';
 //import PaginationTest from './PaginationTest';
 import '../styles/MorphingPagination.css'; // Import your CSS file
 
+
+
 export default function Carousel(): JSX.Element {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [screenHeight, setScreenHeight] = useState<number>(window.innerHeight);
@@ -89,6 +91,7 @@ export default function Carousel(): JSX.Element {
         return () =>{}
     },[currentSlide])
   return (
+    
     <div className="w-full overflow-hidden relative mt-4 mr-7">
       <Slider {...settings}>
         <div className='flex'>
@@ -191,7 +194,7 @@ export default function Carousel(): JSX.Element {
         /> */}
         
 
-          <div className="container">
+        <div className="containerd">
             {buttons.map((index) => (
               <div
                 key={index}
