@@ -251,7 +251,7 @@ export function Staff(){
 
   
     
-    async function RegisterEmployeeCard() {
+    async function RegisterEmployeeCard(event) {
       try {
 
         event?.preventDefault()
@@ -433,7 +433,7 @@ export function Staff(){
 
 return(
   <div  style={{
-    backgroundColor: '#f1f5f9',
+    backgroundColor: '#e2e8f0',
     height:'100vh'
   }}>
 <ToastContainer

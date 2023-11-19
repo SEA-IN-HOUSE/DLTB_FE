@@ -532,7 +532,7 @@ function CustomToolbar() {
 
     return(
       <div  style={{
-        backgroundColor: '#f1f5f9',
+        backgroundColor: '#e2e8f0',
         height:'100vh'
       }}>
     <NavBar>

@@ -12,11 +12,21 @@ import 'react-toastify/dist/ReactToastify.css';
 const defaultFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
 import { Helmet } from "react-helmet";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
+
+import FilipayLogo from '../assets/Filipay-logo.png';
+import MessageIcon from '../assets/message-icon.png'
+
+
 
 
 export default function TestLogin() : JSX.Element {
+
+    const [isLoading, setIsLoading ] = useState(false);
     const [username, setUsername] = useState(''); 
     const [password, setPassword] = useState('');
+
+    const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -35,7 +45,7 @@ export default function TestLogin() : JSX.Element {
     async function handleSubmitLoggedIn(event : FormEvent){
 
         event.preventDefault();
-    
+        setIsLoading(true)
         try{
 
             const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth`, {
@@ -54,6 +64,7 @@ export default function TestLogin() : JSX.Element {
                 if(localStorage.getItem('token')){
                     navigate('/dashboard')
                 }
+                
             }else{
                
                 toast.error(response.messages[0].message, {
@@ -67,7 +78,7 @@ export default function TestLogin() : JSX.Element {
                     theme: "colored",
                     });
             }
-    
+            
         }catch(e : any){
             console.error("Error in login ",e );
             toast.error("Connection error", {
@@ -80,6 +91,8 @@ export default function TestLogin() : JSX.Element {
                 progress: undefined,
                 theme: "colored",
         });
+        }finally{
+          setIsLoading(false);
         }
     
     }
@@ -113,14 +126,178 @@ export default function TestLogin() : JSX.Element {
         localStorage.setItem('isTorTrip' , response.response.isAllowedToTorTrip)
         localStorage.setItem('isTorViolation' , response.response.isAllowedToTorViolation)
         localStorage.setItem('isTorTrouble' , response.response.isAllowedToTorTrouble)
+
         }catch(e){
           console.log(`Error in getting user: ${e}`)
         }
   
       }
 
+      const [isSubmitOtp, setIsSubmitOtp] = useState(false)
+      const [emailOtp, setEmailOtp] = useState('');
+      const [otp, setOtp] = useState('');
+
+      async function RequestOTP(event) {
+        try {
+  
+          event?.preventDefault()
+          // Define the request data as an object
+          const requestData = {
+           email : emailOtp
+          };
+      
+          const response = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/email-otp`,
+            requestData, // Use the requestData object as the request data
+            {
+              headers: {
+                Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+              },
+            }
+          );
+      
+          // Note that there's no need to use `await` on response.data directly
+          // as axios already returns the response data.
+          const responseData = response.data;
+
+            if(responseData.messages[0].code === "0"){
+            
+              setIsSubmitOtp(!isSubmitOtp);
+           
+             }
+      
+        } catch (error) {
+          console.error(error);
+          toast.error(`Action failed error: ${error}`, {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        }
+      }
+
+      async function VerifyOtp(event){
+    
+        try {
+  
+          event?.preventDefault()
+          // Define the request data as an object
+          const requestData = {
+           email : emailOtp,
+           otp: otp
+          };
+      
+          const response = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/validate-otp`,
+            requestData, // Use the requestData object as the request data
+            {
+              headers: {
+                Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+              },
+            }
+          );
+      
+          // Note that there's no need to use `await` on response.data directly
+          // as axios already returns the response data.
+          const responseData = response.data;
+
+            if(responseData.messages[0].code === "0"){
+            
+              setIsSubmitOtp(!isSubmitOtp);
+           
+             }
+      
+        } catch (error) {
+          console.error(error);
+          toast.error(`Action failed error: ${error}`, {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        }
+
+      }
+
+      useEffect(() =>{
+
+        return () =>{}
+      },[isSubmitOtp, isLoading])
+  
     return(
-        <div>
+        <>
+         <Dialog open={isOtpModalOpen} onClose={() => setIsOtpModalOpen(!isOtpModalOpen)}>
+    {isSubmitOtp ? (
+    <>
+    
+    <form onSubmit ={VerifyOtp}>
+       <DialogTitle>Please enter the otp that we have sent to your email.</DialogTitle>
+       <DialogContent  dividers>
+         <DialogContentText>
+          Please don't share this one time password.
+         </DialogContentText>
+         <TextField
+           autoFocus
+           margin="dense"
+           id="otp"
+           label="OTP (One time password)"
+           type="text"
+           fullWidth
+           value = {otp}
+           onChange = {(event) => { setOtp(event.target.value) }}
+           variant="standard"
+         />
+       </DialogContent>
+       <DialogActions>
+         <Button onClick={() => setIsOtpModalOpen(!isOtpModalOpen)}>Cancel</Button>
+         <Button type ="submit" variant = "contained" onClick={() => setIsOtpModalOpen(!isOtpModalOpen)}>Next</Button>
+       </DialogActions>
+    </form>
+
+
+    </>) :
+    (
+     
+      <form onSubmit ={RequestOTP}>
+       <DialogTitle>Please provide you email address</DialogTitle>
+       <DialogContent  dividers>
+         <DialogContentText>
+           We will sent a one time password to your email address, to recover your account.
+         </DialogContentText>
+         <TextField
+           autoFocus
+           margin="dense"
+           id="name"
+           label="Email Address"
+           type="email"
+           fullWidth
+           value = {emailOtp}
+           onChange = {(event) => { setEmailOtp(event.target.value) }}
+           variant="standard"
+         />
+       </DialogContent>
+       <DialogActions>
+         <Button onClick={() => setIsOtpModalOpen(!isOtpModalOpen)}>Cancel</Button>
+         <Button type ="submit" variant = "contained" >Submit</Button>
+       </DialogActions>
+      </form>
+
+    )}
+      </Dialog>
+
+<div style={{overflow:'hidden',
+        margin: 0,
+
+        }}>
         
         <Helmet>
         <link
@@ -167,7 +344,7 @@ export default function TestLogin() : JSX.Element {
                     
                        <div className="loginInputs" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
         
-                        <img src={import.meta.env.VITE_ASSET_URL+"/assets/Filipay-logo.png"} alt="" className='w-44 m-auto mb-0 mt-0' />
+                        <img src={FilipayLogo} alt="" className='w-44 m-auto mb-0 mt-0' />
                             <div className="signinlabel"  >
                                 
                                 <span className="mb-1" style ={{fontFamily:defaultFont}}>Sign In</span>
@@ -229,9 +406,9 @@ export default function TestLogin() : JSX.Element {
                                         </div>
 
                                         <div className='flex-1'>
-                                        <div className="forgotPassword">
-                                        <a href="#" style ={{color:'#007BFF', fontFamily:defaultFont}}>Forgot password?</a>
-                                        </div>
+                                            <div className="forgotPassword">
+                                            <a href="#" style ={{color:'#007BFF', fontFamily:defaultFont}} onClick = {() => setIsOtpModalOpen(!isOtpModalOpen)}>Forgot password?</a>
+                                            </div>
                                         </div>
                                    
                                 </div>
@@ -239,14 +416,15 @@ export default function TestLogin() : JSX.Element {
                               
                             </div>
                            
-                              {/* <button type="submit" className="btn btn-primary mt-3 submitbtn" style = {{fontFamily:defaultFont}}>SIGN IN</button>
-
-                               */}
-                              <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800  font-medium rounded-xl text-lg px-5 py-2.5  mb-2 mt-6 h-16">SIGN IN</button>
-                        {/* <DefaultButton /> */}
+                           
+                              <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800  font-medium rounded-xl text-lg px-5 py-2.5  mb-2 mt-6 h-16" disabled ={isLoading}>
+                              {isLoading ?
+                              "LOADING..." : "SIGN IN"}
+                              </button>
+                     
                         </div>
                         <div className="msgicon">
-                            <img src={import.meta.env.VITE_ASSET_URL+"/assets/message-icon.png"} alt="" />
+                            <img src={MessageIcon} alt="" />
                         </div>
                      
                 </form>
@@ -258,6 +436,11 @@ export default function TestLogin() : JSX.Element {
 
     </div>
         </div>
+
+        </>
+   
+
+        
     )
 
 }

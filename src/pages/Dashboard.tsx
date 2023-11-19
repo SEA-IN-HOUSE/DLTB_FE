@@ -312,7 +312,7 @@ export function Dashboard() : JSX.Element{
     },[torMainNumber, torTicket, torFuel, torRemittance, torTrip, torInspection, torViolation, torTrouble])
     return(
         <div  style={{
-            backgroundColor: '#f1f5f9',
+            backgroundColor: '#e2e8f0',
             height:'100vh'
           }}>
         <NavBar>

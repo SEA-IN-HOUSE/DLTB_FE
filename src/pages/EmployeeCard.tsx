@@ -5,9 +5,9 @@ import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect,  useLayoutEffect,  useState} from 'react'
+import {useEffect,  useLayoutEffect,  useState, useMemo} from 'react'
 import Box from '@mui/material/Box';
-import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,  IconButton,  LinearProgress,  TextField } from "@mui/material";
+import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,  FormControl,  IconButton,  InputAdornment,  InputLabel,  LinearProgress,  ListSubheader,  MenuItem,  Select,  TextField } from "@mui/material";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,6 +17,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/AddCard';
 
+import SearchIcon from "@mui/icons-material/Search";
 const columns: GridColDef[] = [
   
   { 
@@ -84,22 +85,14 @@ const columns: GridColDef[] = [
   //   return <Slide {...props} direction="up" />;
   // }
 
-export function EmployeeCard(){
+export function EmployeeCard()
+{
     const [tableRows, setTableRows] = useState(rows)
 
-   
-    useEffect(() =>{
-      
-        GetAllData();
-        setTableRows(rows)
-        if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/tormain")
-        }
-      
-        return () =>{}
+    const navigate = useNavigate();
 
-    },[])
-
+    
+ 
   
     async function GetAllData(){
 
@@ -142,15 +135,27 @@ export function EmployeeCard(){
 
     const [employee, setEmployee] = useState<any>([]);
 
-    // const [snackBarStatus, setSnackBarStatus] = useState<AlertColor>('success')
     
+    const containsText = (text : string, searchText) =>
+    text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+
+   // const allOptions = ["Option One", "Option Two", "Option Three", "Option Four"];
+
+    //const [selectedOption, setSelectedOption] = useState(allOptions[0]);
+
+    const [searchText, setSearchText] = useState("");
+    const displayedOptions = useMemo(
+      () => employee.filter((option) => containsText(option, searchText)),
+      [searchText]
+    );
+        
     async function GetAllEmployees(){
 
       // setIsLoading(true)
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/${import.meta.env.VITE_DLTB_COOP_ID}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
@@ -162,23 +167,19 @@ export function EmployeeCard(){
 
             if(response.messages[0].code === '0'){
 
-              response.response[0].map((employee : any ) =>{
+              response.response.map((employee : any ) =>{
               
-                // console.log(employee.fieldData[0]);
-
-                // if(employee.fieldData[0]._id){
-                //   setEmployee((employee : any) => [...employee, {id: employee.fieldData[0]._id, ...employee.fieldData[0]}])
-                // }
-                if(employee.fieldData[0].empNo !== undefined && employee.fieldData[0].empNo !== null && employee.fieldData[0].empNo !== "" && employee.fieldData[0]._id !== undefined && employee.fieldData[0]._id !== null && employee.fieldData[0]._id !== ""){
-                  
-                  // console.log("EMP: " + employee.fieldData[0].empNo)
-                  if(employee.fieldData[0].empNo === undefined){
-                    console.log("TEST")
-                  }
-                  // setEmployee((employee : any) => [...employee, {id: employee.fieldData[0].empNo, ...employee.fieldData[0]}])
-                  setEmployee((employee : any) => [...employee, {empNo: employee.fieldData[0].empNo}])
+                if (employee?.empNo !== undefined &&
+                  employee?.empNo !== null &&
+                  employee?.empNo !== "" &&
+                  employee._id !== undefined &&
+                  employee._id !== null &&
+                  employee._id !== "") {
+                 
+                    const empNumber  = employee?.empNo.toString();
+                    console.log(empNumber)
+                  setEmployee((employee: any) => [...employee, empNumber]);
                 }
-              
               })
 
             }
@@ -204,7 +205,7 @@ export function EmployeeCard(){
         event?.preventDefault()
         // Define the request data as an object
         const requestData = {
-          empNo: empNo, // Assuming empNo and cardId are variables in your scope
+          empNo: parseFloat(empNo), // Assuming empNo and cardId are variables in your scope
           cardId: cardId,
         };
     
@@ -269,6 +270,7 @@ export function EmployeeCard(){
 
     function CustomToolbar() {
 
+
       return (<>
           <GridToolbarContainer style=
           {{
@@ -291,140 +293,196 @@ export function EmployeeCard(){
         </>
         );
   
-  }   
+    }   
 
-  const navigate = useNavigate();
 
-  useEffect(() =>{
-    console.log(localStorage.getItem('role'))
-    if(localStorage.getItem('role') !== "Administrator"){
-      navigate("/tormain")
-    }
+    useLayoutEffect(() =>{
 
-    return () =>{}
-
-  },[isModalOpen, empNo, cardId])
-
-    return(
-      <div  style={{
-        backgroundColor: '#f1f5f9',
-        height:'100vh'
-      }}>
-        
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        style={
-          {
-            width: "100%",
-          }
-        }
-        />
-
-    <NavBar>
+      if(localStorage.getItem('role') !== "Administrator"){
+        navigate("/tormain")
+      }
+     GetAllData();
+          setTableRows(rows)
+      return () =>{}
+  
+    },[isModalOpen, empNo, cardId])
     
- <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
-     <form onSubmit={RegisterEmployeeCard}>
-     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Add Employee Card
-        </DialogTitle>
-        
-        <IconButton
-          aria-label="close"
-          onClick={() => setIsModalOpen(!isModalOpen)}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
+    useEffect(() =>{
+
+      console.log(`Employees:`)
+      console.log(employee)
+      return () =>{}
+    }, [employee])
+      return(
+        <div  style={{
+          backgroundColor: '#e2e8f0',
+          height:'100vh'
+        }}>
+          
+        <ToastContainer
+          position="bottom-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          style={
+            {
+              width: "100%",
+            }
+          }
+          />
+  
+      <NavBar>
       
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers>
-          <DialogContentText>
-            {/* To subscribe to this website, please enter your email address here. We
-            will send updates occasionally. */}
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="empNo"
-            name ="empNo"
-            label="Employee No"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setEmpNo(event.target.value)}
-          />
-
-          <TextField
-            autoFocus
-            margin="dense"
-            id="cardId"
-            name ="cardId"
-            label="Card Id"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setCardId(event.target.value)}
-          />
-         
-        </DialogContent>
-        
-        <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
-        
-          <Button onClick={() => setIsModalOpen(!isModalOpen)}>Cancel</Button>
-          <Button type ="submit" variant="contained" color="success">Save</Button>
-        </DialogActions>
-        </form>
-  </Dialog>
-
-    <HeaderCard title ="EMPLOYEE CARD" />
-        <Paper style={{width: '100%', marginTop: '10px' }}>
-            <Box sx = {{
-            '& .super-app-theme--header': {
-            backgroundColor: '#161d6f',
-            color:'white',
-            },
-            height:'400'
-            }}>
-
-            <DataGrid rows={tableRows} columns={columns}
-            slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
-            slotProps={{
-                toolbar: {
-                showQuickFilter: true,
-                quickFilterProps: {
-                    variant: 'filled',
-                    size: "medium"
-                },  
-              },
-            }}
+   <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
+       <form onSubmit={RegisterEmployeeCard}>
+       <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+            Add Employee Card
+          </DialogTitle>
+          
+          <IconButton
+            aria-label="close"
+            onClick={() => setIsModalOpen(!isModalOpen)}
             sx={{
-              '& .MuiDataGrid-cell': {
-                fontSize: '1rem',
-                padding: '15px',
-              },
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
             }}
+          >
+        
+            <CloseIcon />
+          </IconButton>
+          <DialogContent dividers>
+            <DialogContentText>
+              {/* To subscribe to this website, please enter your email address here. We
+              will send updates occasionally. */}
+            </DialogContentText>
+            {/* <TextField
+              autoFocus
+              margin="dense"
+              id="empNo"
+              name ="empNo"
+              label="Employee No"
+              type="text"
+              fullWidth
+              variant="outlined"
+              onChange={(event) => setEmpNo(event.target.value)}
+            /> */}
+  
+  <FormControl fullWidth>
+          <InputLabel id="search-select-label">Options</InputLabel>
+          <Select
+            // Disables auto focus on MenuItems and allows TextField to be in focus
+            MenuProps={{ autoFocus: false }}
+            labelId="search-select-label"
+            id="search-select"
+            value={empNo}
+            label="Options"
+            onChange={(e) => setEmpNo(e.target.value)}
+            onClose={() => setSearchText("")}
+            // This prevents rendering empty string in Select's value
+            // if search text would exclude currently selected option.
+            renderValue={() => empNo}
+          >
+  
+           
+            <ListSubheader>
+              <TextField
+                size="small"
+                // Autofocus on textfield
+                autoFocus
+                placeholder="Type to search..."
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  )
+                }}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key !== "Escape") {
+                    // Prevents autoselecting item while typing (default Select behaviour)
+                    e.stopPropagation();
+                  }
+                }}
+              />
+            </ListSubheader>
+            {displayedOptions.map((option, i) => (
+              <MenuItem key={i} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+  
+            <TextField
+              autoFocus
+              margin="dense"
+              id="cardId"
+              name ="cardId"
+              label="Card Id"
+              type="text"
+              fullWidth
+              variant="outlined"
+              onChange={(event) => setCardId(event.target.value)}
             />
-        </Box>
-        </Paper>
-     
-
- 
+           
+          </DialogContent>
+          
+          <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
+          
+            <Button onClick={() => setIsModalOpen(!isModalOpen)}>Cancel</Button>
+            <Button type ="submit" variant="contained" color="success">Save</Button>
+          </DialogActions>
+          </form>
+    </Dialog>
+  
+      <HeaderCard title ="EMPLOYEE CARD" />
+          <Paper style={{width: '100%', marginTop: '10px' }}>
+              <Box sx = {{
+              '& .super-app-theme--header': {
+              backgroundColor: '#161d6f',
+              color:'white',
+              },
+              height:'400'
+              }}>
+  
+              <DataGrid rows={tableRows} columns={columns}
+              slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
+              slotProps={{
+                  toolbar: {
+                  showQuickFilter: true,
+                  quickFilterProps: {
+                      variant: 'filled',
+                      size: "medium"
+                  },  
+                },
+              }}
+              sx={{
+                '& .MuiDataGrid-cell': {
+                  fontSize: '1rem',
+                  padding: '15px',
+                },
+              }}
+              />
+          </Box>
+          </Paper>
        
-    </NavBar>
-    </div>)
+  
+   
+         
+      </NavBar>
+      </div>
+      )
+    
 }
 
 

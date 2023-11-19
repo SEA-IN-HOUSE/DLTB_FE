@@ -10,7 +10,9 @@ import LoginGallery from './LoginGallery';
 //import PaginationTest from './PaginationTest';
 import '../styles/MorphingPagination.css'; // Import your CSS file
 
-
+import BackgroundImage from '../assets/background-image.jpg'
+import FirstSlide from '../assets/first-slide-text.png'
+import SecondSlide from '../assets/second-slide-text.png'
 
 export default function Carousel(): JSX.Element {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
@@ -98,7 +100,7 @@ export default function Carousel(): JSX.Element {
           
           
           <img
-            src="http://filipworks.com/fmd/assets/background-image.JPG"
+            src= {BackgroundImage}
             alt="Image 1"
             // className="w-full h-3/5 object-cover object-center rounded-lg"
           style={{
@@ -108,7 +110,7 @@ export default function Carousel(): JSX.Element {
           }}/>
 
           <div className="fixed top-32 ml-20 z-50" id ="titleimage">
-              <img src ="http://filipworks.com/fmd/assets/first-slide-text.png" />
+              <img src = {FirstSlide} />
               
           </div>
        
@@ -117,7 +119,7 @@ export default function Carousel(): JSX.Element {
    </div>
         <div>
           <img
-            src="http://filipworks.com/fmd/assets/background-image.JPG"
+            src= {BackgroundImage}
             alt="Image 2"
             // className="w-full h-3/5 object-cover object-center rounded-lg"
             style={{
@@ -128,7 +130,7 @@ export default function Carousel(): JSX.Element {
 
 
             <div className="fixed top-36 ml-20 z-1" id ="titleimage">
-              <img src ="http://filipworks.com/fmd/assets/second-slide-text.png" />              
+              <img src = {SecondSlide} />              
             </div>
             <div
             className="absolute top-2/4 z-10 mx-20"
@@ -177,7 +179,7 @@ export default function Carousel(): JSX.Element {
             <LoginGallery />
           </div>        
           <img
-            src="http://filipworks.com/fmd/assets/background-image.JPG"
+            src= {BackgroundImage}
             alt="Image 3"
             style={{
               width: '100%',

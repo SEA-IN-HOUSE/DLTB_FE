@@ -2,12 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ReactNode,  useEffect, useState } from "react";
 //import { useNavigate, useLocation } from "react-router-dom";
-import { BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace, BsTicketPerforatedFill } from 'react-icons/bs';
+import { BsCurrencyExchange, BsEmojiDizzyFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace,BsTicketPerforatedFill } from 'react-icons/bs';
 import NavList, { ProfileBoxList } from "./NavList";
 // import NotificationBell from "./NotificationBell";
 import axios from "axios";
-import { useNavigate, useLocation, NavLink } from "react-router-dom";
-
+import { useNavigate, useLocation} from "react-router-dom";
+import { BsDeviceSsd } from "react-icons/bs";
+import { BsPeopleFill } from "react-icons/bs";
+import FilipayLogo from '../assets/Filipay-logo.png';
 interface NavBarProps {
     children: ReactNode;
 }
@@ -32,6 +34,8 @@ interface IUserInformation{
         {id: 3, pageName: "Route", url: "/direction", iconUrl: <BsFillMapFill />},
         {id: 4, pageName: "Station", url :"/station" , iconUrl : <BsFillTruckFrontFill />},
         {id: 5, pageName: "Employee", url: "/employee", iconUrl: <BsPersonWorkspace />},
+        {id: 6, pageName: "Device", url: "/device", iconUrl: <BsDeviceSsd />},
+        {id: 7, pageName: "Cooperative", url: "/cooperative", iconUrl: <BsPeopleFill />},
         // {id: 6, pageName: "User", url: "/user", iconUrl: <BsPersonFillLock /> },
     ]
 
@@ -84,7 +88,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
       
         return () => {}
-    },[userInformation, isOpenProfileBox,isBurgerClicked,torIsOpen])
+    },[userInformation, isOpenProfileBox,isBurgerClicked,torIsOpen, navigate])
 
   
     async function GetUserByEmail (){
@@ -139,7 +143,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
              <div className="bg-white w-full rounded-lg p-2 shadow-md">
             <img
               className="w-full h-16 rounded-lg "
-              src="http://filipworks.com/fmd/assets/Filipay-logo.png"
+              src= {FilipayLogo}
               alt="logo"
             />
         </div>

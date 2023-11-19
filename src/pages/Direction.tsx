@@ -183,7 +183,7 @@ export function Direction(){
       };
   
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/directions`,
+        `${import.meta.env.VITE_BASE_URL}/directions/${import.meta.env.VITE_DLTB_COOP_ID}`,
         requestData, // Use the requestData object as the request data
         {
           headers: {
@@ -278,7 +278,7 @@ export function Direction(){
 
     return(
       <div  style={{
-        backgroundColor: '#f1f5f9',
+        backgroundColor: '#e2e8f0',
         height:'100vh'
       }}>
           <ToastContainer

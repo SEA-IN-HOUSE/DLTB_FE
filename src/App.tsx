@@ -20,6 +20,8 @@ import TestArea from "./pages/TestArea";
 import { Station } from "./pages/Station";
 import { EmployeeCard } from "./pages/EmployeeCard";
 import { Staff } from "./pages/Staff";
+import { Device } from "./pages/Device";
+import { Cooperative } from "./pages/Cooperative";
 
 function App() {
  
@@ -43,6 +45,8 @@ function App() {
               <Route path ="/mastercard" element ={<MasterCard />} />
               <Route path ="/station" element ={<Station />} />
               <Route path = "/employeecard" element ={<EmployeeCard />} />
+              <Route path ="/device" element ={<Device />} />
+              <Route path ="/cooperative" element ={<Cooperative />} />
               <Route path ="/tormain" element ={ <TORMain /> } />
               <Route path ="/torticket" element= {<TORTicket />} />
               <Route path ="/torfuel" element = {<TORFuel />} />

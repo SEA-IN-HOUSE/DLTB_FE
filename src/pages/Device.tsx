@@ -1,25 +1,51 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+
+import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect, useState} from 'react'
+import {useEffect,  useLayoutEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
-import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, TextField } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
-import HeaderCard from "../components/HeaderCard";
 import { useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AddIcon from '@mui/icons-material/AddCard';
+import { BsDeviceSsd } from "react-icons/bs";
+
+            // "_id": "655321a339c1307c069616e9",
+            // "cooperativeName": "Del Monte Land Transport Bus Company",
+            // "cooperativeCodeName": "DLTB",
+            // "createdAt": "2023-10-12T07:48:34.337Z"
+
+interface ICooperative{
+
+ id: string,
+ cooperativeName : string,
+ cooperativeCodeName: string,
+ createdAt: string
+}
 
 const columns: GridColDef[] = [
   
+  // { 
+  //   field: 'id', 
+  //   headerName: 'ID', 
+  //   flex: 1,
+  //       minWidth: 0,
+  //   headerClassName: 'super-app-theme--header',
+  //   headerAlign: 'center',
+  //   align: 'center',
+  //   editable: true,
+   
+  // },
   { 
-    field: 'riderId', 
-    headerName: 'RIDER ID', 
+    field: 'deviceId', 
+    headerName: 'DEVICE ID', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
@@ -30,8 +56,8 @@ const columns: GridColDef[] = [
   },
 
   { 
-    field: 'cardId', 
-    headerName: 'CARD ID', 
+    field: 'coopId', 
+    headerName: 'COOP ID', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
@@ -41,23 +67,9 @@ const columns: GridColDef[] = [
    
   },
 
-  { 
-    field: 'balance', 
-    headerName: 'BALANCE', 
-    
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => `₱ ${params.value}`
-    
-  },
-
 
   { 
-    field: 'createdAt', 
+    field: 'dateCreated', 
     headerName: 'DATE CREATED', 
     flex: 1,
     minWidth: 0,
@@ -70,19 +82,19 @@ const columns: GridColDef[] = [
     },
   },
 
-  { 
-    field: 'updatedAt', 
-    headerName: 'LAST MODIFIED', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: true,
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
-  }
+  // { 
+  //   field: 'updatedAt', 
+  //   headerName: 'LAST MODIFIED', 
+  //   flex: 1,
+  //       minWidth: 0,
+  //   headerClassName: 'super-app-theme--header',
+  //   headerAlign: 'center',
+  //   align: 'center',
+  //   editable: true,
+  //   valueFormatter: (params) => {
+  //     return moment(params.value).format('MMMM D, YYYY');
+  //   },
+  // }
  
   ];
   
@@ -93,42 +105,45 @@ const columns: GridColDef[] = [
 
 
 
-export function MasterCard(){
-    const [tableRows, setTableRows] = useState(rows)
+
+
+export function Device(){
+    const [tableRows, setTableRows] = useState(rows);
+    const [cooperativeDropdown, setCooperativeDropdown]  = useState<any>([])
     const navigate = useNavigate();
-    
     useEffect(() =>{
-      console.log(localStorage.getItem('role'))
-    if(localStorage.getItem('role') !== "Administrator"){
-      navigate("/tormain")
-    }
+   
         GetAllData();
         setTableRows(rows)
+        console.log(localStorage.getItem('role'))
         if(localStorage.getItem('role') !== "Administrator"){
           navigate("/tormain")
         }
-    
         return () =>{}
 
     },[])
+
  
     async function GetAllData(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/mastercard`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/device/${import.meta.env.VITE_DLTB_COOP_ID}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
         })
             
             const response = await request.data;
-        
+
+         
+
             if(response.messages[0].code === '0'){
 
               setTableRows(
                 
                 response.response.map((data : any) =>{
+             
                   return {id: data._id, ...data}
                 })
               )
@@ -142,32 +157,66 @@ export function MasterCard(){
       
     }   
 
+    async function GetAllCoop(){
 
-    // "riderId" : "6535ee6209cc1d199faf2cbd",
-    // "cardId": "123456",
-    // "balance" : 100000
+      try{
+        
+        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+          headers :{
+              Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+          }
+      })
+          
+          const response = await request.data;
 
-    const [riderId, setRiderId] = useState("")
+       
 
-    const [cardId, setCardId] = useState("")
+          if(response.messages[0].code === '0'){
 
-    const [balance, setBalance] = useState("")
+            setCooperativeDropdown(
+              
+              response.response.map((data : any) =>{
+           
+                return {id: data._id, ...data}
+              })
+            )
+          }
+     
 
-    const [isModalOpen, setIsModalOpen] = useState(false)
+          // setClientTableRows(newRows)
+      }catch(e){
+          console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
+      }
+    
+  }   
 
-    async function RegisterCard() {
+
+
+    // {"deviceId" : "123458", "coopId" : "655321a339c1307c069616e9",   "deviceName": "sumni",
+    // "deviceType": "mobile"}
+const [deviceId, setDeviceId]  = useState("");
+const [coopId, setCoopId] = useState("655321a339c1307c069616e9");
+const [deviceName, setDeviceName] = useState("");
+const [deviceType, setDeviceType] =  useState("");   
+
+const [isModalOpen, setIsModalOpen] = useState(false)
+
+
+    async function AddData() {
       try {
+      
 
         event?.preventDefault()
         // Define the request data as an object
         const requestData = {
-          riderId: riderId, // Assuming empNo and cardId are variables in your scope
-          cardId: cardId,
-          balance: balance,
+          "deviceId" : deviceId,
+          "coopId" : coopId,
+          "deviceName" : deviceName,
+          "deviceType" : deviceType
         };
     
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/mastercard`,
+          `${import.meta.env.VITE_BASE_URL}/device`,
           requestData, // Use the requestData object as the request data
           {
             headers: {
@@ -180,12 +229,12 @@ export function MasterCard(){
         // as axios already returns the response data.
         const responseData = response.data;
           console.log(responseData)
-          
+       
           if(responseData.messages[0].code === "0"){
           
             GetAllData();
         
-            toast.success("Success", {
+            toast.success("Successfully added!", {
               position: "bottom-center",
               autoClose: 5000,
               hideProgressBar: false,
@@ -196,7 +245,7 @@ export function MasterCard(){
               theme: "colored",
               });
            }else{
-            toast.warning(responseData.messages[0].message, {
+            toast.warning("Invalid fields!", {
               position: "bottom-center",
               autoClose: 5000,
               hideProgressBar: false,
@@ -226,6 +275,7 @@ export function MasterCard(){
       }
     }
 
+
     function CustomToolbar() {
 
       return (<>
@@ -236,10 +286,10 @@ export function MasterCard(){
             marginBottom: '2px',
           }}
           >
-          <Button variant="contained"  startIcon = {<AddIcon />} color="success" onClick={ () =>{
+          <Button variant="contained"  startIcon = {<BsDeviceSsd />} color="success"  onClick={ () =>{
             setIsModalOpen(true)
           }}>
-          Register card
+          Add device
         </Button>
   
         <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
@@ -255,12 +305,30 @@ export function MasterCard(){
   
   }   
 
+
+   // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"}
+
+
+  useLayoutEffect(() =>{
+
+    GetAllCoop();
+
+    return () =>{}
+
+  },[isModalOpen])
+
+  useEffect(() =>{
+    console.log(cooperativeDropdown)
+    return () =>{}
+  },[cooperativeDropdown])
+
     return(
       <div  style={{
         backgroundColor: '#e2e8f0',
         height:'100vh'
       }}>
-      <ToastContainer
+    <NavBar>
+    <ToastContainer
         position="bottom-center"
         autoClose={5000}
         hideProgressBar={false}
@@ -278,13 +346,11 @@ export function MasterCard(){
         }
         />
 
-    <NavBar>
-
-
 <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
-     <form onSubmit={RegisterCard}>
-     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Add Master Card
+     <form onSubmit={AddData}>
+
+         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Add Device
         </DialogTitle>
         
         <IconButton
@@ -299,7 +365,8 @@ export function MasterCard(){
         >
       
           <CloseIcon />
-        </IconButton>
+        </IconButton>       
+
         <DialogContent dividers>
           <DialogContentText>
             {/* To subscribe to this website, please enter your email address here. We
@@ -309,41 +376,69 @@ export function MasterCard(){
           <TextField
             autoFocus
             margin="dense"
-            id="riderId"
-            name ="riderId"
-            label="Rider Id"
+            id="deviceId"
+            name ="deviceId"
+            label="Device Id"
             type="text"
             fullWidth
             variant="outlined"
-            onChange={(event) => setRiderId(event.target.value)}
+            onChange={(event) => setDeviceId(event.target.value)}
           />
 
-          <TextField
-            autoFocus
-            margin="dense"
-            id="cardId"
-            name ="cardId"
-            label="Card Id"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setCardId(event.target.value)}
-            />
+<FormControl fullWidth margin="dense">
+  <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
+  <Select
+    labelId="demo-simple-select-label"
+    id="demo-simple-select"
+    value={coopId}
+    defaultValue= {coopId}
+    label="Cooperative"
+    onChange={(event) => setCoopId(event?.target.value)}
+  >
+    {cooperativeDropdown.map((coop : ICooperative) =>{
+      console.log(coop)
+      console.log(coop.cooperativeCodeName)
+      return (
+        <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+      )
 
-          <TextField
-            autoFocus
-            margin="dense"
-            id="balance"
-            name ="balance"
-            label="Balance"
-            type="number"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setBalance(event.target.value)}
-          />
+    })
+    }
+   
+  </Select>
+</FormControl>
 
-        
-         
+<FormControl fullWidth  margin="dense">
+  <InputLabel id="deviceNameLabel">Name</InputLabel>
+  <Select
+    labelId="deviceNameLabel"
+    id="deviceName"
+    value={deviceName}
+    label="Device Name"
+    onChange={(event) => setDeviceName(event?.target.value)}
+  >
+   
+        <MenuItem value={"sumni"}>SUMNI</MenuItem>
+
+  </Select>
+</FormControl>
+
+<FormControl fullWidth  margin="dense">
+  <InputLabel id="deviceTypeLbl">Type</InputLabel>
+  <Select
+    labelId="deviceTypeLbl"
+    id="deviceType"
+    value={deviceType}
+    label="Device Type"
+    onChange={(event) => setDeviceType(event?.target.value)}
+  >
+    
+        <MenuItem value={"Mobile"}>Mobile</MenuItem>
+
+   
+  </Select>
+</FormControl>
+
         </DialogContent>
         
         <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
@@ -354,8 +449,7 @@ export function MasterCard(){
         </form>
   </Dialog>
 
-
-    <HeaderCard title ="MASTER CARD" />
+    <HeaderCard title ="DEVICE" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
             <Box sx = {{
             '& .super-app-theme--header': {
