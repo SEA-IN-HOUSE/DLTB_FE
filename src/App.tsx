@@ -20,19 +20,26 @@ import TestArea from "./pages/TestArea";
 import { Station } from "./pages/Station";
 import { EmployeeCard } from "./pages/EmployeeCard";
 import { Staff } from "./pages/Staff";
+<<<<<<< HEAD
 import { Device } from "./pages/Device";
 import { Cooperative } from "./pages/Cooperative";
 
+=======
+import styles from 'styles/LogIn.css'
+import { useEffect } from "react";
+>>>>>>> adda894768f68ba1f016f12390eee94e73d44847
 function App() {
  
+  useEffect(() =>{
 
+  },[])
 
   return (
     <>   
           <HashRouter basename="/">
             <Routes>
               <Route path ="/" element = { <TestLogin />} />
-              <Route path ="/testarea" element ={<LogIn /> }/>
+              <Route path ="/testarea" element ={<TestArea /> }/>
               <Route path ="/dashboard" element ={<Dashboard />} />
               <Route path ="/test" element ={<TestArea />}/> 
               <Route path="/client" element ={<Client />} />

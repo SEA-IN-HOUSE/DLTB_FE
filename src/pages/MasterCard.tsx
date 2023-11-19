@@ -99,19 +99,23 @@ export function MasterCard(){
     
     useEffect(() =>{
       console.log(localStorage.getItem('role'))
-    if(localStorage.getItem('role') !== "Administrator"){
-      navigate("/tormain")
-    }
+   
         GetAllData();
         setTableRows(rows)
         if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/tormain")
+          navigate("/dashboard")
         }
     
         return () =>{}
 
     },[])
+<<<<<<< HEAD
+
+  
+  
+=======
  
+>>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
     async function GetAllData(){
 
         try{

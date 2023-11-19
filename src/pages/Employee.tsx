@@ -201,7 +201,20 @@ export function Employee(){
 
    
 
+<<<<<<< HEAD
     
+=======
+    useEffect(() =>{
+      
+        GetAllEmployees();
+        setClientTableRows(rows)
+        if(localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "UserAdmin"){
+          navigate("/dashboard")
+        }
+        return () =>{}
+
+    },[])
+>>>>>>> adda894768f68ba1f016f12390eee94e73d44847
 
     useEffect(() =>{
 

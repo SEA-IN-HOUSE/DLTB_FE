@@ -142,7 +142,10 @@ export function Staff(){
       editable: false,
      
     },
+<<<<<<< HEAD
+=======
     
+>>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
   
     { 
       field: 'createdAt', 
@@ -207,7 +210,7 @@ export function Staff(){
         GetAllData();
         setTableRows(rows)
         if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/tormain")
+          navigate("/dashboard")
         }
         return () =>{}
 
@@ -458,6 +461,10 @@ return(
  
  <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
      <form onSubmit={RegisterEmployeeCard}>
+<<<<<<< HEAD
+        <DialogTitle>Add User</DialogTitle>
+        <DialogContent>
+=======
      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           Add User
         </DialogTitle>
@@ -475,6 +482,7 @@ return(
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
+>>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
           <DialogContentText>
          </DialogContentText>
           <TextField
@@ -534,7 +542,11 @@ return(
             <em>None</em>
           </MenuItem>
           <MenuItem value={"Administrator"}>Administrator</MenuItem>
+<<<<<<< HEAD
+          <MenuItem value={"UserAdmin"}>User Admin</MenuItem>
+=======
           <MenuItem value={"User Admin"}>User Admin</MenuItem>
+>>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
           <MenuItem value={"User"}>User</MenuItem>
         </Select>
         {/* <FormHelperText>With label + helper text</FormHelperText> */}
@@ -668,6 +680,10 @@ return(
             <em>None</em>
           </MenuItem>
           <MenuItem value={"Administrator"}>Administrator</MenuItem>
+<<<<<<< HEAD
+          <MenuItem value={"UserAdmin"}>UserAdmin</MenuItem>
+          <MenuItem value={"User"}>User</MenuItem>
+=======
           <MenuItem value={"User Admin"}>User Admin</MenuItem>
           <MenuItem value={"User"}>User</MenuItem>
         </Select>
@@ -691,6 +707,7 @@ return(
           </MenuItem>
             <MenuItem value={"Seapps-inc"}>Seapps-inc</MenuItem>
             <MenuItem value={"DLTB"}>DLTB</MenuItem>
+>>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
         </Select>
         {/* <FormHelperText>With label + helper text</FormHelperText> */}
       </FormControl>
