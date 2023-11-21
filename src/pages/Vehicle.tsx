@@ -371,7 +371,7 @@ export function Vehicle(){
             type="number"
             fullWidth
             variant="outlined"
-            onChange={(event) => setVehicleNo(parseFloat(event.target.value))}
+            onChange={(event) => setPlateNo(parseFloat(event.target.value))}
           />
           
          
