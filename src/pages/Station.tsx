@@ -7,7 +7,7 @@ import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, TextField } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/AddHomeWork';
+import { ICooperative } from "./Employee";
 
 const columns: GridColDef[] = [
   
@@ -125,7 +126,7 @@ export function Station(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/station`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/station/${import.meta.env.VITE_DLTB_COOP_ID}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
@@ -156,7 +157,9 @@ export function Station(){
 
 
     // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"}
+    const [coopList, setCoopList] = useState([]);
 
+    const [coopId, setCoopId] = useState("");
     
 const [stationName , setStationName] = useState("")
 
@@ -176,6 +179,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         event?.preventDefault()
         // Define the request data as an object
         const requestData = {
+          coopId: coopId,
           stationName: stationName, // Assuming empNo and cardId are variables in your scope
           km : km,
           viceVersaKM : viceVersaKM,
@@ -271,11 +275,45 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         );
   
   }   
+  async function GetCooperative(){
 
+    try{
+  
+      const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+        headers :{
+            Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+        }
+    })
+        
+        const response = await request.data;
+        
+        if(response.messages[0].code === '0'){
+          console.log(response);
+          setCoopList(
+            
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+            response.response.map((coop : any ) =>{
+              console.log(coop)
+              
+              if(coop._id){
+                return {id: coop._id, ...coop}
+              }
+              
+            })
+          )
+  
+          
+        }
+ 
+    }catch(e){
+      console.log(`Error in getting coops: ${e}`)
+    }
+  }
+  
 
    // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"}
   useEffect(() =>{
-
+    GetCooperative();
     return () =>{}
 
   },[isModalOpen, km, viceVersaKM, routeId ])
@@ -330,6 +368,32 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             {/* To subscribe to this website, please enter your email address here. We
             will send updates occasionally. */}
           </DialogContentText>
+          
+          <FormControl fullWidth margin="dense">
+  <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
+  <Select
+    labelId="demo-simple-select-label-coopId"
+    id="demo-simple-select-coopId"
+    value={coopId}
+    defaultValue= {coopId}
+    label="Cooperative"
+    onChange={(event) => setCoopId(event?.target.value)}
+    required
+  >
+    {
+    Object(coopList).length === 0? (<></>) :
+    coopList.map((coop : ICooperative) =>{
+      console.log(coop)
+      console.log(coop.cooperativeCodeName)
+      return (
+        <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+      )
+
+    })
+    }
+   
+  </Select>
+</FormControl>
          
           <TextField
             autoFocus
@@ -416,6 +480,15 @@ const [isModalOpen, setIsModalOpen] = useState(false)
                 padding: '15px',
               },
             }}
+            initialState={{ 
+
+              pagination: { 
+                paginationModel: { 
+                  pageSize: 5 
+                } 
+              }, 
+            }} 
+            pageSizeOptions={[5, 10, 25]}
             />
         </Box>
         </Paper>

@@ -16,6 +16,7 @@ import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/AddHomeWork';
+import { ICooperative } from "./Employee";
 
 const columns: GridColDef[] = [
   
@@ -112,6 +113,7 @@ export function Direction(){
     if(localStorage.getItem('role') !== "Administrator"){
       navigate("/tormain")
     }
+    GetCooperative();
         GetAllData();
         setTableRows(rows)
         if(localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "UserAdmin"){
@@ -128,7 +130,7 @@ export function Direction(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/directions`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/directions/${import.meta.env.VITE_DLTB_COOP_ID}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
@@ -169,6 +171,44 @@ export function Direction(){
   const [destination, setDestination] = useState("")
   
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [coopList, setCoopList] = useState([]);
+
+  const [coopId, setCoopId] = useState("");
+
+  async function GetCooperative(){
+
+    try{
+  
+      const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+        headers :{
+            Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+        }
+    })
+        
+        const response = await request.data;
+        
+        if(response.messages[0].code === '0'){
+          console.log(response);
+          setCoopList(
+            
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+            response.response.map((coop : any ) =>{
+              console.log(coop)
+              
+              if(coop._id){
+                return {id: coop._id, ...coop}
+              }
+              
+            })
+          )
+  
+          
+        }
+        
+    }catch(e){
+      console.log(`Error in getting coops: ${e}`)
+    }
+  }
 
   async function AddData() {
     try {
@@ -176,14 +216,15 @@ export function Direction(){
       event?.preventDefault()
       // Define the request data as an object
       const requestData = {
+        coopId: coopId,
         bound: bound, // Assuming empNo and cardId are variables in your scope
         origin: origin,
-        route_code : route_code,
+        code : route_code,
         destination: destination,
       };
   
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/directions/${import.meta.env.VITE_DLTB_COOP_ID}`,
+        `${import.meta.env.VITE_BASE_URL}/directions`,
         requestData, // Use the requestData object as the request data
         {
           headers: {
@@ -195,7 +236,7 @@ export function Direction(){
       // Note that there's no need to use `await` on response.data directly
       // as axios already returns the response data.
       const responseData = response.data;
-      
+        console.log(responseData)
 
         if(responseData.messages[0].code === "0"){
           
@@ -327,6 +368,32 @@ export function Direction(){
             {/* To subscribe to this website, please enter your email address here. We
             will send updates occasionally. */}
           </DialogContentText>
+
+          <FormControl fullWidth margin="dense">
+  <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
+  <Select
+    labelId="demo-simple-select-label-coopId"
+    id="demo-simple-select-coopId"
+    value={coopId}
+    defaultValue= {coopId}
+    label="Cooperative"
+    onChange={(event) => setCoopId(event?.target.value)}
+    required
+  >
+    {
+    Object(coopList).length === 0? (<></>) :
+    coopList.map((coop : ICooperative) =>{
+      console.log(coop)
+      console.log(coop.cooperativeCodeName)
+      return (
+        <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+      )
+
+    })
+    }
+   
+  </Select>
+</FormControl>
          
           <FormControl fullWidth sx ={{marginTop: 1}}>
         <InputLabel id="demo-simple-select-helper-label">Bound</InputLabel>
@@ -422,6 +489,15 @@ export function Direction(){
                 padding: '15px',
               },
             }}
+            initialState={{ 
+
+              pagination: { 
+                paginationModel: { 
+                  pageSize: 5 
+                } 
+              }, 
+            }} 
+            pageSizeOptions={[5, 10, 25]}
             />
         </Box>
         </Paper>

@@ -1,6 +1,5 @@
 // import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import {  Route, Routes, HashRouter} from "react-router-dom";
-import LogIn from "./pages/LogIn";
 import TestLogin from "./pages/TestLogin";
 import { Dashboard } from "./pages/Dashboard";
 import { Client } from "./pages/Client";
@@ -20,19 +19,12 @@ import TestArea from "./pages/TestArea";
 import { Station } from "./pages/Station";
 import { EmployeeCard } from "./pages/EmployeeCard";
 import { Staff } from "./pages/Staff";
-<<<<<<< HEAD
 import { Device } from "./pages/Device";
 import { Cooperative } from "./pages/Cooperative";
+import { Vehicle } from "./pages/Vehicle";
 
-=======
-import styles from 'styles/LogIn.css'
-import { useEffect } from "react";
->>>>>>> adda894768f68ba1f016f12390eee94e73d44847
 function App() {
  
-  useEffect(() =>{
-
-  },[])
 
   return (
     <>   
@@ -54,6 +46,7 @@ function App() {
               <Route path = "/employeecard" element ={<EmployeeCard />} />
               <Route path ="/device" element ={<Device />} />
               <Route path ="/cooperative" element ={<Cooperative />} />
+              <Route path ="/vehicle" element = {<Vehicle />} />
               <Route path ="/tormain" element ={ <TORMain /> } />
               <Route path ="/torticket" element= {<TORTicket />} />
               <Route path ="/torfuel" element = {<TORFuel />} />

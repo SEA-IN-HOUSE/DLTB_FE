@@ -18,6 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/AddCard';
 
 import SearchIcon from "@mui/icons-material/Search";
+import { ICooperative } from "./Employee";
 const columns: GridColDef[] = [
   
   { 
@@ -89,14 +90,13 @@ export function EmployeeCard()
 {
     const [tableRows, setTableRows] = useState(rows)
 
-<<<<<<< HEAD
-    const navigate = useNavigate();
-=======
    
+    const navigate = useNavigate();
+    
     useEffect(() =>{
       
         GetAllData();
-        setTableRows(rows)
+     
         if(localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "UserAdmin"){
           navigate("/dashboard")
         }
@@ -104,7 +104,6 @@ export function EmployeeCard()
         return () =>{}
 
     },[])
->>>>>>> adda894768f68ba1f016f12390eee94e73d44847
 
     
  
@@ -113,22 +112,22 @@ export function EmployeeCard()
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employeecard`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employeecard/${import.meta.env.VITE_DLTB_COOP_ID}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
         })
-            
             const response = await request.data;
 
-         
+           
 
-            if(response.messages[0].code === '0'){
-
+            
+            if(response.messages[0].code === 0){
+              console.log("TEST")
               setTableRows(
                 
                 response.response.map((data : any) =>{
-                  console.log(data.destination)
+                // console.log(data._id)
                   return {id: data._id, ...data}
                 })
               )
@@ -149,6 +148,10 @@ export function EmployeeCard()
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     const [employee, setEmployee] = useState<any>([]);
+
+    const [coopList, setCoopList] = useState([]);
+
+const [coopId, setCoopId] = useState("");
 
     
     const containsText = (text : string, searchText) =>
@@ -178,8 +181,6 @@ export function EmployeeCard()
             
             const response = await request.data;
             
-            // console.log(` GetAllEmployees response: ${JSON.stringify(response)}`)
-
             if(response.messages[0].code === '0'){
 
               response.response.map((employee : any ) =>{
@@ -192,7 +193,7 @@ export function EmployeeCard()
                   employee._id !== "") {
                  
                     const empNumber  = employee?.empNo.toString();
-                    console.log(empNumber)
+                  
                   setEmployee((employee: any) => [...employee, empNumber]);
                 }
               })
@@ -222,6 +223,7 @@ export function EmployeeCard()
         const requestData = {
           empNo: parseFloat(empNo), // Assuming empNo and cardId are variables in your scope
           cardId: cardId,
+          coopId: coopId
         };
     
         const response = await axios.post(
@@ -237,7 +239,7 @@ export function EmployeeCard()
         // Note that there's no need to use `await` on response.data directly
         // as axios already returns the response data.
         const responseData = response.data;
-          console.log(responseData)
+       
           if(responseData.messages[0].code === "0"){
           
             GetAllData();
@@ -317,17 +319,57 @@ export function EmployeeCard()
         navigate("/tormain")
       }
      GetAllData();
-          setTableRows(rows)
+     GetCooperative();
       return () =>{}
   
     },[isModalOpen, empNo, cardId])
     
     useEffect(() =>{
 
-      console.log(`Employees:`)
-      console.log(employee)
+    
+      console.log(tableRows)
       return () =>{}
-    }, [employee])
+    }, [employee, tableRows])
+
+
+
+
+    
+async function GetCooperative(){
+  
+  try{
+
+    const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+      headers :{
+          Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      }
+  })
+      
+      const response = await request.data;
+      
+      if(response.messages[0].code === '0'){
+        console.log(response);
+        setCoopList(
+          
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+          response.response.map((coop : any ) =>{
+            console.log(coop)
+            
+            if(coop._id){
+              return {id: coop._id, ...coop}
+            }
+            
+          })
+        )
+
+        
+      }
+    
+  }catch(e){
+    console.log(`Error in getting coops: ${e}`)
+  }
+}
+
       return(
         <div  style={{
           backgroundColor: '#e2e8f0',
@@ -378,27 +420,41 @@ export function EmployeeCard()
               {/* To subscribe to this website, please enter your email address here. We
               will send updates occasionally. */}
             </DialogContentText>
-            {/* <TextField
-              autoFocus
-              margin="dense"
-              id="empNo"
-              name ="empNo"
-              label="Employee No"
-              type="text"
-              fullWidth
-              variant="outlined"
-              onChange={(event) => setEmpNo(event.target.value)}
-            /> */}
-  
-  <FormControl fullWidth>
-          <InputLabel id="search-select-label">Options</InputLabel>
+        
+         <FormControl fullWidth margin="dense">
+  <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
+  <Select
+    labelId="demo-simple-select-label-coopId"
+    id="demo-simple-select-coopId"
+    value={coopId}
+    defaultValue= {coopId}
+    label="Cooperative"
+    onChange={(event) => setCoopId(event?.target.value)}
+    required
+  >
+    {
+    Object(coopList).length === 0? (<></>) :
+    coopList.map((coop : ICooperative) =>{
+      console.log(coop)
+      console.log(coop.cooperativeCodeName)
+      return (
+        <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+      )
+
+    })
+    }
+   
+  </Select>
+</FormControl>
+  <FormControl fullWidth margin ="dense">
+          <InputLabel id="search-select-label">Employee No</InputLabel>
           <Select
             // Disables auto focus on MenuItems and allows TextField to be in focus
             MenuProps={{ autoFocus: false }}
             labelId="search-select-label"
             id="search-select"
             value={empNo}
-            label="Options"
+            label="Employee No"
             onChange={(e) => setEmpNo(e.target.value)}
             onClose={() => setSearchText("")}
             // This prevents rendering empty string in Select's value

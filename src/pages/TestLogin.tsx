@@ -10,40 +10,37 @@ import {useNavigate} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const defaultFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
-
-<<<<<<< HEAD
-
-interface IUserInformation{
-    _id : string,
-    company : string,
-    email: string,
-    firstName: string,
-    middleName : string,
-    lastName : string,
-    isAllowedToTorFuel : boolean,
-    isAllowedToTorInspection: boolean,
-    isAllowedToTorMain : boolean,
-    isAllowedToTorRemittance : boolean,
-    isAllowedToTorTicket: boolean,
-    isAllowedToTorTrip: boolean,
-    isAllowedToTorTrouble: boolean,
-    isAllowedToTorViolation: boolean,
-    isEmailVerified: boolean,
-    password: string,
-    role: string,
-    profileImageUrl: string,
-    updatedAt: Date,
-}
-=======
-import { Helmet } from "react-helmet";
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import '../styles/LogIn.css'; // Import your local CSS
+// import { Helmet } from "react-helmet";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 
 import FilipayLogo from '../assets/Filipay-logo.png';
 import MessageIcon from '../assets/message-icon.png'
 
+interface IUserInformation  {
+
+  _id: string,
+  profileImageUrl: string,
+  firstName: string,
+  middleName: string,
+  lastName: string,
+  email: string,
+  company: string,
+  isEmailVerified: boolean,
+  isAllowedToTorMain: boolean,
+  isAllowedToTorTicket: boolean,
+  isAllowedToTorFuel: boolean,
+  isAllowedToTorRemittance: boolean,
+  isAllowedToTorTrip: boolean,
+  isAllowedToTorInspection: boolean,
+  isAllowedToTorViolation: boolean,
+  isAllowedToTorTrouble: boolean,
+  role: string,
+}
 
 
->>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
+
 
 export default function TestLogin() : JSX.Element {
 
@@ -126,40 +123,10 @@ export default function TestLogin() : JSX.Element {
 
     async function InsertToStorage (data : IUserInformation){
 
-<<<<<<< HEAD
-=======
         //const email = localStorage.getItem('token')
         console.log(import.meta.env.VITE_BASE_URL)
         try{
-          console.log(email)
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/${email}`,{
-            headers :{
-                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-            }
-        })
-  
-        const response = await request.data;
-        console.log("Email ",email)
-        console.log("response:", response)
->>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
-       
-  
-<<<<<<< HEAD
-        localStorage.setItem('role' , response.response.role)
-        localStorage.setItem('isTorMain' , response.response.
-        isAllowedToTorMain)
-        localStorage.setItem('isTorTicket' , response.response.isAllowedToTorTicket)
-        localStorage.setItem('isTorFuel' , response.response.isAllowedToTorFuel)
-        localStorage.setItem('isTorRemittance' , response.response.isAllowedToTorRemittance)
-        localStorage.setItem('isTorInspection' , response.response.isAllowedToTorInspection)
-        localStorage.setItem('isTorTrip' , response.response.isAllowedToTorTrip)
-        localStorage.setItem('isTorViolation' , response.response.isAllowedToTorViolation)
-        localStorage.setItem('isTorTrouble' , response.response.isAllowedToTorTrouble)
-
-=======
-        try{
-   
-        console.log("Email ",data.email)
+         
 
   
         localStorage.setItem('role' , data.role)
@@ -172,14 +139,13 @@ export default function TestLogin() : JSX.Element {
         localStorage.setItem('isTorTrip' , data.isAllowedToTorTrip.toString())
         localStorage.setItem('isTorViolation' , data.isAllowedToTorViolation.toString())
         localStorage.setItem('isTorTrouble' , data.isAllowedToTorTrouble.toString())
->>>>>>> adda894768f68ba1f016f12390eee94e73d44847
         }catch(e){
           console.log(`Error in getting user: ${e}`)
         }
   
       }
 
-      const [isSubmitOtp, setIsSubmitOtp] = useState(false)
+      const [isSubmitOtp, setIsSubmitOtp] = useState(false);
       const [emailOtp, setEmailOtp] = useState('');
       const [otp, setOtp] = useState('');
 
@@ -282,7 +248,8 @@ export default function TestLogin() : JSX.Element {
     return(
         <>
          <Dialog open={isOtpModalOpen} onClose={() => setIsOtpModalOpen(!isOtpModalOpen)}>
-    {isSubmitOtp ? (
+    {isSubmitOtp ? 
+    (
     <>
     
     <form onSubmit ={VerifyOtp}>
@@ -311,40 +278,37 @@ export default function TestLogin() : JSX.Element {
 
 
     </>) :
-    (
-     
-      <form onSubmit ={RequestOTP}>
-       <DialogTitle>Please provide you email address</DialogTitle>
-       <DialogContent  dividers>
-         <DialogContentText>
-           We will sent a one time password to your email address, to recover your account.
-         </DialogContentText>
-         <TextField
-           autoFocus
-           margin="dense"
-           id="name"
-           label="Email Address"
-           type="email"
-           fullWidth
-           value = {emailOtp}
-           onChange = {(event) => { setEmailOtp(event.target.value) }}
-           variant="standard"
-         />
-       </DialogContent>
-       <DialogActions>
-         <Button onClick={() => setIsOtpModalOpen(!isOtpModalOpen)}>Cancel</Button>
-         <Button type ="submit" variant = "contained" >Submit</Button>
-       </DialogActions>
-      </form>
-
-    )}
+    (<form onSubmit ={RequestOTP}>
+      <DialogTitle>Please provide you email address</DialogTitle>
+      <DialogContent  dividers>
+        <DialogContentText>
+          We will sent a one time password to your email address, to recover your account.
+        </DialogContentText>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Email Address"
+          type="email"
+          fullWidth
+          value = {emailOtp}
+          onChange = {(event) => { setEmailOtp(event.target.value) }}
+          variant="standard"
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setIsOtpModalOpen(!isOtpModalOpen)}>Cancel</Button>
+        <Button type ="submit" variant = "contained" >Submit</Button>
+      </DialogActions>
+     </form> )
+    }
       </Dialog>
 
 <div style={{overflow:'hidden',
         margin: 0,
 
         }}>
-        
+{/*         
         <Helmet>
         <link
             rel="stylesheet"
@@ -354,7 +318,7 @@ export default function TestLogin() : JSX.Element {
             rel ="stylesheet"
             href ="../styles/LogIn.css'"
         />
-      </Helmet>
+      </Helmet> */}
 
         <ToastContainer
         position="bottom-right"
@@ -380,7 +344,8 @@ export default function TestLogin() : JSX.Element {
             marginBottom: '6em'
         }}
         >
-                <form id="loginform" className="loginform" style={{background:'white',
+                <form id="loginform" className="loginform" style=
+            {{background:'white',
             padding: '1em',
             border: '5px solid whitesmoke',
             height: 'auto', 
@@ -484,9 +449,7 @@ export default function TestLogin() : JSX.Element {
         </div>
 
         </>
-   
-
-        
+  
     )
 
 }

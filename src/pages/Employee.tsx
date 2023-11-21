@@ -11,11 +11,16 @@ import { Button, Chip, Dialog, DialogActions, DialogContent,  DialogTitle, FormC
 import axios from 'axios';
 import {  useNavigate } from "react-router-dom";
 import NoRowBackGround from "../components/NoRowBackGround";
-import { BsDeviceSsd } from "react-icons/bs";
+import {BsFillPersonPlusFill  } from "react-icons/bs";
 import CloseIcon from '@mui/icons-material/Close';
 
-
-interface IEmployeeData extends Document {
+import dayjs, { Dayjs } from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { ToastContainer, toast } from 'react-toastify';
+interface IEmployeeData  {
   _id : string,
   coopId: string,
 
@@ -49,7 +54,8 @@ interface IEmployeeData extends Document {
 }
 
 
-interface ICooperative{
+
+export interface ICooperative{
 
   id: string,
   cooperativeName : string,
@@ -99,7 +105,7 @@ const columns: GridColDef[] = [
   {
     field: 'empNo', 
     headerName: 'EMPLOYEE NO.',
-    type:'number', 
+    // type:'number', 
     width: 180, 
     headerClassName: 'super-app-theme--header',
     editable: false,
@@ -201,9 +207,6 @@ export function Employee(){
 
    
 
-<<<<<<< HEAD
-    
-=======
     useEffect(() =>{
       
         GetAllEmployees();
@@ -214,7 +217,6 @@ export function Employee(){
         return () =>{}
 
     },[])
->>>>>>> adda894768f68ba1f016f12390eee94e73d44847
 
     useEffect(() =>{
 
@@ -290,10 +292,10 @@ function CustomToolbar() {
         }}
         >
         
-        <Button variant="contained"  startIcon = {<BsDeviceSsd />} color="success"  onClick={ () =>{
+        <Button variant="contained"  startIcon = {<BsFillPersonPlusFill  />} color="success"  onClick={ () =>{
           setIsModalOpen(true)
         }}>
-        Add device
+        Add Employee
       </Button>
 
         {/* <Button variant="text"  color ="success" startIcon = {<PersonAddIcon />}> Add</Button> */}
@@ -309,37 +311,22 @@ function CustomToolbar() {
 
 }   
 
-// "_id": "6555fcd014cae16d89c40194",
-// "coopId": "655321a339c1307c069616e9",
-// "lastName": "BOLA",
-// "firstName": "ANTHONY",
-// "middleName": "BRITANICO",
-// "nameSuffix": "",
-// "empNo": 1427,
-// "empStatus": "Active/Recalled",
-// "empType": "Regular",
-// "idName": "ANTHONY B. BOLA ",
-// "designation": "Temporary GPS Section Staff Cashier",
-// "idPicture": "https://fms.dltbbus.com.ph/Streaming_SSL/MainDB/49F840081DA767BCF7CBF9CAA098BA426ADCA78817C5AA98F79C7D4E1C5CB088.png?RCType=EmbeddedRCFileProcessor",
-// "idSignature": "https://fms.dltbbus.com.ph/Streaming_SSL/MainDB/BF76BDA3BD65F0ED8917A7C8EBF7F1C9DA1623991618DF0DCE78A9D64C831A2F.png?RCType=EmbeddedRCFileProcessor",
-// "JTI_RFID": "YES",
-// "accessPrivileges": "Cashier",
-// "JTI_RFID_RequestDate": "",
-// "__v": 0
+
 const [coopList, setCoopList] = useState([]);
 
 const [coopId, setCoopId] = useState("");
 const [lastName, setLastName] = useState("");
 const [firstName , setFirstName] = useState("");
 const [middleName, setMiddleName] = useState("");
+const [nameSuffix, setNameSuffix] = useState("");
 const [empNo ,setEmpNo] = useState("");
 const [empType, setEmpType] = useState("");
-const [idName, setIdName] = useState("");
+const [empStatus, setEmpStatus] = useState("");
 const [designation , setDesignation] = useState("");
-const [idPicture, setIdPicture] = useState("");
+// const [idPicture, setIdPicture] = useState("");
 const [JTI_RFID, setJTIRFID] = useState("");
 const [accessPrivileges , setAccessPrivileges] = useState("");
-const [JTI_RFID_RequestDate, setJTIRFIDRequestDate] = useState("");
+const [JTI_RFID_RequestDate, setJTIRFIDRequestDate] = useState<Dayjs | null>(dayjs('2022-04-17'));
 
 async function AddData() {
   try {
@@ -347,8 +334,19 @@ async function AddData() {
     event?.preventDefault()
     // Define the request data as an object
     const requestData = {
-      // empNo: parseFloat(empNo), // Assuming empNo and cardId are variables in your scope
-      // cardId: cardId,
+     "coopId" : coopId,
+     "lastName" : lastName,
+     "firstName" : firstName,
+     "middleName" : middleName,
+     "nameSuffix": nameSuffix,
+     "empNo" : empNo,
+     "empStatus" : empStatus,
+     "empType" : empType,
+     "idName" : firstName+" "+middleName+" "+lastName,
+     "designation" : designation,
+     "JTI_RFID" : JTI_RFID,
+     "accessPrivileges": accessPrivileges,
+     "JTI_RFID_RequestDate": JTI_RFID_RequestDate,
     };
 
     const response = await axios.post(
@@ -367,45 +365,44 @@ async function AddData() {
       console.log(responseData)
       if(responseData.messages[0].code === "0"){
       
-        // GetAllData();
-    
-        // toast.success("Success", {
-        //   position: "bottom-center",
-        //   autoClose: 5000,
-        //   hideProgressBar: false,
-        //   closeOnClick: true,
-        //   pauseOnHover: true,
-        //   draggable: true,
-        //   progress: undefined,
-        //   theme: "colored",
-        //   });
+        toast.success("Success", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
        }else{
-        // toast.warning(responseData.messages[0].message, {
-        //   position: "bottom-center",
-        //   autoClose: 5000,
-        //   hideProgressBar: false,
-        //   closeOnClick: true,
-        //   pauseOnHover: true,
-        //   draggable: true,
-        //   progress: undefined,
-        //   theme: "colored",
-        //   });
+        toast.warning(responseData.messages[0].message, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
        }
  
 
   } catch (error) {
     console.error(error);
-    // toast.error(`Action failed error: ${error}`, {
-    //   position: "bottom-center",
-    //   autoClose: 5000,
-    //   hideProgressBar: false,
-    //   closeOnClick: true,
-    //   pauseOnHover: true,
-    //   draggable: true,
-    //   progress: undefined,
-    //   theme: "colored",
-    //   });
+    toast.error(`Action failed error: ${error}`, {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
   }finally{
+    GetAllEmployees();
     setIsModalOpen(!isModalOpen)
   }
 }
@@ -463,22 +460,25 @@ useEffect(() =>{
         backgroundColor: '#e2e8f0',
         height:'100vh'
       }}>
-    <NavBar>
 
-{/*       
-    const [coopId, setCoopId] = useState("");
-const [lastName, setLastName] = useState("");
-const [firstName , setFirstName] = useState("");
-const [middleName, setMiddleName] = useState("");
-const [empNo ,setEmpNo] = useState("");
-const [empType, setEmpType] = useState("");
-const [idName, setIdName] = useState("");
-const [designation , setDesignation] = useState("");
-const [idPicture, setIdPicture] = useState("");
-const [JTI_RFID, setJTIRFID] = useState("");
-const [accessPrivileges , setAccessPrivileges] = useState("");
-const [JTI_RFID_RequestDate, setJTIRFIDRequestDate] = useState(""); 
-*/}
+<ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        style={
+          {
+            width: "100%",
+          }
+        }
+        />
+    <NavBar>
 
 <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
      <form onSubmit={AddData}>
@@ -506,12 +506,13 @@ const [JTI_RFID_RequestDate, setJTIRFIDRequestDate] = useState("");
         <FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
   <Select
-    labelId="demo-simple-select-label"
-    id="demo-simple-select"
+    labelId="demo-simple-select-label-coopId"
+    id="demo-simple-select-coopId"
     value={coopId}
     defaultValue= {coopId}
     label="Cooperative"
     onChange={(event) => setCoopId(event?.target.value)}
+    required
   >
     {
     Object(coopList).length === 0? (<></>) :
@@ -528,8 +529,168 @@ const [JTI_RFID_RequestDate, setJTIRFIDRequestDate] = useState("");
   </Select>
 </FormControl>
          
-          
+            <TextField
+              autoFocus
+              margin="dense"
+              id="firstName"
+              name ="firstName"
+              label="First Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              onChange={(event) => setFirstName(event.target.value)}
+              required
+            />
+
+            <TextField
+              autoFocus
+              margin="dense"
+              id="middleName"
+              name ="middleName"
+              label="Middle Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              onChange={(event) => setMiddleName(event.target.value)}
+            />
+             <TextField
+              autoFocus
+              margin="dense"
+              id="lastName"
+              name ="lastName"
+              label="Last Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              onChange={(event) => setLastName(event.target.value)}
+              required
+            />
+
+            <TextField
+              autoFocus
+              margin="dense"
+              id="nameSuffix"
+              name ="nameSuffix"
+              label="Name Suffix"
+              type="text"
+              fullWidth
+              variant="outlined"
+              onChange={(event) => setNameSuffix(event.target.value)}
+       
+            />
+
+              <TextField
+              autoFocus
+              margin="dense"
+              id="empNo"
+              name ="empNo"
+              label="Employee No"
+              type="text"
+              fullWidth
+              variant="outlined"
+              onChange={(event) => setEmpNo(event.target.value)}
+              required
+            />
+
+<FormControl fullWidth margin="dense">
+            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <Select
+              labelId="demo-simple-select-label-empStatus"
+              id="demo-simple-select-empStatus"
+              value={empStatus}
+              defaultValue= {empStatus}
+              label="Status"
+              onChange={(event) => setEmpStatus(event?.target.value)}
+              required
+            >
+            <MenuItem value={"Active / Recalled"}>Active / Recalled</MenuItem>
+            <MenuItem value={"Active"}>Active</MenuItem>
+            <MenuItem value={"Terminated"}>Terminated</MenuItem>
+            <MenuItem value={"Awol"}>Awol</MenuItem>
+            <MenuItem value={"Contract"}>Contract</MenuItem>
+            </Select>
+          </FormControl>
+
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="demo-simple-select-label">Employee Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label-empType"
+                id="demo-simple-select-empType"
+                value={empType}
+                defaultValue= {empType}
+                label="Employee Type"
+                onChange={(event) => setEmpType(event?.target.value)}
+                required
+              >
+              <MenuItem value={"Regular"}>Regular</MenuItem>
+              <MenuItem value={"Irregular"}>Iregular</MenuItem>
+              </Select>
+            </FormControl>
+
+
+            <FormControl fullWidth margin="dense">
+            <InputLabel id="demo-simple-select-label">Designation</InputLabel>
+            <Select
+              labelId="demo-simple-select-label-designation"
+              id="demo-simple-select-designation"
+              value={designation}
+              defaultValue= {designation}
+              label="Designation"
+              onChange={(event) => setDesignation(event?.target.value)}
+              required
+            >
+            <MenuItem value={"Bus Conductor"}>Bus Conductor</MenuItem>
+            <MenuItem value={"Cashier"}>Cashier</MenuItem>
+            <MenuItem value={"Dispatcher"}>Dispatcher</MenuItem>
+            <MenuItem value={"Inspector"}>Inspector</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="demo-simple-select-label">JTI RFID</InputLabel>
+            <Select
+              labelId="demo-simple-select-label-JTI_RFID"
+              id="demo-simple-select-JTI_RFID"
+              value={JTI_RFID}
+              defaultValue= {JTI_RFID}
+              label="Designation"
+              onChange={(event) => setJTIRFID(event?.target.value)}
+              required
+            >
+            <MenuItem value={"YES"}>YES</MenuItem>
+            <MenuItem value={"NO"}>NO</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="demo-simple-select-label">Access Privileges</InputLabel>
+            <Select
+              labelId="demo-simple-select-label-accessPrivileges"
+              id="demo-simple-select-accessPrivileges"
+              value={accessPrivileges}
+              defaultValue= {accessPrivileges}
+              label="Access Privileges"
+              onChange={(event) => setAccessPrivileges(event?.target.value)}
+              required
+            >
+            <MenuItem value={"Bus Conductor"}>Bus Conductor</MenuItem>
+            <MenuItem value={"Cashier"}>Cashier</MenuItem>
+            <MenuItem value={"Dispatcher"}>Dispatcher</MenuItem>
+            <MenuItem value={"Inspector"}>Inspector</MenuItem>
+            </Select>
+          </FormControl>
+
         
+          <LocalizationProvider dateAdapter={AdapterDayjs} >
+          <DemoContainer components={['DatePicker']} >
+            <DatePicker label="JTI RFID Request Date" 
+            value={JTI_RFID_RequestDate}
+            onChange ={(newValue) => setJTIRFIDRequestDate(newValue)}
+            sx={{ width: '100%' }}
+            />
+          </DemoContainer>
+        </LocalizationProvider>
+          
 
         </DialogContent>
     

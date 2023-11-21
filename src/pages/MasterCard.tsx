@@ -4,7 +4,7 @@ import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
-import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, TextField } from "@mui/material";
+import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
@@ -14,6 +14,7 @@ import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/AddCard';
+import { ICooperative } from "./Employee";
 
 const columns: GridColDef[] = [
   
@@ -101,6 +102,7 @@ export function MasterCard(){
       console.log(localStorage.getItem('role'))
    
         GetAllData();
+        GetCooperative();
         setTableRows(rows)
         if(localStorage.getItem('role') !== "Administrator"){
           navigate("/dashboard")
@@ -109,23 +111,18 @@ export function MasterCard(){
         return () =>{}
 
     },[])
-<<<<<<< HEAD
 
   
   
-=======
- 
->>>>>>> 2baac73cb76a93a87dc93f715972741aa7c9e6dc
     async function GetAllData(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/mastercard`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/mastercard/${import.meta.env.VITE_DLTB_COOP_ID}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
         })
-            
             const response = await request.data;
         
             if(response.messages[0].code === '0'){
@@ -159,12 +156,53 @@ export function MasterCard(){
 
     const [isModalOpen, setIsModalOpen] = useState(false)
 
+    const [coopList, setCoopList] = useState([]);
+
+  const [coopId, setCoopId] = useState("");
+
+  async function GetCooperative(){
+
+    try{
+  
+      const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+        headers :{
+            Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+        }
+    })
+        
+        const response = await request.data;
+        
+        if(response.messages[0].code === '0'){
+          console.log(response);
+          setCoopList(
+            
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+            response.response.map((coop : any ) =>{
+              console.log(coop)
+              
+              if(coop._id){
+                return {id: coop._id, ...coop}
+              }
+              
+            })
+          )
+  
+          
+        }
+        
+    }catch(e){
+      console.log(`Error in getting coops: ${e}`)
+    }
+  }
+
+
     async function RegisterCard() {
       try {
 
         event?.preventDefault()
         // Define the request data as an object
         const requestData = {
+          coopId: coopId,
           riderId: riderId, // Assuming empNo and cardId are variables in your scope
           cardId: cardId,
           balance: balance,
@@ -309,7 +347,33 @@ export function MasterCard(){
             {/* To subscribe to this website, please enter your email address here. We
             will send updates occasionally. */}
           </DialogContentText>
-         
+      
+          <FormControl fullWidth margin="dense">
+  <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
+  <Select
+    labelId="demo-simple-select-label-coopId"
+    id="demo-simple-select-coopId"
+    value={coopId}
+    defaultValue= {coopId}
+    label="Cooperative"
+    onChange={(event) => setCoopId(event?.target.value)}
+    required
+  >
+    {
+    Object(coopList).length === 0? (<></>) :
+    coopList.map((coop : ICooperative) =>{
+      console.log(coop)
+      console.log(coop.cooperativeCodeName)
+      return (
+        <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+      )
+
+    })
+    }
+   
+  </Select>
+</FormControl>
+
           <TextField
             autoFocus
             margin="dense"
@@ -386,6 +450,15 @@ export function MasterCard(){
                 padding: '15px',
               },
             }}
+            initialState={{ 
+
+              pagination: { 
+                paginationModel: { 
+                  pageSize: 5 
+                } 
+              }, 
+            }} 
+            pageSizeOptions={[5, 10, 25]}
             />
         </Box>
         </Paper>
