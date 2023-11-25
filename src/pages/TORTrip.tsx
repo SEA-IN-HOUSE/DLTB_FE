@@ -10,6 +10,7 @@ import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
 import SyncIcon from '@mui/icons-material/Sync';
 import { useNavigate } from "react-router-dom";
+
 const columns: GridColDef[] = [
   
   { 
@@ -551,6 +552,24 @@ const columns: GridColDef[] = [
 
 
 export function TORTrip(){
+  
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("tTrip, ")){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
 
     const [tableRows, setTableRows] = useState(rows)
 
@@ -558,10 +577,7 @@ export function TORTrip(){
 
     const [isSyncing, setIsSyncing] = useState(false);
 
-    const navigate = useNavigate();
-    if(localStorage.getItem('isTorTrip') !== "true"){
-      navigate("/dashboard");
-    }
+   
 
 
     useEffect(() =>{

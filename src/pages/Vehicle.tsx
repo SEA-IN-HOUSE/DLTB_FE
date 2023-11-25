@@ -8,13 +8,13 @@ import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialo
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
-import { useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/Add';
 import { ICooperative } from "./Employee";
+import { useNavigate } from "react-router-dom";
 
 export interface IVehicle {
     _id: string,
@@ -34,7 +34,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -46,7 +46,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -58,7 +58,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
     valueFormatter: (params) => {
       return moment(params.value).format('MMMM D, YYYY');
     },
@@ -75,19 +75,35 @@ const columns: GridColDef[] = [
 
 
 export function Vehicle(){
+  
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("veh, ")){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
+
     const [tableRows, setTableRows] = useState(rows)
-    const navigate = useNavigate();
+
     
     useEffect(() =>{
-      console.log(localStorage.getItem('role'))
+      
    
         GetAllData();
         GetCooperative();
         setTableRows(rows)
-        if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/dashboard")
-        }
-    
+       
         return () =>{}
 
     },[])

@@ -6,6 +6,7 @@ import axios from "axios";
 import DashboardCard from "../components/DashboardCard";
 import { BsCurrencyExchange, BsEmojiDizzyFill, BsFileEarmarkTextFill, BsFillClipboardCheckFill, BsFillExclamationTriangleFill, BsFillFuelPumpFill, BsFillSignpostFill, BsTicketPerforatedFill } from "react-icons/bs";
 import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useNavigate } from "react-router-dom";
 
 
 const initialState = [
@@ -44,6 +45,24 @@ const initialState = [
 ];
 
 export function Dashboard() : JSX.Element{
+
+    const navigate = useNavigate();
+    useEffect(() =>{
+  
+      if(!localStorage.getItem('token')){
+        localStorage.clear();
+        navigate('/login')
+      }
+      
+    //   if(!localStorage.getItem('pageCode')?.includes("dash, ")){
+    //       navigate('/dashboard')
+    //   }
+  
+     
+  
+      return () =>{}
+  
+  },[])
 
     const [torMainNumber, setTorMainNumber] = useState(0);
 

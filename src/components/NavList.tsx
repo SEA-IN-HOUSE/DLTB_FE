@@ -41,6 +41,7 @@ export default function NavList(props : IListProps) : JSX.Element {
                 {props.iconUrl}
                 <span className="ml-3">{props.pageName}</span>
                 
+                
             </a>
           </li>
         </>
@@ -65,7 +66,7 @@ export function ProfileBoxList (props: IProfileBoxListProps) : JSX.Element {
         try{
 
             localStorage.clear();
-            navigate("/login")
+            navigate("/login");
 
         }catch(e){
             console.log(e)

@@ -10,12 +10,12 @@ import Box from '@mui/material/Box';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BsDeviceSsd } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
             // "_id": "655321a339c1307c069616e9",
             // "cooperativeName": "Del Monte Land Transport Bus Company",
@@ -40,7 +40,7 @@ const columns: GridColDef[] = [
   //   headerClassName: 'super-app-theme--header',
   //   headerAlign: 'center',
   //   align: 'center',
-  //   editable: true,
+  //   editable: false,
    
   // },
   { 
@@ -51,7 +51,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -63,7 +63,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -76,7 +76,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
     valueFormatter: (params) => {
       return moment(params.value).format('MMMM D, YYYY');
     },
@@ -90,7 +90,7 @@ const columns: GridColDef[] = [
   //   headerClassName: 'super-app-theme--header',
   //   headerAlign: 'center',
   //   align: 'center',
-  //   editable: true,
+  //   editable: false,
   //   valueFormatter: (params) => {
   //     return moment(params.value).format('MMMM D, YYYY');
   //   },
@@ -108,17 +108,34 @@ const columns: GridColDef[] = [
 
 
 export function Device(){
+
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("dev, ")){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
+
+
     const [tableRows, setTableRows] = useState(rows);
     const [cooperativeDropdown, setCooperativeDropdown]  = useState<any>([])
-    const navigate = useNavigate();
+ 
     useEffect(() =>{
    
         GetAllData();
         setTableRows(rows)
-        console.log(localStorage.getItem('role'))
-        if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/tormain")
-        }
+       
         return () =>{}
 
     },[])

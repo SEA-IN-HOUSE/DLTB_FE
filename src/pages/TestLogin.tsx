@@ -28,15 +28,9 @@ interface IUserInformation  {
   email: string,
   company: string,
   isEmailVerified: boolean,
-  isAllowedToTorMain: boolean,
-  isAllowedToTorTicket: boolean,
-  isAllowedToTorFuel: boolean,
-  isAllowedToTorRemittance: boolean,
-  isAllowedToTorTrip: boolean,
-  isAllowedToTorInspection: boolean,
-  isAllowedToTorViolation: boolean,
-  isAllowedToTorTrouble: boolean,
+  pageCode : string,
   role: string,
+  
 }
 
 
@@ -53,8 +47,10 @@ export default function TestLogin() : JSX.Element {
     const navigate = useNavigate();
 
     
+    
 
     useEffect(() =>{
+
 
         if(localStorage.getItem('token')){
             navigate('/dashboard')
@@ -130,15 +126,7 @@ export default function TestLogin() : JSX.Element {
 
   
         localStorage.setItem('role' , data.role)
-        localStorage.setItem('isTorMain' , data.
-        isAllowedToTorMain.toString())
-        localStorage.setItem('isTorTicket' , data.isAllowedToTorTicket.toString())
-        localStorage.setItem('isTorFuel' , data.isAllowedToTorFuel.toString())
-        localStorage.setItem('isTorRemittance' , data.isAllowedToTorRemittance.toString())
-        localStorage.setItem('isTorInspection' , data.isAllowedToTorInspection.toString())
-        localStorage.setItem('isTorTrip' , data.isAllowedToTorTrip.toString())
-        localStorage.setItem('isTorViolation' , data.isAllowedToTorViolation.toString())
-        localStorage.setItem('isTorTrouble' , data.isAllowedToTorTrouble.toString())
+        localStorage.setItem('pageCode', data.pageCode)
         }catch(e){
           console.log(`Error in getting user: ${e}`)
         }

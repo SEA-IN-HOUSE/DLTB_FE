@@ -9,7 +9,6 @@ import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
 import { Button, Chip, Dialog, DialogActions, DialogContent,  DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField} from "@mui/material";
 import axios from 'axios';
-import {  useNavigate } from "react-router-dom";
 import NoRowBackGround from "../components/NoRowBackGround";
 import {BsFillPersonPlusFill  } from "react-icons/bs";
 import CloseIcon from '@mui/icons-material/Close';
@@ -20,6 +19,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 interface IEmployeeData  {
   _id : string,
   coopId: string,
@@ -199,11 +199,29 @@ const columns: GridColDef[] = [
   //Toolbar
 
 export function Employee(){
+  
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("emp, ")){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
 
     const [clientTableRows, setClientTableRows] = useState(rows)
     const [isLoading ,setIsLoading ] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const navigate = useNavigate();
+
 
    
 
@@ -211,9 +229,7 @@ export function Employee(){
       
         GetAllEmployees();
         setClientTableRows(rows)
-        if(localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "UserAdmin"){
-          navigate("/dashboard")
-        }
+       
         return () =>{}
 
     },[])
@@ -448,9 +464,7 @@ useEffect(() =>{
   GetAllEmployees();
   GetCooperative();
   setClientTableRows(rows)
-  if(localStorage.getItem('role') !== "Administrator"){
-    navigate("/tormain")
-  }
+  
   return () =>{}
 
 },[])
@@ -503,7 +517,7 @@ useEffect(() =>{
       
         <DialogContent dividers>
         
-        <FormControl fullWidth margin="dense">
+<FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
   <Select
     labelId="demo-simple-select-label-coopId"

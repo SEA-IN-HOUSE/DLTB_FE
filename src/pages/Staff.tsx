@@ -10,14 +10,13 @@ import Box from '@mui/material/Box';
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl,  FormControlLabel,  IconButton,  InputLabel, LinearProgress, MenuItem, Select, Switch, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
-import styles from '../styles/MuiDataGrid.css'
 import moment from 'moment';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import CloseIcon from '@mui/icons-material/Close';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/PersonAdd';
+import { useNavigate } from "react-router-dom";
   //Toolbar
 
 interface IEditState{
@@ -29,20 +28,31 @@ interface IEditState{
   email: string,
   role: string,
   company: string,
-  isAllowedToTorFuel: boolean,
-  isAllowedToTorInspection: boolean,
-  isAllowedToTorMain: boolean,
-  isAllowedToTorRemittance: boolean,
-  isAllowedToTorTicket: boolean,
-  isAllowedToTorTrip: boolean,
-  isAllowedToTorTrouble: boolean,
-  isAllowedToTorViolation: boolean,
+  pageCode: string,
   isEmailVerified: boolean,
 
 }
 
 
 export function Staff(){
+  
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("user, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+  },[])
 
   const editInitialState = {
 
@@ -54,14 +64,7 @@ export function Staff(){
     email: "",
     role: "",
     company: "",
-    isAllowedToTorFuel: true,
-    isAllowedToTorInspection: true,
-    isAllowedToTorMain: true,
-    isAllowedToTorRemittance: true,
-    isAllowedToTorTicket: true,
-    isAllowedToTorTrip: true,
-    isAllowedToTorTrouble: true,
-    isAllowedToTorViolation: true,
+    pageCode : "",
     isEmailVerified: false,
   
 
@@ -195,7 +198,9 @@ export function Staff(){
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("");
     const [password, setPassword] = useState("");
-    const [company, setCompany] = useState("");
+    const [company, setCompany] = useState(localStorage.getItem('role'));
+
+    const [pageCode, setPageCode] = useState("");
 
 
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -203,17 +208,43 @@ export function Staff(){
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
 
     useEffect(() =>{
-      console.log(styles)
+
         GetAllData();
         setTableRows(rows)
-        if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/dashboard")
-        }
+    
         return () =>{}
 
 
     },[])
   
+    function UpdatePageCode (codeToAddOrRemove) {
+     
+      if (pageCode.includes(codeToAddOrRemove)) {
+
+        setPageCode(prevPageCode => prevPageCode.replace(codeToAddOrRemove, ""));
+      } else {
+  
+        setPageCode(prevPageCode => prevPageCode + codeToAddOrRemove);
+      }
+    }
+
+    function EditUpdatePageCode (codeToAddOrRemove) {
+      setEditData((prevEditData) => {
+        const updatedPageCode = prevEditData.pageCode.includes(codeToAddOrRemove)
+          ? prevEditData.pageCode.replace(codeToAddOrRemove, "")
+          : prevEditData.pageCode + codeToAddOrRemove;
+  
+        return { ...prevEditData, pageCode: updatedPageCode };
+      });
+    }
+
+    useEffect(() =>{
+
+      console.log(pageCode)
+
+      return () =>{}
+    },[pageCode])
+
     async function GetAllData(){
 
         try{
@@ -262,6 +293,7 @@ export function Staff(){
           lastName : lastName,
           email : email,
           role : role,
+          pageCode: pageCode,
           password : password,
           company : company
         };
@@ -413,17 +445,14 @@ export function Staff(){
   
   }   
 
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   useEffect(() =>{
-    console.log(localStorage.getItem('role'))
-    if(localStorage.getItem('role') !== "Administrator"){
-      navigate("/tormain")
-    }
+ 
 
     return () =>{}
 
-  },[isModalOpen, firstName, middleName, lastName, email, role, password,company])
+  },[isModalOpen])
 
   
   useEffect(() =>{
@@ -518,9 +547,48 @@ return(
               type="email"
               fullWidth
               variant="outlined"
+              defaultValue={""}
+              value ={email}
               onChange = {(event) => setEmail(event.target.value)}
             />
-<FormControl fullWidth sx ={{marginTop: 1}}>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="password"
+              label="Password"
+              type="password"
+              fullWidth
+              variant="outlined"
+              defaultValue={""}
+              value ={password}
+              required
+              onChange={(event) => setPassword(event.target.value)}
+        />
+      {localStorage.getItem('role') === "Administrator" ? (
+         <FormControl fullWidth sx ={{marginTop: 1}}>
+         <InputLabel id="demo-simple-select-helper-label">Company</InputLabel>
+         <Select
+           labelId="demo-simple-select-helper-label"
+           id="demo-simple-select-helper"
+           value={company}
+           label="Company"
+           required
+           onChange={(event) => setCompany(event.target.value)}
+         >
+       
+           <MenuItem value={"Seapps-inc"}>Seapps-inc</MenuItem>
+           <MenuItem value={"DLTB"}>DLTB</MenuItem>
+         </Select>
+       
+       </FormControl>
+      ) : (
+        <>
+        </>
+      )}      
+     
+
+
+      <FormControl fullWidth sx ={{marginTop: 1}}>
         <InputLabel id="demo-simple-select-helper-label">Role</InputLabel>
         <Select
           labelId="demo-simple-select-helper-label"
@@ -530,47 +598,194 @@ return(
           required
           onChange={(event) => setRole(event.target.value)}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={"Administrator"}>Administrator</MenuItem>
+      
+          {company === "Seapps-inc" ? (
+            <MenuItem value={"Administrator"}>Administrator</MenuItem>
+          ) : (<></>) }
           <MenuItem value={"User Admin"}>User Admin</MenuItem>
           <MenuItem value={"User"}>User</MenuItem>
         </Select>
         {/* <FormHelperText>With label + helper text</FormHelperText> */}
       </FormControl>
 
-      <FormControl fullWidth sx ={{marginTop: 1}}>
-        <InputLabel id="demo-simple-select-helper-label">Company</InputLabel>
-        <Select
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
-          value={company}
-          label="Company"
-          required
-          onChange={(event) => setCompany(event.target.value)}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={"Seapps-inc"}>Seapps-inc</MenuItem>
-          <MenuItem value={"DLTB"}>DLTB</MenuItem>
-        </Select>
-        {/* <FormHelperText>With label + helper text</FormHelperText> */}
-      </FormControl>
+
+
+
+
+      {role === "User" ? 
+        (
+          <DialogContent dividers >
+    
+          <div className="flex flex-row ml-2 mb-1">
+          <FormControlLabel className ="flex-1" control={<Switch  checked = {pageCode.includes("tMain, ")}
+          onChange={() => {
+            UpdatePageCode("tMain, ")
+          }}
+          />} label="TOR Main" />
+          <FormControlLabel className ="flex-1" control={<Switch defaultChecked = {pageCode.includes("tTicket, ")} checked ={pageCode.includes("tTicket, ")}
+          onChange={() => {
+            UpdatePageCode("tTicket, ")
+          }}
+          />} label="TOR Ticket" />
+         
+         <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={pageCode.includes("tFuel, ")} checked = {pageCode.includes("tFuel, ")}
+          onChange={() => {
+            UpdatePageCode("tFuel, ")
+          }}
+          />} label="TOR Fuel" />
+          </div>
+
+          <div className="flex flex-row ml-2 mb-1">
+
+         
+          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={pageCode.includes("tRem, ")} checked = {pageCode.includes("tRem, ")}
+          onChange={() => {
+            UpdatePageCode("tRem, ")
+          }}
+          />}
+          label="TOR Remittance" />
+
+          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={pageCode.includes("tTrip, ")} checked = {pageCode.includes("tTrip, ")}
+          onChange={() => {
+            UpdatePageCode("tTrip, ")
+          }}
+          />} label="TOR Trip" />
+
+          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={pageCode.includes("tIns, ")} 
+          checked = {pageCode.includes("tIns, ")} 
+          onChange={() => {
+            UpdatePageCode("tIns, ")
+          }}
+          
+          />} label="TOR Inspection" />
+          </div>
+
+          <div className="flex flex-row ml-2 mb-1">
+          
+         
+          
+
+          </div>
+          
+          <div className="flex flex-row ml-2 mb-1">
+
+          <FormControlLabel className ="flex-1" control={<Switch 
+          
+          defaultChecked ={pageCode.includes("tVio, ")} 
+          checked = {pageCode.includes("tVio, ")} 
+          onChange={() => {
+            
+            UpdatePageCode("tVio, ")
+          }}
+
+          />} label="TOR Violation" />
+         
+          <FormControlLabel className ="flex-1" control={<Switch 
+          defaultChecked ={pageCode.includes("tTro, ")} 
+          checked = {pageCode.includes("tTro, ")} 
+          onChange={() => {
+            
+            UpdatePageCode("tTro, ")
+          }}
+          />} label="TOR Trouble" />
+
+          <FormControlLabel className ="flex-1" control={<Switch 
+          defaultChecked ={pageCode.includes("user, ")} 
+          checked = {pageCode.includes("user, ")} 
+          onChange={() => {
+            
+            UpdatePageCode("user, ")
+          }}
+          />} label="User" />
+          
+         </div>
+
+          <div className="flex flex-row ml-2 mb-1">
+
+                <FormControlLabel className ="flex-1" control={<Switch 
+                defaultChecked ={pageCode.includes("empCard, ")} 
+                checked = {pageCode.includes("empCard, ")} 
+                onChange={() => {
+                  
+                  UpdatePageCode("empCard, ")
+                }}
+                />} label="Employee Card" />
+
+                <FormControlLabel className ="flex-1" control={<Switch 
+                defaultChecked ={pageCode.includes("masCard, ")} 
+                checked = {pageCode.includes("masCard, ")} 
+                onChange={() => {
+                  
+                  UpdatePageCode("masCard, ")
+                }}
+                />} label="Master Card" />
+
+                <FormControlLabel className ="flex-1" control={<Switch 
+                defaultChecked ={pageCode.includes("rou, ")} 
+                checked = {pageCode.includes("rou, ")} 
+                onChange={() => {
+                  
+                  UpdatePageCode("rou, ")
+                }}
+                />} label="Route" />
+
+          </div>
+
+          <div className="flex flex-row ml-2 mb-1">
+
+            <FormControlLabel className ="flex-1" control={<Switch 
+            defaultChecked ={pageCode.includes("sta, ")} 
+            checked = {pageCode.includes("sta, ")} 
+            onChange={() => {
+              
+              UpdatePageCode("sta, ")
+            }}
+            />} label="Station" />
+
+            <FormControlLabel className ="flex-1" control={<Switch 
+            defaultChecked ={pageCode.includes("veh, ")} 
+            checked = {pageCode.includes("veh, ")} 
+            onChange={() => {
+              
+              UpdatePageCode("veh, ")
+            }}
+            />} label="Vehicle" />
+
+            <FormControlLabel className ="flex-1" control={<Switch 
+            defaultChecked ={pageCode.includes("emp, ")} 
+            checked = {pageCode.includes("emp, ")} 
+            onChange={() => {
+              
+              UpdatePageCode("emp, ")
+            }}
+            />} label="Employee" />
+                  
+          </div>
+
+          <div className="flex flex-row ml-2 mb-1">
+
+              
+         <FormControlLabel className ="flex-1" control={<Switch 
+          defaultChecked ={pageCode.includes("dev, ")} 
+          checked = {pageCode.includes("dev, ")} 
+          onChange={() => {
+            
+            UpdatePageCode("dev, ")
+          }}
+          />} label="Device" />
+
+         
+
+          </div>
+
+          </DialogContent>
+        ) :(<></>)}
+
+     
+
           
           
-        <TextField
-              autoFocus
-              margin="dense"
-              id="password"
-              label="Password"
-              type="password"
-              fullWidth
-              variant="outlined"
-              required
-              onChange={(event) => setPassword(event.target.value)}
-        />
+        
 
         </DialogContent>
         <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
@@ -609,22 +824,24 @@ return(
            required
             autoFocus
             margin="dense"
-            id="firstName"
+            id="editfirstName"
             label="First Name"
             type="text"
             fullWidth
             variant="outlined"
+            disabled = {editData.company === "Seapps-inc" && localStorage.getItem('role') !== "Administrator" }
             defaultValue={editData.firstName}
             onChange={(event) => setEditData({...editData, firstName: event.target.value})}
           />
            <TextField
             autoFocus
             margin="dense"
-            id="middleName"
+            id="editmiddleName"
             label="Middle Name"
             type="text"
             fullWidth
             variant="outlined"
+            disabled = {editData.company === "Seapps-inc" && localStorage.getItem('role') !== "Administrator" }
             defaultValue={editData.middleName}
             onChange = {(event) => setEditData({...editData, middleName: event.target.value})}
           />
@@ -632,11 +849,12 @@ return(
             required
               autoFocus
               margin="dense"
-              id="lastName"
+              id="editlastName"
               label="Last Name"
               type="text"
               fullWidth
               variant="outlined"
+              disabled = {editData.company === "Seapps-inc" && localStorage.getItem('role') !== "Administrator" }
               defaultValue={editData.lastName}
               onChange = {(event) => setEditData({...editData, lastName: event.target.value})}
             />
@@ -644,111 +862,117 @@ return(
             required
               autoFocus
               margin="dense"
-              id="email"
+              id="editEmail"
               label="Email"
               type="email"
               fullWidth
               variant="outlined"
+              disabled = {editData.company === "Seapps-inc" && localStorage.getItem('role') !== "Administrator" }
               defaultValue={editData.email}
               onChange = {(event) => setEditData({...editData, email: event.target.value})}
             />
+
       <FormControl fullWidth sx ={{marginTop: 1}}>
         <InputLabel id="demo-simple-select-helper-label">Role</InputLabel>
         <Select
           labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
+          id="editdemo-simple-select-helper"
           value={editData.role}
           label="Role"
           required
           defaultValue={editData.role}
-          
+          disabled = {editData.company === "Seapps-inc" && localStorage.getItem('role') !== "Administrator" }
           onChange={(event) => setEditData({...editData, role: event.target.value})}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={"Administrator"}>Administrator</MenuItem>
+          {editData.company === "Seapps-inc" ? 
+            <MenuItem value={"Administrator"}>Administrator</MenuItem>
+            :
+            <></>
+          }
+          
           <MenuItem value={"User Admin"}>User Admin</MenuItem>
           <MenuItem value={"User"}>User</MenuItem>
         </Select>
         {/* <FormHelperText>With label + helper text</FormHelperText> */}
       </FormControl>
-
+      {localStorage.getItem('role') === "Administrator" ? 
       <FormControl fullWidth sx ={{marginTop: 1}}>
-        <InputLabel id="demo-simple-select-helper-label">Company</InputLabel>
-        <Select
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
-          value={editData.company}
-          label="Company"
-          required
-          defaultValue={editData.company}
-          
-          onChange={(event) => setEditData({...editData, company: event.target.value})}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-            <MenuItem value={"Seapps-inc"}>Seapps-inc</MenuItem>
-            <MenuItem value={"DLTB"}>DLTB</MenuItem>
-        </Select>
-        {/* <FormHelperText>With label + helper text</FormHelperText> */}
-      </FormControl>
-        
+      <InputLabel id="demo-simple-select-helper-label">Company</InputLabel>
+      <Select
+        labelId="demo-simple-select-helper-label"
+        id="editdemo-simple-select-helper"
+        value={editData.company}
+        label="Company"
+        required
+        defaultValue={editData.company}
+        disabled = {editData.company === "Seapps-inc" && localStorage.getItem('role') !== "Administrator" }
+        onChange={(event) => setEditData({...editData, company: event.target.value})}
+      >
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+          <MenuItem value={"Seapps-inc"}>Seapps-inc</MenuItem>
+          <MenuItem value={"DLTB"}>DLTB</MenuItem>
+      </Select>
+      {/* <FormHelperText>With label + helper text</FormHelperText> */}
+    </FormControl>
+      :
+      <></>
+      }
+      
         </DialogContent>
-        {editData.role === "User" || editData.role ==="User Admin" ? 
+        {editData.role === "User" ? 
         (
           <DialogContent dividers >
     
           <div className="flex flex-row ml-2 mb-1">
-          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={editData.isAllowedToTorMain} checked = {editData.isAllowedToTorMain}
+          <FormControlLabel className ="flex-1" control={<Switch  checked = {editData.pageCode.includes("tMain, ")}
           onChange={() => {
-
-          setEditData({...editData, isAllowedToTorMain : !editData.isAllowedToTorMain})
+            EditUpdatePageCode("tMain, ")
           }}
           />} label="TOR Main" />
-          <FormControlLabel className ="flex-1" control={<Switch defaultChecked = {editData.isAllowedToTorTicket} checked ={editData.isAllowedToTorTicket}
+          <FormControlLabel className ="flex-1" control={<Switch defaultChecked = {editData.pageCode.includes("tTicket, ")} checked ={editData.pageCode.includes("tTicket, ")}
           onChange={() => {
-
-
-          setEditData({...editData, isAllowedToTorTicket : !editData.isAllowedToTorTicket})
+            EditUpdatePageCode("tTicket, ")
           }}
           />} label="TOR Ticket" />
          
-          
+         <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={editData.pageCode.includes("tFuel, ")} checked = {editData.pageCode.includes("tFuel, ")}
+          onChange={() => {
+            EditUpdatePageCode("tFuel, ")
+          }}
+          />} label="TOR Fuel" />
           </div>
 
           <div className="flex flex-row ml-2 mb-1">
 
-          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={editData.isAllowedToTorFuel} checked = {editData.isAllowedToTorFuel}
+         
+          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={editData.pageCode.includes("tRem, ")} checked = {editData.pageCode.includes("tRem, ")}
           onChange={() => {
-
-          setEditData({...editData, isAllowedToTorFuel : !editData.isAllowedToTorFuel})
-          }}
-          />} label="TOR Fuel" />
-          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={editData.isAllowedToTorRemittance} checked = {editData.isAllowedToTorRemittance}
-          onChange={() => {
-           setEditData({...editData, isAllowedToTorRemittance : !editData.isAllowedToTorRemittance})
+            EditUpdatePageCode("tRem, ")
           }}
           />}
           label="TOR Remittance" />
 
+          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={editData.pageCode.includes("tTrip, ")} checked = {editData.pageCode.includes("tTrip, ")}
+          onChange={() => {
+            EditUpdatePageCode("tTrip, ")
+          }}
+          />} label="TOR Trip" />
+
+          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={editData.pageCode.includes("tIns, ")} 
+          checked = {editData.pageCode.includes("tIns, ")} 
+          onChange={() => {
+            EditUpdatePageCode("tIns, ")
+          }}
+          
+          />} label="TOR Inspection" />
           </div>
 
           <div className="flex flex-row ml-2 mb-1">
           
-          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={editData.isAllowedToTorTrip} checked = {editData.isAllowedToTorTrip}
-          onChange={() => {
-         setEditData({...editData, isAllowedToTorTrip : !editData.isAllowedToTorTrip})
-          }}
-          />} label="TOR Trip" />
-          <FormControlLabel className ="flex-1" control={<Switch defaultChecked ={editData.isAllowedToTorInspection} 
-          checked = {editData.isAllowedToTorInspection} 
-          onChange={() => {
-        setEditData({...editData, isAllowedToTorInspection : !editData.isAllowedToTorInspection})
-          }}
+         
           
-          />} label="TOR Inspection" />
 
           </div>
           
@@ -756,25 +980,111 @@ return(
 
           <FormControlLabel className ="flex-1" control={<Switch 
           
-          defaultChecked ={editData.isAllowedToTorViolation} 
-          checked = {editData.isAllowedToTorViolation} 
+          defaultChecked ={editData.pageCode.includes("tVio, ")} 
+          checked = {editData.pageCode.includes("tVio, ")} 
           onChange={() => {
             
-          setEditData({...editData, isAllowedToTorViolation : !editData.isAllowedToTorViolation})
+            EditUpdatePageCode("tVio, ")
           }}
 
           />} label="TOR Violation" />
          
           <FormControlLabel className ="flex-1" control={<Switch 
-          defaultChecked ={editData.isAllowedToTorTrouble} 
-          checked = {editData.isAllowedToTorTrouble} 
+          defaultChecked ={editData.pageCode.includes("tTro, ")} 
+          checked = {editData.pageCode.includes("tTro, ")} 
           onChange={() => {
             
-         setEditData({...editData, isAllowedToTorTrouble : !editData.isAllowedToTorTrouble})
+            EditUpdatePageCode("tTro, ")
           }}
           />} label="TOR Trouble" />
-          
+
+          <FormControlLabel className ="flex-1" control={<Switch 
+          defaultChecked ={editData.pageCode.includes("user, ")} 
+          checked = {editData.pageCode.includes("user, ")} 
+          onChange={() => {
+            
+            EditUpdatePageCode("user, ")
+          }}
+          />} label="User" />
+
+          </div>
+
+          <div className="flex flex-row ml-2 mb-1">
+
+                <FormControlLabel className ="flex-1" control={<Switch 
+                defaultChecked ={editData.pageCode.includes("empCard, ")} 
+                checked = {editData.pageCode.includes("empCard, ")} 
+                onChange={() => {
+                  
+                  EditUpdatePageCode("empCard, ")
+                }}
+                />} label="Employee Card" />
+
+                <FormControlLabel className ="flex-1" control={<Switch 
+                defaultChecked ={editData.pageCode.includes("masCard, ")} 
+                checked = {editData.pageCode.includes("masCard, ")} 
+                onChange={() => {
+                  
+                  EditUpdatePageCode("masCard, ")
+                }}
+                />} label="Master Card" />
+
+                <FormControlLabel className ="flex-1" control={<Switch 
+                defaultChecked ={editData.pageCode.includes("rou, ")} 
+                checked = {editData.pageCode.includes("rou, ")} 
+                onChange={() => {
+                  
+                  EditUpdatePageCode("rou, ")
+                }}
+                />} label="Route" />
+
+          </div>
+
+          <div className="flex flex-row ml-2 mb-1">
+
+            <FormControlLabel className ="flex-1" control={<Switch 
+            defaultChecked ={editData.pageCode.includes("sta, ")} 
+            checked = {editData.pageCode.includes("sta, ")} 
+            onChange={() => {
+              
+              EditUpdatePageCode("sta, ")
+            }}
+            />} label="Station" />
+
+            <FormControlLabel className ="flex-1" control={<Switch 
+            defaultChecked ={editData.pageCode.includes("veh, ")} 
+            checked = {editData.pageCode.includes("veh, ")} 
+            onChange={() => {
+              
+              EditUpdatePageCode("veh, ")
+            }}
+            />} label="Vehicle" />
+
+            <FormControlLabel className ="flex-1" control={<Switch 
+            defaultChecked ={editData.pageCode.includes("emp, ")} 
+            checked = {editData.pageCode.includes("emp, ")} 
+            onChange={() => {
+              
+              EditUpdatePageCode("emp, ")
+            }}
+            />} label="Employee" />
+                  
+          </div>
+
+          <div className="flex flex-row ml-2 mb-1">
+
+              
+         <FormControlLabel className ="flex-1" control={<Switch 
+          defaultChecked ={editData.pageCode.includes("dev, ")} 
+          checked = {editData.pageCode.includes("dev, ")} 
+          onChange={() => {
+            
+            EditUpdatePageCode("dev, ")
+          }}
+          />} label="Device" />
+
          
+
           </div>
 
           </DialogContent>
@@ -783,7 +1093,7 @@ return(
         <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
         
           <Button onClick={() => setIsModalEditOpen(!isModalEditOpen)}>Cancel</Button>
-          <Button type ="submit" variant="contained" color="success">UPDATE</Button>
+          <Button type ="submit" variant="contained" color="success" disabled = {editData.company === "Seapps-inc" && localStorage.getItem('role') !== "Administrator" }>UPDATE</Button>
         </DialogActions>
         </form>
   </Dialog>

@@ -23,38 +23,63 @@ import { Device } from "./pages/Device";
 import { Cooperative } from "./pages/Cooperative";
 import { Vehicle } from "./pages/Vehicle";
 
+// const pageCode = localStorage.getItem("pageCode");
+
 function App() {
  
 
   return (
     <>   
+    
           <HashRouter basename="/">
+          
             <Routes>
-              <Route path ="/" element = { <TestLogin />} />
+              <Route path ="/" element = { <TestLogin />}  />
               <Route path ="/testarea" element ={<TestArea /> }/>
-              <Route path ="/dashboard" element ={<Dashboard />} />
+             
+              <Route path ="/dashboard" element ={<Dashboard />} /> 
+              
               <Route path ="/test" element ={<TestArea />}/> 
               <Route path="/client" element ={<Client />} />
               <Route path ="/login" element = {<TestLogin />} />
               <Route path ="/signout" element = {<TestLogin />} />
               <Route path ="/test" element = {<TestLogin />}/>
+            
               <Route path ="/employee" element = {<Employee />}/>
+          
               <Route path ="/user" element = {<Staff />} />
+
               <Route path ="/direction" element ={<Direction />} />
+
               <Route path ="/mastercard" element ={<MasterCard />} />
+
               <Route path ="/station" element ={<Station />} />
+
               <Route path = "/employeecard" element ={<EmployeeCard />} />
+
               <Route path ="/device" element ={<Device />} />
+ 
               <Route path ="/cooperative" element ={<Cooperative />} />
+              
+
               <Route path ="/vehicle" element = {<Vehicle />} />
+
               <Route path ="/tormain" element ={ <TORMain /> } />
+
               <Route path ="/torticket" element= {<TORTicket />} />
+
               <Route path ="/torfuel" element = {<TORFuel />} />
+
               <Route path ="/torremittance" element ={<TORRemittance />} />
+
               <Route path ="/torinspection" element = {<TORInspection /> } />
+
               <Route path  ="/tortrip" element ={<TORTrip />} />
+
               <Route path ="/torviolation" element ={<TORViolation />} />
-              <Route path ="/tortrouble" element = {<TORTrouble /> } />       
+
+              <Route path ="/tortrouble" element = {<TORTrouble /> } />              
+                   
             </Routes>
           </HashRouter>
 

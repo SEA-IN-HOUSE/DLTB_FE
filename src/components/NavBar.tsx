@@ -3,7 +3,7 @@
 import { ReactNode,  useEffect, useState, useLayoutEffect } from "react";
 //import { useNavigate, useLocation } from "react-router-dom";
 import { BsCurrencyExchange, BsEmojiDizzyFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace,BsTicketPerforatedFill, BsCarFrontFill  } from 'react-icons/bs';
-import NavList, { ProfileBoxList } from "./NavList";
+import { ProfileBoxList } from "./NavList";
 // import NotificationBell from "./NotificationBell";
 import axios from "axios";
 import { useNavigate, useLocation} from "react-router-dom";
@@ -27,19 +27,7 @@ interface IUserInformation{
     //////////////////////////////////////////////////////////////////
     ///////// MOCK DATA
     /////////////////////////////////////////////////////////////////
-    const NavBarPages = [
-    
-        {id: 1, pageName: "Employee Card", url :"/employeecard" , iconUrl: <BsFillCreditCard2FrontFill />},
-        {id: 2, pageName: "Master Card", url :"/mastercard", iconUrl: <BsFillCreditCardFill />},
-        {id: 3, pageName: "Route", url: "/direction", iconUrl: <BsFillMapFill />},
-        {id: 4, pageName: "Station", url :"/station" , iconUrl : <BsFillTruckFrontFill />},
-        {id: 5, pageName: "Vehicle", url :"/vehicle" , iconUrl : <BsCarFrontFill />},
-        {id: 6, pageName: "Employee", url: "/employee", iconUrl: <BsPersonWorkspace />},
-        {id: 7, pageName: "Device", url: "/device", iconUrl: <BsDeviceSsd />},
-        {id: 8, pageName: "Cooperative", url: "/cooperative", iconUrl: <BsPeopleFill />},
-        // {id: 6, pageName: "User", url: "/user", iconUrl: <BsPersonFillLock /> },
-    ]
-
+ 
     const ProfileDropdown = [
         {id : 1, name : "Logout" , pageUrl: "/signout"}
     ]
@@ -169,7 +157,10 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
             {user.firstName + " " + user.middleName + " " + user.lastName}
           </p>
           <p className="text-sm font-medium text-gray-900 truncate " role="none">
-            {user.email}
+            {user.role}
+          </p>
+          <p className="text-sm font-medium text-gray-900 truncate " role="none">
+            {user.role}
           </p>
         </div>
         <ul className="py-1" role="none">
@@ -181,6 +172,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                 id={list.id}
                 name={list.name}
                 pageUrl={list.pageUrl}
+                
                 key={list.id}
               />
             );
@@ -221,26 +213,204 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
       </li>
       
 
-          
-      
+
+{
+        localStorage.getItem('pageCode')?.includes("empCard, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/employeecard")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/employeecard" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/employeecard" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsFillCreditCard2FrontFill  />
+              <span className="ml-3">Employee Card</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+}
+
+{
+        localStorage.getItem('pageCode')?.includes("masCard, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/mastercard")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/mastercard" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/mastercard" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsFillCreditCardFill  />
+              <span className="ml-3">Master Card</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+}
+
+
+{
+        localStorage.getItem('pageCode')?.includes("rou, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/direction")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/direction" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/direction" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsFillMapFill  />
+              <span className="ml-3">Route</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+}
+
+{
+        localStorage.getItem('pageCode')?.includes("sta, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/station")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/station" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/station" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsFillTruckFrontFill  />
+              <span className="ml-3">Station</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+}
+
+{
+        localStorage.getItem('pageCode')?.includes("veh, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/vehicle")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/vehicle" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/vehicle" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsCarFrontFill  />
+              <span className="ml-3">Vehicle</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+}
+
+{
+        localStorage.getItem('pageCode')?.includes("emp, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/employee")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/employee" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/employee" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsPersonWorkspace  />
+              <span className="ml-3">Employee</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+}
+
+{
+        localStorage.getItem('pageCode')?.includes("dev, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/device")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/device" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/device" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsDeviceSsd />
+              <span className="ml-3">Device</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+}
+
+
+
+{
+        localStorage.getItem('role') === "Administrator" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/cooperative")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/cooperative" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/cooperative" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsPeopleFill  />
+              <span className="ml-3">Cooperative</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+      }
+
       {
-        localStorage.getItem("role") === "Administrator" || localStorage.getItem("role") === "User Admin" ? (NavBarPages.map((page) =>{
-          return(
-         <>
-         
-            <NavList 
-            iconUrl= {page.iconUrl}
-            pageName= {page.pageName}
-            url= {page.url}
-            id = {page.id}
-            key = {page.id}
-            />
-         </>
-          ) 
-        })) : (<></>)
-        }
-      {
-        localStorage.getItem("role") === "Administrator" ? 
+        localStorage.getItem('pageCode')?.includes("user, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
         (
         <li>
           <a
@@ -285,7 +455,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   <ul id="dropdown-example" className= {`py-2 space-y-2 ${localStorage.getItem("torIsOpen") === "true" ? "" : "hidden"}`}>
              
                     {
-                    localStorage.getItem('isTorMain') === "true" ? ( 
+                    localStorage.getItem('pageCode')?.includes("tMain, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? ( 
                   
                       <li>
                         <a
@@ -312,7 +482,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
               }
                  
                  {
-                localStorage.getItem('isTorTicket') === "true" ? (
+                localStorage.getItem('pageCode')?.includes("tTicket, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? (
 
                     <li>
                         <a
@@ -339,7 +509,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                  ) : (<></>)}
 
                  {
-                 localStorage.getItem('isTorFuel') === "true" ? (
+                localStorage.getItem('pageCode')?.includes("tFuel, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin"? (
                   <li>
                   <a
                       onClick={() => navigate("/torfuel")}
@@ -363,7 +533,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                  ) : (<></>)}
                   
                   {
-                  localStorage.getItem('isTorRemittance') === "true" ? (
+                  localStorage.getItem('pageCode')?.includes("tRem, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin"? (
                       // <li>
                       //   <NavLink to= "/torremittance" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsCurrencyExchange className ="mr-4"  />Remittance </NavLink>
                       // </li>
@@ -387,7 +557,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   ) :(<></>)}
                   
                   {
-                  localStorage.getItem('isTorTrip') === "true" ? (
+                  localStorage.getItem('pageCode')?.includes("tTrip, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? (
                     // <li>
                     //     <NavLink to= "/tortrip" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsFillSignpostFill className ="mr-4"  />Trip </NavLink>
                     // </li>
@@ -410,11 +580,8 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   ) : (<></>)}
 
                   {
-                  localStorage.getItem('isTorInspection') === "true" ? (   
-                  // <li>
-                  //    <NavLink to= "/torinspection" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsFillClipboardCheckFill className ="mr-4"  />Inspection </NavLink>
-                     
-                  // </li>
+                  localStorage.getItem('pageCode')?.includes("tIns, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin"? (   
+                  
                   <li>
                   <a
                       onClick={() => navigate("/torinspection")}
@@ -434,10 +601,8 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   ):( <></>)}
                   
                   {
-                  localStorage.getItem('isTorViolation') === "true" ? (
-                    // <li>
-                    //   <NavLink to= "/torviolation" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsFillExclamationTriangleFill className ="mr-4"  />Violation </NavLink>
-                    // </li>
+                  localStorage.getItem('pageCode')?.includes("tVio, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? (
+                 
                     <li>
                     <a
                         onClick={() => navigate("/torviolation")}
@@ -457,11 +622,9 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   ) :(<></>)}
                   
                   {
-                  localStorage.getItem('isTorTrouble') === "true" ? 
+                  localStorage.getItem('pageCode')?.includes("tTro, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
                   (
-                //     <li>
-                //       <NavLink to= "/tortrouble" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsEmojiDizzyFill className ="mr-4"  />Trouble </NavLink>
-                //  </li>
+ 
                   <li>
                     <a
                         onClick={() => navigate("/tortrouble")}

@@ -10,6 +10,7 @@ import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
 import SyncIcon from '@mui/icons-material/Sync';
 import { useNavigate } from "react-router-dom";
+
 const columns: GridColDef[] = [
   
   { 
@@ -254,17 +255,31 @@ const columns: GridColDef[] = [
 
 export function TORRemittance(){
 
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("tRem, ")){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
+
     const [tableRows, setTableRows] = useState(rows)
 
     const [isLoading , setIsLoading] = useState(false);
 
     const [isSyncing, setIsSyncing] = useState(false);
 
-    const navigate = useNavigate();
-    if(localStorage.getItem('isTorTicket') !== "true"){
-      navigate("/dashboard");
-    }
-
+ 
 
     useEffect(() =>{
       

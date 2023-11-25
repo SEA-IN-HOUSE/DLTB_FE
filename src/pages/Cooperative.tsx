@@ -10,12 +10,12 @@ import Box from '@mui/material/Box';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BsDeviceSsd } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 // "_id": "65530747f9eb5ec7c5ec8f75",
 // "deviceId": "1234",
@@ -31,7 +31,7 @@ const columns: GridColDef[] = [
 //     headerClassName: 'super-app-theme--header',
 //     headerAlign: 'center',
 //     align: 'center',
-//     editable: true,
+//     editable: false,
    
 //   },
   { 
@@ -42,7 +42,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -54,7 +54,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -67,7 +67,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
     valueFormatter: (params) => {
       return moment(params.value).format('MMMM D, YYYY');
     },
@@ -81,7 +81,7 @@ const columns: GridColDef[] = [
 //     headerClassName: 'super-app-theme--header',
 //     headerAlign: 'center',
 //     align: 'center',
-//     editable: true,
+//     editable: false,
 //     valueFormatter: (params) => {
 //       return moment(params.value).format('MMMM D, YYYY');
 //     },
@@ -99,16 +99,32 @@ const columns: GridColDef[] = [
 
 
 export function Cooperative(){
+
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("coop, ")){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
+
     const [tableRows, setTableRows] = useState(rows)
-    const navigate = useNavigate();
+   
     useEffect(() =>{
    
         GetAllData();
         setTableRows(rows)
-        console.log(localStorage.getItem('role'))
-        if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/tormain")
-        }
+        
         return () =>{}
 
     },[])
@@ -353,7 +369,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         </form>
   </Dialog>
 
-    <HeaderCard title ="DEVICE" />
+    <HeaderCard title ="COOPERATIVE" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
             <Box sx = {{
             '& .super-app-theme--header': {

@@ -2,43 +2,44 @@
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useLayoutEffect, useMemo} from 'react'
 import Box from '@mui/material/Box';
-import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
+import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputAdornment, InputLabel, LinearProgress, ListSubheader, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
-import { useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/AddCard';
 import { ICooperative } from "./Employee";
+import SearchIcon from "@mui/icons-material/Search";
+import { useNavigate } from "react-router-dom";
 
 const columns: GridColDef[] = [
   
   { 
-    field: 'riderId', 
-    headerName: 'RIDER ID', 
+    field: 'empNo', 
+    headerName: 'Employee No', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
   { 
-    field: 'cardId', 
+    field: 'cardID', 
     headerName: 'CARD ID', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -65,7 +66,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
     valueFormatter: (params) => {
       return moment(params.value).format('MMMM D, YYYY');
     },
@@ -79,7 +80,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
     valueFormatter: (params) => {
       return moment(params.value).format('MMMM D, YYYY');
     },
@@ -95,18 +96,35 @@ const columns: GridColDef[] = [
 
 
 export function MasterCard(){
+  
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("masCard, ")){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
+
     const [tableRows, setTableRows] = useState(rows)
-    const navigate = useNavigate();
+   
     
     useEffect(() =>{
-      console.log(localStorage.getItem('role'))
+    
    
         GetAllData();
         GetCooperative();
         setTableRows(rows)
-        if(localStorage.getItem('role') !== "Administrator"){
-          navigate("/dashboard")
-        }
+        
     
         return () =>{}
 
@@ -147,8 +165,8 @@ export function MasterCard(){
     // "riderId" : "6535ee6209cc1d199faf2cbd",
     // "cardId": "123456",
     // "balance" : 100000
-
-    const [riderId, setRiderId] = useState("")
+    const [employee, setEmployee] = useState<any>([]);
+    const [empNo, setEmpNo] = useState("")
 
     const [cardId, setCardId] = useState("")
 
@@ -203,11 +221,11 @@ export function MasterCard(){
         // Define the request data as an object
         const requestData = {
           coopId: coopId,
-          riderId: riderId, // Assuming empNo and cardId are variables in your scope
-          cardId: cardId,
+          empNo: parseFloat(empNo), // Assuming empNo and cardId are variables in your scope
+          cardID: cardId,
           balance: balance,
         };
-    
+        console.log(requestData)
         const response = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/mastercard`,
           requestData, // Use the requestData object as the request data
@@ -297,6 +315,69 @@ export function MasterCard(){
   
   }   
 
+
+
+
+  const containsText = (text : string, searchText) =>
+  text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+
+ // const allOptions = ["Option One", "Option Two", "Option Three", "Option Four"];
+
+  //const [selectedOption, setSelectedOption] = useState(allOptions[0]);
+
+  const [searchText, setSearchText] = useState("");
+  const displayedOptions = useMemo(
+    () => employee.filter((option) => containsText(option, searchText)),
+    [searchText]
+  );
+      
+  async function GetAllEmployees(){
+
+    // setIsLoading(true)
+
+      try{
+        
+        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+          headers :{
+              Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+          }
+      })
+          
+          const response = await request.data;
+          
+          if(response.messages[0].code === '0'){
+
+            response.response.map((employee : any ) =>{
+            
+              if (employee?.empNo !== undefined &&
+                employee?.empNo !== null &&
+                employee?.empNo !== "" &&
+                employee._id !== undefined &&
+                employee._id !== null &&
+                employee._id !== "") {
+               
+                  const empNumber  = employee?.empNo.toString();
+                
+                setEmployee((employee: any) => [...employee, empNumber]);
+              }
+            })
+
+          }
+     
+      }catch(e){
+          console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
+    
+      }
+    
+  } 
+
+  useLayoutEffect(() =>{
+    setEmployee([])
+    GetAllEmployees();
+
+    return () => {}
+  },[])
+
     return(
       <div  style={{
         backgroundColor: '#e2e8f0',
@@ -374,7 +455,7 @@ export function MasterCard(){
   </Select>
 </FormControl>
 
-          <TextField
+          {/* <TextField
             autoFocus
             margin="dense"
             id="riderId"
@@ -384,7 +465,55 @@ export function MasterCard(){
             fullWidth
             variant="outlined"
             onChange={(event) => setRiderId(event.target.value)}
-          />
+          /> */}
+
+<FormControl fullWidth margin ="dense">
+          <InputLabel id="search-select-label">Employee No</InputLabel>
+          <Select
+            // Disables auto focus on MenuItems and allows TextField to be in focus
+            MenuProps={{ autoFocus: false }}
+            labelId="search-select-label"
+            id="search-select"
+            value={empNo}
+            label="Employee No"
+            onChange={(e) => setEmpNo(e.target.value)}
+            onClose={() => setSearchText("")}
+            // This prevents rendering empty string in Select's value
+            // if search text would exclude currently selected option.
+            renderValue={() => empNo}
+          >
+  
+           
+            <ListSubheader>
+              <TextField
+                size="small"
+                // Autofocus on textfield
+                autoFocus
+                placeholder="Type to search..."
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  )
+                }}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key !== "Escape") {
+                    // Prevents autoselecting item while typing (default Select behaviour)
+                    e.stopPropagation();
+                  }
+                }}
+              />
+            </ListSubheader>
+            {displayedOptions.map((option, i) => (
+              <MenuItem key={i} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
           <TextField
             autoFocus

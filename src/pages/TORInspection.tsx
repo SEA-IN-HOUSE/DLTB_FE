@@ -404,6 +404,24 @@ const columns: GridColDef[] = [
 
 
 export function TORInspection(){
+  
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("tIns, ")){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
 
     const [tableRows, setTableRows] = useState(rows)
 
@@ -411,10 +429,7 @@ export function TORInspection(){
 
     const [isSyncing, setIsSyncing] = useState(false);
 
-    const navigate = useNavigate();
-    if(localStorage.getItem('isTorInspection') !== "true"){
-      navigate("/dashboard");
-    }
+   
 
 
     useEffect(() =>{

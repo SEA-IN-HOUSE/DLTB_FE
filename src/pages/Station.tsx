@@ -10,13 +10,13 @@ import Box from '@mui/material/Box';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/AddHomeWork';
 import { ICooperative } from "./Employee";
+import { useNavigate } from "react-router-dom";
 
 const columns: GridColDef[] = [
   
@@ -28,7 +28,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
   { 
@@ -39,7 +39,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -51,7 +51,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -63,7 +63,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
    
   },
 
@@ -75,7 +75,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
     valueFormatter: (params) => {
       return moment(params.value).format('MMMM D, YYYY');
     },
@@ -89,7 +89,7 @@ const columns: GridColDef[] = [
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
-    editable: true,
+    editable: false,
     valueFormatter: (params) => {
       return moment(params.value).format('MMMM D, YYYY');
     },
@@ -107,16 +107,33 @@ const columns: GridColDef[] = [
 
 
 export function Station(){
+  
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("sta, ")){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
+
     const [tableRows, setTableRows] = useState(rows)
-    const navigate = useNavigate();
+
     useEffect(() =>{
    
         GetAllData();
         setTableRows(rows)
     
-        if(localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "UserAdmin"){
-          navigate("/dashboard")
-        }
+        
         return () =>{}
 
     },[])
