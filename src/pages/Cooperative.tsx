@@ -58,6 +58,30 @@ const columns: GridColDef[] = [
    
   },
 
+  { 
+    field: 'minimum_fare', 
+    headerName: 'MINIMUM FARE', 
+    flex: 1,
+        minWidth: 0,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: false,
+   
+  },
+
+  { 
+    field: 'first_km', 
+    headerName: 'FIRST KM', 
+    flex: 1,
+        minWidth: 0,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: false,
+   
+  },
+
 
   { 
     field: 'createdAt', 
@@ -108,11 +132,10 @@ export function Cooperative(){
       navigate('/login')
     }
     
-    if(!localStorage.getItem('pageCode')?.includes("coop, ")){
-        navigate('/dashboard')
-    }
 
-   
+    if(!localStorage.getItem('pageCode')?.includes("coop, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+      navigate('/dashboard')
+    }
 
     return () =>{}
 
@@ -169,6 +192,10 @@ export function Cooperative(){
     
 const [coopName, setCoopName] = useState("");
 const [coopCodeName, setCoopCodeName] = useState("");
+const [minimum_fare, setMinimumFare] = useState("");
+const [first_km, setFirstKm] = useState("");
+const [pricePerKm, setPricePerKm] = useState(0);
+const [discountPercent , setDiscountPercent] = useState(0);
 
 const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -181,7 +208,10 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         // Define the request data as an object
         const requestData = {
             "cooperativeName" : coopName,
-
+            "first_km": first_km,
+            "minimumFare": minimum_fare,
+            "pricePerKm" : pricePerKm,
+            "discountPercent" : discountPercent,
             "cooperativeCodeName" : coopCodeName
         };
     
@@ -286,7 +316,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
     return(
       <div  style={{
         backgroundColor: '#e2e8f0',
-        height:'100vh'
+        height:'auto'
       }}>
     <NavBar>
     <ToastContainer
@@ -345,6 +375,42 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             variant="outlined"
             onChange={(event) => setCoopName(event.target.value)}
           />
+           <TextField
+            autoFocus
+            margin="dense"
+            id="minimum_fare"
+            name ="minimum_fare"
+            label="Minimum Fare"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setMinimumFare(event.target.value)}
+          />
+
+        <TextField
+            autoFocus
+            margin="dense"
+            id="first_km"
+            name ="first_km"
+            label="First Km"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setFirstKm(event.target.value)}
+          />
+
+          
+        <TextField
+            autoFocus
+            margin="dense"
+            id="first_km"
+            name ="first_km"
+            label="First Km"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setFirstKm(event.target.value)}
+          />
 
           <TextField
             autoFocus
@@ -358,6 +424,29 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             onChange={(event) => setCoopCodeName(event.target.value)}
           />
 
+          <TextField
+            autoFocus
+            margin="dense"
+            id="pricePerKm"
+            name ="Price Per Km"
+            label="pricePerKm Km"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setPricePerKm(parseFloat(event.target.value))}
+          />
+
+<TextField
+            autoFocus
+            margin="dense"
+            id="discountPercent"
+            name ="Discount"
+            label="Discount"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setDiscountPercent(parseInt(event.target.value))}
+          />
 
         </DialogContent>
         

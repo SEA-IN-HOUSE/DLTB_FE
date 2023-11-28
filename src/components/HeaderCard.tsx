@@ -13,7 +13,7 @@ export default function HeaderCard(props : IHeaderCard){
         />
       </Helmet> */}
 
-        {console.log(props.title)}
+      
         <div className="relative block mt-10  p-12 bg-white border border-gray-200 rounded-lg shadow-lg"
         style ={{
             height: 'auto'

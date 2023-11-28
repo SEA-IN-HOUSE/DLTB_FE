@@ -5,9 +5,9 @@ import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect,  useLayoutEffect,  useState, useMemo} from 'react'
+import {useEffect,  useLayoutEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
-import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,  FormControl,  IconButton,  InputAdornment,  InputLabel,  LinearProgress,  ListSubheader,  MenuItem,  Select,  TextField } from "@mui/material";
+import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,  FormControl,  IconButton,   InputLabel,  LinearProgress,   MenuItem,  Select,  TextField } from "@mui/material";
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
@@ -16,65 +16,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/AddCard';
 
-import SearchIcon from "@mui/icons-material/Search";
+
 import { ICooperative } from "./Employee";
 import { useNavigate } from "react-router-dom";
-const columns: GridColDef[] = [
-  
-  { 
-    field: 'empNo', 
-    headerName: 'EMPLOYEE NUMBER', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
 
-  { 
-    field: 'cardId', 
-    headerName: 'CARD ID', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
-  
-
-  { 
-    field: 'createdAt', 
-    headerName: 'DATE CREATED', 
-    flex: 1,
-    minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
-  },
-
-  { 
-    field: 'updatedAt', 
-    headerName: 'LAST MODIFIED', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
-  }
-
-  ];
   
   const rows: GridRowsProp = [
    
@@ -88,7 +33,82 @@ const columns: GridColDef[] = [
 
 export function EmployeeCard()
 {
+  const [coopList, setCoopList] = useState([]);
+  const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
+
+  const columns: GridColDef[] = [
   
+    { 
+      field: 'empNo', 
+      headerName: 'EMPLOYEE NUMBER', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+     
+    },
+  
+    { 
+      field: 'cardId', 
+      headerName: 'CARD ID', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+     
+    },
+    
+    {
+      field: 'coopId', // Assuming you have a 'name' field in your data source
+      headerName: 'COMPANY',
+      flex: 1,
+      minWidth: 180,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+      valueGetter: (params) => {
+        // Assuming your data source is an array of objects with 'coopId' and 'name' fields
+        const { coopId } = params.row;
+        // Assuming your data is stored in a variable named 'data'
+        const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+        return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
+      },
+    },
+    { 
+      field: 'createdAt', 
+      headerName: 'DATE CREATED', 
+      flex: 1,
+      minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+      valueFormatter: (params) => {
+        return moment(params.value).format('MMMM D, YYYY');
+      },
+    },
+  
+    { 
+      field: 'updatedAt', 
+      headerName: 'LAST MODIFIED', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+      valueFormatter: (params) => {
+        return moment(params.value).format('MMMM D, YYYY');
+      },
+    }
+  
+    ];
+
   const navigate = useNavigate();
   useEffect(() =>{
 
@@ -96,10 +116,10 @@ export function EmployeeCard()
       localStorage.clear();
       navigate('/login')
     }
-    
-    if(!localStorage.getItem('pageCode')?.includes("empCard, ")){
-        navigate('/dashboard')
+    if(!localStorage.getItem('pageCode')?.includes("empCard, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+      navigate('/dashboard')
     }
+
 
    
 
@@ -128,7 +148,7 @@ export function EmployeeCard()
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employeecard/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employeecard/${filterTableCompanyId}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
@@ -152,10 +172,13 @@ export function EmployeeCard()
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      
+      setTimeout(GetAllData, 5000)
     }   
 
-
+    useEffect(() =>{
+      GetAllData();
+      return () =>{}
+    },[filterTableCompanyId])
 
     const [empNo, setEmpNo] = useState("")
 
@@ -165,23 +188,21 @@ export function EmployeeCard()
 
     const [employee, setEmployee] = useState<any>([]);
 
-    const [coopList, setCoopList] = useState([]);
-
 const [coopId, setCoopId] = useState("");
 
     
-    const containsText = (text : string, searchText) =>
-    text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+    // const containsText = (text : string, searchText) =>
+    // text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
 
    // const allOptions = ["Option One", "Option Two", "Option Three", "Option Four"];
 
     //const [selectedOption, setSelectedOption] = useState(allOptions[0]);
 
-    const [searchText, setSearchText] = useState("");
-    const displayedOptions = useMemo(
-      () => employee.filter((option) => containsText(option, searchText)),
-      [searchText]
-    );
+    // const [searchText, setSearchText] = useState("");
+    // const displayedOptions = useMemo(
+    //   () => employee.filter((option) => containsText(option, searchText)),
+    //   [searchText]
+    // );
         
     async function GetAllEmployees(){
 
@@ -199,20 +220,26 @@ const [coopId, setCoopId] = useState("");
             
             if(response.messages[0].code === '0'){
 
-              response.response.map((employee : any ) =>{
+              if(employee.toString().equals(response.response)){
+
+              }else{
+                response.response.map((employee : any ) =>{
               
-                if (employee?.empNo !== undefined &&
-                  employee?.empNo !== null &&
-                  employee?.empNo !== "" &&
-                  employee._id !== undefined &&
-                  employee._id !== null &&
-                  employee._id !== "") {
-                 
-                    const empNumber  = employee?.empNo.toString();
-                  
-                  setEmployee((employee: any) => [...employee, empNumber]);
-                }
-              })
+                  if (employee?.empNo !== undefined &&
+                    employee?.empNo !== null &&
+                    employee?.empNo !== "" &&
+                    employee._id !== undefined &&
+                    employee._id !== null &&
+                    employee._id !== "") {
+                   
+                      const empNumber  = employee?.empNo.toString();
+                    
+                    setEmployee((employee: any) => [...employee, empNumber]);
+                  }
+                })
+              }
+
+             
 
             }
        
@@ -320,7 +347,39 @@ const [coopId, setCoopId] = useState("");
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
             <GridToolbarExport style ={{color:"#161d6f"}} />
             <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
+            {localStorage.getItem('role') === "Administrator" ? 
+          
+          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+            <Select
+              labelId="filter-company-demo-demo-simple-select-autowidth-label"
+              id="filter-company-demo-demo-simple-select-autowidth"
+              value={filterTableCompanyId}
+              onChange={(event) => setFilterTableCompanyId(event.target.value)}
+              autoWidth
+              label="Company"
+            >
+              {/* {localStorage.getItem('role') === "Administrator" ? 
+          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+          :
+          null
+          } */}
+              {
+        Object(coopList).length === 0? (<></>) :
+        coopList.map((coop : ICooperative) =>{
+          console.log(coop)
+          console.log(coop.cooperativeCodeName)
+          return (
+            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+          )
+
+        })
+        }
             
+            </Select>
+    </FormControl> :
+    null
+          }
           </GridToolbarContainer>
          
         </>
@@ -386,8 +445,7 @@ async function GetCooperative(){
 
       return(
         <div  style={{
-          backgroundColor: '#e2e8f0',
-          height:'100vh'
+         
         }}>
           
         <ToastContainer
@@ -460,10 +518,37 @@ async function GetCooperative(){
    
   </Select>
 </FormControl>
-  <FormControl fullWidth margin ="dense">
+{/* 
+<FormControl fullWidth margin="dense">
+  <InputLabel id="demo-simple-select-label">Employee No</InputLabel>
+  <Select
+    labelId="demo-simple-select-label-coopId"
+    id="demo-simple-select-coopId"
+    value={empNo}
+    defaultValue= {empNo}
+    label="Employee No"
+    onChange={(event) => setEmpNo(event?.target.value)}
+    required
+  >
+    {
+    Object(employee).length === 0? null :
+    employee.map((emp : any) =>{
+      console.log("employees")
+      console.log(emp)
+      return (
+        <MenuItem value={emp}>{emp}</MenuItem>
+      )
+
+    })
+    }
+   
+  </Select>
+</FormControl> */}
+
+  {/* <FormControl fullWidth margin ="dense">
           <InputLabel id="search-select-label">Employee No</InputLabel>
           <Select
-            // Disables auto focus on MenuItems and allows TextField to be in focus
+            
             MenuProps={{ autoFocus: false }}
             labelId="search-select-label"
             id="search-select"
@@ -471,8 +556,7 @@ async function GetCooperative(){
             label="Employee No"
             onChange={(e) => setEmpNo(e.target.value)}
             onClose={() => setSearchText("")}
-            // This prevents rendering empty string in Select's value
-            // if search text would exclude currently selected option.
+          
             renderValue={() => empNo}
           >
   
@@ -494,7 +578,7 @@ async function GetCooperative(){
                 onChange={(e) => setSearchText(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key !== "Escape") {
-                    // Prevents autoselecting item while typing (default Select behaviour)
+                  
                     e.stopPropagation();
                   }
                 }}
@@ -506,8 +590,21 @@ async function GetCooperative(){
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+  </FormControl> */}
   
+            
+           <TextField
+              autoFocus
+              margin="dense"
+              id="txtEmpNo"
+              name ="txtEmpNo"
+              label="Employee No"
+              type="number"
+              fullWidth
+              variant="outlined"
+              onChange={(event) => setEmpNo(event.target.value)}
+            />
+
             <TextField
               autoFocus
               margin="dense"

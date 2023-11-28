@@ -17,76 +17,7 @@ import { ICooperative } from "./Employee";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 
-const columns: GridColDef[] = [
-  
-  { 
-    field: 'empNo', 
-    headerName: 'Employee No', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
 
-  { 
-    field: 'cardID', 
-    headerName: 'CARD ID', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
-
-  { 
-    field: 'balance', 
-    headerName: 'BALANCE', 
-    
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => `₱ ${params.value}`
-    
-  },
-
-
-  { 
-    field: 'createdAt', 
-    headerName: 'DATE CREATED', 
-    flex: 1,
-    minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
-  },
-
-  { 
-    field: 'updatedAt', 
-    headerName: 'LAST MODIFIED', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
-  }
- 
-  ];
   
   const rows: GridRowsProp = [
    
@@ -97,6 +28,96 @@ const columns: GridColDef[] = [
 
 export function MasterCard(){
   
+
+  const [coopList, setCoopList] = useState([]);
+  const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
+  const columns: GridColDef[] = [
+  
+    { 
+      field: 'empNo', 
+      headerName: 'Employee No', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+     
+    },
+  
+    { 
+      field: 'cardID', 
+      headerName: 'CARD ID', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+     
+    },
+  
+    { 
+      field: 'balance', 
+      headerName: 'BALANCE', 
+      
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+      valueFormatter: (params) => `₱ ${params.value}`
+      
+    },
+    {
+      field: 'coopId', // Assuming you have a 'name' field in your data source
+      headerName: 'COMPANY',
+      flex: 1,
+      minWidth: 180,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+      valueGetter: (params) => {
+        // Assuming your data source is an array of objects with 'coopId' and 'name' fields
+        const { coopId } = params.row;
+        // Assuming your data is stored in a variable named 'data'
+        const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+        return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
+      },
+    },
+  
+    { 
+      field: 'createdAt', 
+      headerName: 'DATE CREATED', 
+      flex: 1,
+      minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+      valueFormatter: (params) => {
+        return moment(params.value).format('MMMM D, YYYY');
+      },
+    },
+  
+    { 
+      field: 'updatedAt', 
+      headerName: 'LAST MODIFIED', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+      valueFormatter: (params) => {
+        return moment(params.value).format('MMMM D, YYYY');
+      },
+    }
+   
+    ];
+
   const navigate = useNavigate();
   useEffect(() =>{
 
@@ -105,11 +126,10 @@ export function MasterCard(){
       navigate('/login')
     }
     
-    if(!localStorage.getItem('pageCode')?.includes("masCard, ")){
-        navigate('/dashboard')
-    }
 
-   
+    if(localStorage.getItem('role') !== "Administrator"){
+      navigate('/dashboard')
+    }
 
     return () =>{}
 
@@ -136,7 +156,7 @@ export function MasterCard(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/mastercard/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/mastercard/${filterTableCompanyId}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
@@ -160,11 +180,12 @@ export function MasterCard(){
         }
       
     }   
+    useEffect(() =>{
+      GetAllData();
+      return () =>{}
+    },[filterTableCompanyId])
 
-
-    // "riderId" : "6535ee6209cc1d199faf2cbd",
-    // "cardId": "123456",
-    // "balance" : 100000
+    
     const [employee, setEmployee] = useState<any>([]);
     const [empNo, setEmpNo] = useState("")
 
@@ -173,8 +194,6 @@ export function MasterCard(){
     const [balance, setBalance] = useState("")
 
     const [isModalOpen, setIsModalOpen] = useState(false)
-
-    const [coopList, setCoopList] = useState([]);
 
   const [coopId, setCoopId] = useState("");
 
@@ -307,7 +326,39 @@ export function MasterCard(){
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
             <GridToolbarExport style ={{color:"#161d6f"}} />
             <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
+            {localStorage.getItem('role') === "Administrator" ? 
+          
+          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+            <Select
+              labelId="filter-company-demo-demo-simple-select-autowidth-label"
+              id="filter-company-demo-demo-simple-select-autowidth"
+              value={filterTableCompanyId}
+              onChange={(event) => setFilterTableCompanyId(event.target.value)}
+              autoWidth
+              label="Company"
+            >
+              {/* {localStorage.getItem('role') === "Administrator" ? 
+          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+          :
+          null
+          } */}
+              {
+        Object(coopList).length === 0? (<></>) :
+        coopList.map((coop : ICooperative) =>{
+          console.log(coop)
+          console.log(coop.cooperativeCodeName)
+          return (
+            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+          )
+
+        })
+        }
             
+            </Select>
+    </FormControl> :
+    null
+          }
           </GridToolbarContainer>
          
         </>
@@ -381,7 +432,7 @@ export function MasterCard(){
     return(
       <div  style={{
         backgroundColor: '#e2e8f0',
-        height:'100vh'
+        height:'auto'
       }}>
       <ToastContainer
         position="bottom-center"

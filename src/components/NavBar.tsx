@@ -151,7 +151,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
     
 
     {isOpenProfileBox && (
-      <div className="absolute z-50 right-0 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded shadow" id="dropdown-user">
+      <div className="absolute z-50 right-0 top-10  text-base list-none bg-white divide-y divide-gray-100 rounded shadow" id="dropdown-user">
         <div className="px-4 py-3" role="none">
           {/* <p className="text-sm text-gray-900 " role="none">
             {user.firstName + " " + user.middleName + " " + user.lastName}
@@ -239,7 +239,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 }
 
 {
-        localStorage.getItem('pageCode')?.includes("masCard, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+        localStorage.getItem('role') === "Administrator"  ? 
         (
         <li>
           <a

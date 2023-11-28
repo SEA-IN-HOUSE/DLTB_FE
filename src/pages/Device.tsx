@@ -30,6 +30,32 @@ interface ICooperative{
  createdAt: string
 }
 
+
+
+
+
+
+
+
+export function Device(){
+
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+   
+
+    if(!localStorage.getItem('pageCode')?.includes("dev, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+      navigate('/dashboard')
+    }
+
+    return () =>{}
+
+},[])
+
 const columns: GridColDef[] = [
   
   // { 
@@ -55,16 +81,22 @@ const columns: GridColDef[] = [
    
   },
 
-  { 
-    field: 'coopId', 
-    headerName: 'COOP ID', 
+  {
+    field: 'coopId', // Assuming you have a 'name' field in your data source
+    headerName: 'COMPANY',
     flex: 1,
-        minWidth: 0,
+    minWidth: 0,
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
     editable: false,
-   
+    valueGetter: (params) => {
+      // Assuming your data source is an array of objects with 'coopId' and 'name' fields
+      const { coopId } = params.row;
+      // Assuming your data is stored in a variable named 'data'
+      const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+      return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
+    },
   },
 
 
@@ -101,41 +133,55 @@ const columns: GridColDef[] = [
   const rows: GridRowsProp = [
    
   ];
+    const [tableRows, setTableRows] = useState(rows);
+    const [cooperativeDropdown, setCooperativeDropdown]  = useState<any>([])
+    const [coopList, setCoopList] = useState([]);
+    const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
 
 
-
-
-
-
-export function Device(){
-
-  const navigate = useNavigate();
-  useEffect(() =>{
-
-    if(!localStorage.getItem('token')){
-      localStorage.clear();
-      navigate('/login')
-    }
-    
-    if(!localStorage.getItem('pageCode')?.includes("dev, ")){
-        navigate('/dashboard')
-    }
 
    
 
-    return () =>{}
+    async function GetCooperative(){
 
-},[])
+      try{
+    
+        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+          headers :{
+              Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+          }
+      })
+          
+          const response = await request.data;
+          
+          if(response.messages[0].code === '0'){
+            console.log(response);
+            setCoopList(
+              
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+              response.response.map((coop : any ) =>{
+                console.log(coop)
+                
+                if(coop._id){
+                  return {id: coop._id, ...coop}
+                }
+                
+              })
+            )
+    
+            
+          }
+          
+      }catch(e){
+        console.log(`Error in getting coops: ${e}`)
+      }
+    }
 
-
-    const [tableRows, setTableRows] = useState(rows);
-    const [cooperativeDropdown, setCooperativeDropdown]  = useState<any>([])
- 
     useEffect(() =>{
    
         GetAllData();
         setTableRows(rows)
-       
+        GetCooperative();
         return () =>{}
 
     },[])
@@ -145,7 +191,7 @@ export function Device(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/device`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/device/${filterTableCompanyId}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
@@ -172,8 +218,13 @@ export function Device(){
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      
-    }   
+      setTimeout(GetAllData, 5000)
+    } 
+    
+    useEffect(() =>{
+      GetAllData();
+      return () =>{}
+    },[filterTableCompanyId])
 
     async function GetAllCoop(){
 
@@ -315,7 +366,40 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
             <GridToolbarExport style ={{color:"#161d6f"}} />
             <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
+
+            {localStorage.getItem('role') === "Administrator" ? 
+          
+          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+            <Select
+              labelId="filter-company-demo-demo-simple-select-autowidth-label"
+              id="filter-company-demo-demo-simple-select-autowidth"
+              value={filterTableCompanyId}
+              onChange={(event) => setFilterTableCompanyId(event.target.value)}
+              autoWidth
+              label="Company"
+            >
+              {/* {localStorage.getItem('role') === "Administrator" ? 
+          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+          :
+          null
+          } */}
+              {
+        Object(coopList).length === 0? (<></>) :
+        coopList.map((coop : ICooperative) =>{
+          console.log(coop)
+          console.log(coop.cooperativeCodeName)
+          return (
+            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+          )
+
+        })
+        }
             
+            </Select>
+    </FormControl> :
+    null
+      }
           </GridToolbarContainer>
          
         </>
@@ -343,7 +427,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
     return(
       <div  style={{
         backgroundColor: '#e2e8f0',
-        height:'100vh'
+        height:'auto'
       }}>
     <NavBar>
     <ToastContainer

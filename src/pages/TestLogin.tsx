@@ -30,7 +30,8 @@ interface IUserInformation  {
   isEmailVerified: boolean,
   pageCode : string,
   role: string,
-  
+  companyId: string,
+
 }
 
 
@@ -73,6 +74,7 @@ export default function TestLogin() : JSX.Element {
             
             const response = await request.data;
 
+            console.log(response)
    
             console.log(response.messages[0].message)
             if(response.messages[0].message === "OK"){
@@ -124,14 +126,15 @@ export default function TestLogin() : JSX.Element {
         try{
          
 
-  
+        localStorage.setItem('companyId' , data.companyId)         
         localStorage.setItem('role' , data.role)
         localStorage.setItem('pageCode', data.pageCode)
+        localStorage.setItem('companyName' , data.company)
         }catch(e){
           console.log(`Error in getting user: ${e}`)
         }
   
-      }
+    }
 
       const [isSubmitOtp, setIsSubmitOtp] = useState(false);
       const [emailOtp, setEmailOtp] = useState('');
@@ -294,19 +297,8 @@ export default function TestLogin() : JSX.Element {
 
 <div style={{overflow:'hidden',
         margin: 0,
-
+    backgroundColor:"white"
         }}>
-{/*         
-        <Helmet>
-        <link
-            rel="stylesheet"
-            href="../node_modules/bootstrap/dist/css/bootstrap.min.css"
-        />
-        <link
-            rel ="stylesheet"
-            href ="../styles/LogIn.css'"
-        />
-      </Helmet> */}
 
         <ToastContainer
         position="bottom-right"
@@ -404,11 +396,11 @@ export default function TestLogin() : JSX.Element {
                                             </div>
                                         </div>
 
-                                        <div className='flex-1'>
+                                        {/* <div className='flex-1'>
                                             <div className="forgotPassword">
                                             <a href="#" style ={{color:'#007BFF', fontFamily:defaultFont}} onClick = {() => setIsOtpModalOpen(!isOtpModalOpen)}>Forgot password?</a>
                                             </div>
-                                        </div>
+                                        </div> */}
                                    
                                 </div>
                                

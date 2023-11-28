@@ -64,7 +64,37 @@ export interface ICooperative{
  }
  
 
+  
+  const rows: GridRowsProp = [
+   
+  ];
+
+  //Toolbar
+
+export function Employee(){
+  
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+
+    if(!localStorage.getItem('pageCode')?.includes("emp, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+      navigate('/dashboard')
+    }
+
+    return () =>{}
+
+},[])
+
+const [coopList, setCoopList] = useState([]);
+const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
+
 const columns: GridColDef[] = [
+  
 
   { 
     field: 'lastName', 
@@ -102,6 +132,25 @@ const columns: GridColDef[] = [
     headerAlign: 'center',
     align: 'center',
   },
+  {
+    field: 'coopId', // Assuming you have a 'name' field in your data source
+    headerName: 'COMPANY',
+    flex: 1,
+    minWidth: 180,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: false,
+    valueGetter: (params) => {
+      // Assuming your data source is an array of objects with 'coopId' and 'name' fields
+      const { coopId } = params.row;
+      // Assuming your data is stored in a variable named 'data'
+      const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+      return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
+    },
+  },
+
+
   {
     field: 'empNo', 
     headerName: 'EMPLOYEE NO.',
@@ -191,32 +240,6 @@ const columns: GridColDef[] = [
   },
   
   ];
-  
-  const rows: GridRowsProp = [
-   
-  ];
-
-  //Toolbar
-
-export function Employee(){
-  
-  const navigate = useNavigate();
-  useEffect(() =>{
-
-    if(!localStorage.getItem('token')){
-      localStorage.clear();
-      navigate('/login')
-    }
-    
-    if(!localStorage.getItem('pageCode')?.includes("emp, ")){
-        navigate('/dashboard')
-    }
-
-   
-
-    return () =>{}
-
-},[])
 
     const [clientTableRows, setClientTableRows] = useState(rows)
     const [isLoading ,setIsLoading ] = useState(false);
@@ -225,33 +248,35 @@ export function Employee(){
 
    
 
-    useEffect(() =>{
+    // useEffect(() =>{
       
-        GetAllEmployees();
-        setClientTableRows(rows)
+    //     GetAllData();
+    //     setClientTableRows(rows)
        
-        return () =>{}
+    //     return () =>{}
 
-    },[])
+    // },[])
 
     useEffect(() =>{
 
       return () => {}
     },[isLoading, isModalOpen])
 
-    async function GetAllEmployees(){
+    async function GetAllData(){
 
-      setIsLoading(true)
+    
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/${filterTableCompanyId}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
         })
             
             const response = await request.data;
+
+            console.log(response)
             
             if(response.messages[0].code === '0'){
               console.log(response);
@@ -270,15 +295,22 @@ export function Employee(){
                 })
               )
 
-              setIsLoading(false);
+         
             }
        
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
-            setIsLoading(false);
+    
         }
-      
+      setTimeout(GetAllData, 5000)
     }   
+
+
+     
+    useEffect(() =>{
+      GetAllData();
+      return () =>{}
+    },[filterTableCompanyId])
 
     function NoRowsOverlay() {
       return (
@@ -320,6 +352,40 @@ function CustomToolbar() {
           <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
           <GridToolbarExport style ={{color:"#161d6f"}} />
           <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
+          {localStorage.getItem('role') === "Administrator" ? 
+          
+          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+            <Select
+              labelId="filter-company-demo-demo-simple-select-autowidth-label"
+              id="filter-company-demo-demo-simple-select-autowidth"
+              value={filterTableCompanyId}
+              onChange={(event) => setFilterTableCompanyId(event.target.value)}
+              autoWidth
+              label="Company"
+            >
+              {/* {localStorage.getItem('role') === "Administrator" ? 
+          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+          :
+          null
+          } */}
+              {
+        Object(coopList).length === 0? (<></>) :
+        coopList.map((coop : ICooperative) =>{
+          console.log(coop)
+          console.log(coop.cooperativeCodeName)
+          return (
+            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+          )
+
+        })
+        }
+            
+            </Select>
+    </FormControl> :
+    null
+          }
+          
       </GridToolbarContainer>
       {/* <AddEmployee  open ={formOpenType === 'employee'}/>  */}
     </>
@@ -327,8 +393,6 @@ function CustomToolbar() {
 
 }   
 
-
-const [coopList, setCoopList] = useState([]);
 
 const [coopId, setCoopId] = useState("");
 const [lastName, setLastName] = useState("");
@@ -418,7 +482,7 @@ async function AddData() {
       theme: "colored",
       });
   }finally{
-    GetAllEmployees();
+    GetAllData();
     setIsModalOpen(!isModalOpen)
   }
 }
@@ -461,7 +525,7 @@ async function GetCooperative(){
 
 useEffect(() =>{
       
-  GetAllEmployees();
+  GetAllData();
   GetCooperative();
   setClientTableRows(rows)
   
@@ -653,6 +717,7 @@ useEffect(() =>{
               onChange={(event) => setDesignation(event?.target.value)}
               required
             >
+              <MenuItem value={"Bus Driver"}>Bus Driver</MenuItem>
             <MenuItem value={"Bus Conductor"}>Bus Conductor</MenuItem>
             <MenuItem value={"Cashier"}>Cashier</MenuItem>
             <MenuItem value={"Dispatcher"}>Dispatcher</MenuItem>
@@ -687,6 +752,7 @@ useEffect(() =>{
               onChange={(event) => setAccessPrivileges(event?.target.value)}
               required
             >
+              <MenuItem value={"Bus Driver"}>Bus Driver</MenuItem>
             <MenuItem value={"Bus Conductor"}>Bus Conductor</MenuItem>
             <MenuItem value={"Cashier"}>Cashier</MenuItem>
             <MenuItem value={"Dispatcher"}>Dispatcher</MenuItem>

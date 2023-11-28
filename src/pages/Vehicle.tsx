@@ -24,11 +24,42 @@ export interface IVehicle {
     createdAt: string,
 }
 
+  const rows: GridRowsProp = [
+   
+  ];
+
+
+
+
+export function Vehicle(){
+  
+  const navigate = useNavigate();
+  useEffect(() =>{
+
+    if(!localStorage.getItem('token')){
+      localStorage.clear();
+      navigate('/login')
+    }
+    
+    if(!localStorage.getItem('pageCode')?.includes("veh, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+        navigate('/dashboard')
+    }
+
+   
+
+    return () =>{}
+
+},[])
+
+
+const [coopList, setCoopList] = useState([]);
+const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
+
 const columns: GridColDef[] = [
   
   { 
     field: 'vehicle_no', 
-    headerName: 'Vehicle No', 
+    headerName: 'Bus No', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
@@ -67,33 +98,6 @@ const columns: GridColDef[] = [
 
   ];
   
-  const rows: GridRowsProp = [
-   
-  ];
-
-
-
-
-export function Vehicle(){
-  
-  const navigate = useNavigate();
-  useEffect(() =>{
-
-    if(!localStorage.getItem('token')){
-      localStorage.clear();
-      navigate('/login')
-    }
-    
-    if(!localStorage.getItem('pageCode')?.includes("veh, ")){
-        navigate('/dashboard')
-    }
-
-   
-
-    return () =>{}
-
-},[])
-
     const [tableRows, setTableRows] = useState(rows)
 
     
@@ -114,7 +118,7 @@ export function Vehicle(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/vehicle/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/vehicle/${filterTableCompanyId}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
@@ -136,10 +140,15 @@ export function Vehicle(){
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      
+      setTimeout(GetAllData, 15000)
     }   
 
 
+    
+    useEffect(() =>{
+      GetAllData();
+      return () =>{}
+    },[filterTableCompanyId])
     // "riderId" : "6535ee6209cc1d199faf2cbd",
     // "cardId": "123456",
     // "balance" : 100000
@@ -149,7 +158,7 @@ export function Vehicle(){
 
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    const [coopList, setCoopList] = useState([]);
+    // const [coopList, setCoopList] = useState([]);
 
   const [coopId, setCoopId] = useState("");
 
@@ -213,6 +222,7 @@ export function Vehicle(){
         // Note that there's no need to use `await` on response.data directly
         // as axios already returns the response data.
         const responseData = response.data;
+        console.log("This is the response")
           console.log(responseData)
           
           if(responseData.messages[0].code === "0"){
@@ -281,6 +291,40 @@ export function Vehicle(){
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
             <GridToolbarExport style ={{color:"#161d6f"}} />
             <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
+
+            {localStorage.getItem('role') === "Administrator" ? 
+          
+          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+            <Select
+              labelId="filter-company-demo-demo-simple-select-autowidth-label"
+              id="filter-company-demo-demo-simple-select-autowidth"
+              value={filterTableCompanyId}
+              onChange={(event) => setFilterTableCompanyId(event.target.value)}
+              autoWidth
+              label="Company"
+            >
+              {/* {localStorage.getItem('role') === "Administrator" ? 
+          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+          :
+          null
+          } */}
+              {
+        Object(coopList).length === 0? (<></>) :
+        coopList.map((coop : ICooperative) =>{
+          console.log(coop)
+          console.log(coop.cooperativeCodeName)
+          return (
+            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+          )
+
+        })
+        }
+            
+            </Select>
+    </FormControl> :
+    null
+          }
             
           </GridToolbarContainer>
          
@@ -292,7 +336,7 @@ export function Vehicle(){
     return(
       <div  style={{
         backgroundColor: '#e2e8f0',
-        height:'100vh'
+        height:'auto'
       }}>
       <ToastContainer
         position="bottom-center"
@@ -371,7 +415,7 @@ export function Vehicle(){
             margin="dense"
             id="vehicle_no"
             name ="vehicle_no"
-            label="Vehicle No"
+            label="Bus No"
             type="number"
             fullWidth
             variant="outlined"
@@ -384,7 +428,7 @@ export function Vehicle(){
             id="plate_no"
             name ="plate_no"
             label="Plate No"
-            type="number"
+            type="text"
             fullWidth
             variant="outlined"
             onChange={(event) => setPlateNo(parseFloat(event.target.value))}

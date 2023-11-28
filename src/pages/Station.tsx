@@ -18,85 +18,8 @@ import AddIcon from '@mui/icons-material/AddHomeWork';
 import { ICooperative } from "./Employee";
 import { useNavigate } from "react-router-dom";
 
-const columns: GridColDef[] = [
-  
-  { 
-    field: 'stationName', 
-    headerName: 'STATION NAME', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
-  { 
-    field: 'km', 
-    headerName: 'KILOMETER', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
 
-  { 
-    field: 'viceVersaKM', 
-    headerName: 'VICE VERSA KM', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
 
-  { 
-    field: 'routeId', 
-    headerName: 'ROUTE ID', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
-
-  { 
-    field: 'createdAt', 
-    headerName: 'DATE CREATED', 
-    flex: 1,
-    minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
-  },
-
-  { 
-    field: 'updatedAt', 
-    headerName: 'LAST MODIFIED', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
-  }
- 
-  ];
-  
   const rows: GridRowsProp = [
    
   ];
@@ -108,6 +31,28 @@ const columns: GridColDef[] = [
 
 export function Station(){
   
+  // useEffect(() => {
+  //   console.log("TEST")
+  //   // Check if the socket is connected
+  //   if (socket.connected) {
+  //     console.log('Connected to the server');
+  //   } else {
+  //     console.log('Not connected to the server');
+  //   }
+
+  //   // Listen for disconnect event
+  //   socket.on('disconnect', () => {
+  //     console.log('Disconnected from the server');
+  //   });
+
+  //   // Clean up the event listener when the component unmounts
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
+
+
+
   const navigate = useNavigate();
   useEffect(() =>{
 
@@ -115,18 +60,119 @@ export function Station(){
       localStorage.clear();
       navigate('/login')
     }
-    
-    if(!localStorage.getItem('pageCode')?.includes("sta, ")){
-        navigate('/dashboard')
-    }
-
    
+
+    if(!localStorage.getItem('pageCode')?.includes("sta, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+      navigate('/dashboard')
+    }
 
     return () =>{}
 
 },[])
 
+const [coopList, setCoopList] = useState([]);
+const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
+
     const [tableRows, setTableRows] = useState(rows)
+
+    const columns: GridColDef[] = [
+  
+      { 
+        field: 'stationName', 
+        headerName: 'STATION NAME', 
+        flex: 1,
+            minWidth: 0,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+       
+      },
+      { 
+        field: 'km', 
+        headerName: 'KILOMETER', 
+        flex: 1,
+            minWidth: 0,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+       
+      },
+    
+      { 
+        field: 'viceVersaKM', 
+        headerName: 'VICE VERSA KM', 
+        flex: 1,
+            minWidth: 0,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+       
+      },
+    
+      { 
+        field: 'routeId', 
+        headerName: 'ROUTE ID', 
+        flex: 1,
+            minWidth: 0,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+       
+      },
+
+      {
+        field: 'coopId', // Assuming you have a 'name' field in your data source
+        headerName: 'COMPANY',
+        flex: 1,
+        minWidth: 180,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+        valueGetter: (params) => {
+          // Assuming your data source is an array of objects with 'coopId' and 'name' fields
+          const { coopId } = params.row;
+          // Assuming your data is stored in a variable named 'data'
+          const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+          return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
+        },
+      },
+    
+      { 
+        field: 'createdAt', 
+        headerName: 'DATE CREATED', 
+        flex: 1,
+        minWidth: 0,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+        valueFormatter: (params) => {
+          return moment(params.value).format('MMMM D, YYYY');
+        },
+      },
+    
+      { 
+        field: 'updatedAt', 
+        headerName: 'LAST MODIFIED', 
+        flex: 1,
+            minWidth: 0,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+        valueFormatter: (params) => {
+          return moment(params.value).format('MMMM D, YYYY');
+        },
+      }
+     
+      ];
+      
+
 
     useEffect(() =>{
    
@@ -143,38 +189,38 @@ export function Station(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/station/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/station/${filterTableCompanyId}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
         })
             
             const response = await request.data;
-
+          console.log("THIS IS THE RESPONSE:")
+            console.log(response)
          
 
-            if(response.messages[0].code === '0'){
-
-              setTableRows(
+            if(response.messages[0].code === 0){
+              if (JSON.stringify(response.response) !== JSON.stringify(tableRows)) {
+                setTableRows(
                 
-                response.response.map((data : any) =>{
+                  response.response.map((data : any) =>{
+               
+                    return {id: data._id, ...data}
+                  })
+                )
+              }
              
-                  return {id: data._id, ...data}
-                })
-              )
             }
        
 
             // setClientTableRows(newRows)
+            
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      
+        setTimeout(GetAllData, 5000)
     }   
-
-
-    // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"}
-    const [coopList, setCoopList] = useState([]);
 
     const [coopId, setCoopId] = useState("");
     
@@ -204,7 +250,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         };
     
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/station`,
+          `${import.meta.env.VITE_BASE_URL}/station/${filterTableCompanyId}`,
           requestData, // Use the requestData object as the request data
           {
             headers: {
@@ -220,6 +266,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
        
           if(responseData.messages[0].code === "0"){
           
+
             GetAllData();
         
             toast.success("Successfully added!", {
@@ -262,7 +309,10 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         setIsModalOpen(!isModalOpen)
       }
     }
-
+    useEffect(() =>{
+      GetAllData();
+      return () =>{}
+    },[filterTableCompanyId])
 
     function CustomToolbar() {
 
@@ -285,7 +335,39 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
             <GridToolbarExport style ={{color:"#161d6f"}} />
             <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
+            {localStorage.getItem('role') === "Administrator" ? 
+          
+          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+            <Select
+              labelId="filter-company-demo-demo-simple-select-autowidth-label"
+              id="filter-company-demo-demo-simple-select-autowidth"
+              value={filterTableCompanyId}
+              onChange={(event) => setFilterTableCompanyId(event.target.value)}
+              autoWidth
+              label="Company"
+            >
+              {/* {localStorage.getItem('role') === "Administrator" ? 
+          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+          :
+          null
+          } */}
+              {
+        Object(coopList).length === 0? (<></>) :
+        coopList.map((coop : ICooperative) =>{
+          console.log(coop)
+          console.log(coop.cooperativeCodeName)
+          return (
+            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+          )
+
+        })
+        }
             
+            </Select>
+    </FormControl> :
+    null
+          }
           </GridToolbarContainer>
          
         </>
@@ -338,7 +420,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
     return(
       <div  style={{
         backgroundColor: '#e2e8f0',
-        height:'100vh'
+        height:'auto'
       }}>
     <NavBar>
     <ToastContainer

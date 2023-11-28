@@ -4,317 +4,15 @@ import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
-import { Button, LinearProgress } from "@mui/material";
+
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import HeaderCard from "../components/HeaderCard";
 import SyncIcon from '@mui/icons-material/Sync';
 import { useNavigate } from "react-router-dom";
+import { ICooperative } from "./Employee";
+import { Button, FormControl, InputLabel, LinearProgress, MenuItem, Select } from "@mui/material";
 
-const columns: GridColDef[] = [
-  
-  { 
-    field: 'UUID', 
-    headerName: 'UUID', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'device_id', 
-    headerName: 'DEVICE ID', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'control_no', 
-    headerName: 'CONTROL NO', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'tor_no', 
-    headerName: 'TOR NO', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-  
-  { 
-    field: 'date_of_trip', 
-    headerName: 'DATE OF TRIP', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'bus_no', 
-    headerName: 'BUS NO', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'route', 
-    headerName: 'ROUTE', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'route_code', 
-    headerName: 'ROUTE CODE', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'bound', 
-    headerName: 'BOUND', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'trip_no', 
-    headerName: 'TRIP NO', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'inspector_emp_no', 
-    headerName: 'INSPECTOR EMP NO', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'inspector_emp_name', 
-    headerName: 'INSPECTOR EMP NAME', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'onboard_time', 
-    headerName: 'ONBOARD TIME', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'onboard_place', 
-    headerName: 'ONBOARD PLACE', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'onboard_km_post', 
-    headerName: 'ONBOARD KM POST', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'offboard_time', 
-    headerName: 'OFFBOARD TIME', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'offboard_place', 
-    headerName: 'OFFBOARD PLACE', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'offboard_km_post', 
-    headerName: 'OFFBOARD KM POST', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'ticket_no_beginning', 
-    headerName: 'TICKET NO BEGINNING', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'ticket_no_ending', 
-    headerName: 'TICKET NO ENDING', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'passenger_count_paid', 
-    headerName: 'PASSENGER COUNT PAID', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 240,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'passenger_count_with_pass', 
-    headerName: 'PASSENGER COUNT WITH PASS', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 270,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'passenger_count_transfer', 
-    headerName: 'PASSENGER COUNT TRANSFER', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 270,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'passenger_count_total', 
-    headerName: 'PASSENGER COUNT TOTAL', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 240,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'actual', 
-    headerName: 'ACTUAL COUNT', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'total_discrepancy', 
-    headerName: 'TOTAL DISCREPANCY', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'remakrs', 
-    headerName: 'REMARKS', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'lat', 
-    headerName: 'LAT', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'long', 
-    headerName: 'LONG', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
-
-  { 
-    field: 'timestamp', 
-    headerName: 'TIMESTAMP', 
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-  },
- 
- 
-  ];
   
   const rows: GridRowsProp = [
    
@@ -326,6 +24,330 @@ const columns: GridColDef[] = [
 
 
 export function TORViolation(){
+
+  const [coopList, setCoopList] = useState([]);
+  const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
+  const columns: GridColDef[] = [
+  
+    // { 
+    //   field: 'UUID', 
+    //   headerName: 'UUID', 
+    //   headerClassName: 'super-app-theme--header',
+    //   editable: false,
+    //   width: 180,
+    //   headerAlign: 'center',
+    //   align: 'center',
+    // },
+    {
+      field: 'coopId', // Assuming you have a 'name' field in your data source
+      headerName: 'COMPANY',
+      flex: 1,
+      minWidth: 180,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+      valueGetter: (params) => {
+        // Assuming your data source is an array of objects with 'coopId' and 'name' fields
+        const { coopId } = params.row;
+        // Assuming your data is stored in a variable named 'data'
+        const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+        return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
+      },
+    },
+  
+    { 
+      field: 'device_id', 
+      headerName: 'DEVICE ID', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'control_no', 
+      headerName: 'CONTROL NO', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'tor_no', 
+      headerName: 'TOR NO', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+    
+    { 
+      field: 'date_of_trip', 
+      headerName: 'DATE OF TRIP', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'bus_no', 
+      headerName: 'BUS NO', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'route', 
+      headerName: 'ROUTE', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'route_code', 
+      headerName: 'ROUTE CODE', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'bound', 
+      headerName: 'BOUND', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'trip_no', 
+      headerName: 'TRIP NO', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'inspector_emp_no', 
+      headerName: 'INSPECTOR EMP NO', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'inspector_emp_name', 
+      headerName: 'INSPECTOR EMP NAME', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'onboard_time', 
+      headerName: 'ONBOARD TIME', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'onboard_place', 
+      headerName: 'ONBOARD PLACE', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'onboard_km_post', 
+      headerName: 'ONBOARD KM POST', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'offboard_time', 
+      headerName: 'OFFBOARD TIME', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'offboard_place', 
+      headerName: 'OFFBOARD PLACE', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'offboard_km_post', 
+      headerName: 'OFFBOARD KM POST', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'ticket_no_beginning', 
+      headerName: 'TICKET NO BEGINNING', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'ticket_no_ending', 
+      headerName: 'TICKET NO ENDING', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'passenger_count_paid', 
+      headerName: 'PASSENGER COUNT PAID', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 240,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'passenger_count_with_pass', 
+      headerName: 'PASSENGER COUNT WITH PASS', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 270,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'passenger_count_transfer', 
+      headerName: 'PASSENGER COUNT TRANSFER', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 270,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'passenger_count_total', 
+      headerName: 'PASSENGER COUNT TOTAL', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 240,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'actual', 
+      headerName: 'ACTUAL COUNT', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'total_discrepancy', 
+      headerName: 'TOTAL DISCREPANCY', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'remakrs', 
+      headerName: 'REMARKS', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'lat', 
+      headerName: 'LAT', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'long', 
+      headerName: 'LONG', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+  
+    { 
+      field: 'timestamp', 
+      headerName: 'TIMESTAMP', 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+    },
+   
+   
+    ];
   
   const navigate = useNavigate();
   useEffect(() =>{
@@ -334,11 +356,10 @@ export function TORViolation(){
       localStorage.clear();
       navigate('/login')
     }
-    
-    if(!localStorage.getItem('pageCode')?.includes("tVio, ")){
-        navigate('/dashboard')
+   
+    if(!localStorage.getItem('pageCode')?.includes("tVio, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+      navigate('/dashboard')
     }
-
    
 
     return () =>{}
@@ -354,14 +375,53 @@ export function TORViolation(){
     
 
 
+  
+    
+  
+async function GetCooperative(){
+
+  try{
+
+    const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+      headers :{
+          Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      }
+  })
+      
+      const response = await request.data;
+      
+      if(response.messages[0].code === '0'){
+        console.log(response);
+        setCoopList(
+          
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+          response.response.map((coop : any ) =>{
+            console.log(coop)
+            
+            if(coop._id){
+              return {id: coop._id, ...coop}
+            }
+            
+          })
+        )
+
+        
+      }
+      
+  }catch(e){
+    console.log(`Error in getting coops: ${e}`)
+  }
+}
+
+
     useEffect(() =>{
       
         GetAllData();
         setTableRows(rows)
-
+        GetCooperative();
         return () =>{}
 
-    },[])
+    },[filterTableCompanyId])
 
     // const styles = (theme : any) => ({
     //   activeSortIcon: {
@@ -379,8 +439,8 @@ export function TORViolation(){
 
       setIsLoading(true);
       try{
-          
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/violation`,{
+          console.log(`data ${filterTableCompanyId}`);
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/violation/${filterTableCompanyId}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
@@ -396,7 +456,7 @@ export function TORViolation(){
                 
                 response.response.map((data : any) =>{
                  console.log(data.fieldData[0])
-                  return {id: data.fieldData[0].UUID, ...data.fieldData[0]}
+                  return {id: data.fieldData[0]._id, ...data.fieldData[0]}
                 })
               )
             }
@@ -468,12 +528,52 @@ function CustomToolbar() {
           }}
         >
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
+          {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
+          {
+          localStorage.getItem('role') === "Administrator" ? 
           <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
+          :
+          null
+}
         <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
             <GridToolbarFilterButton style ={{color:"#161d6f"}} />
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
             <GridToolbarExport style ={{color:"#161d6f"}} />
             <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
+
+            {localStorage.getItem('role') === "Administrator" ? 
+          
+          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+            <Select
+              labelId="filter-company-demo-demo-simple-select-autowidth-label"
+              id="filter-company-demo-demo-simple-select-autowidth"
+              value={filterTableCompanyId}
+              onChange={(event) => setFilterTableCompanyId(event.target.value)}
+              autoWidth
+              label="Company"
+            >
+              {/* {localStorage.getItem('role') === "Administrator" ? 
+          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+          :
+          null
+          } */}
+              {
+        Object(coopList).length === 0? (<></>) :
+        coopList.map((coop : ICooperative) =>{
+          console.log(coop)
+          console.log(coop.cooperativeCodeName)
+          return (
+            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+          )
+
+        })
+        }
+            
+            </Select>
+    </FormControl> :
+    null
+          }
       </GridToolbarContainer>
     </>
   );
@@ -483,7 +583,7 @@ function CustomToolbar() {
     return(
       <div  style={{
         backgroundColor: '#e2e8f0',
-        height:'100vh'
+        height:'auto'
       }}>
     <NavBar>
       <HeaderCard title="TOR VIOLATION"/>

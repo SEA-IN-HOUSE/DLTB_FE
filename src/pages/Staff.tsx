@@ -7,7 +7,7 @@ import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl,  FormControlLabel,  IconButton,  InputLabel, LinearProgress, MenuItem, Select, Switch, TextField } from "@mui/material";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl,  FormControlLabel,  IconButton,  InputLabel, LinearProgress,  MenuItem,  Select, Switch, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import moment from 'moment';
@@ -17,6 +17,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/PersonAdd';
 import { useNavigate } from "react-router-dom";
+import { ICooperative } from "./Employee";
   //Toolbar
 
 interface IEditState{
@@ -198,8 +199,9 @@ export function Staff(){
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("");
     const [password, setPassword] = useState("");
-    const [company, setCompany] = useState(localStorage.getItem('role'));
-
+    const [companyId, setCompanyId] = useState(localStorage.getItem('companyId'))
+    const [company, setCompany] = useState(localStorage.getItem('companyName'));
+    const [coopList, setCoopList] = useState([]);
     const [pageCode, setPageCode] = useState("");
 
 
@@ -207,15 +209,76 @@ export function Staff(){
 
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
 
-    useEffect(() =>{
+    //filter
 
+    const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
+
+    async function GetCooperative(){
+
+      try{
+    
+        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+          headers :{
+              Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+          }
+      })
+          
+          const response = await request.data;
+          
+          if(response.messages[0].code === '0'){
+            console.log(response);
+            setCoopList(
+              
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+              response.response.map((coop : any ) =>{
+                console.log(coop)
+                
+                if(coop._id){
+                  return {id: coop._id, ...coop}
+                }
+                
+              })
+            )
+    
+            
+          }
+          
+      }catch(e){
+        console.log(`Error in getting coops: ${e}`)
+      }
+    }
+  
+
+    useEffect(() =>{
+      
         GetAllData();
         setTableRows(rows)
-    
+        GetCooperative();
         return () =>{}
 
 
     },[])
+
+    useEffect(() =>{
+      
+      if(companyId === "Sburoot@123"){
+        setCompany("Seapps-inc");
+      }else if(companyId !== null ){
+        const selectedCoop : any = coopList.find((coop: ICooperative) => coop.id === companyId);
+        if(typeof selectedCoop !== 'undefined'){
+          console.log(`This is test ${selectedCoop.cooperativeCodeName}`)
+          if (selectedCoop) {
+            setCompany(selectedCoop.cooperativeCodeName);
+          } else {
+            // Handle the case where no matching object is found
+            console.error("No coop found with the given companyId");
+          }
+        } 
+       
+      }
+      return () =>{}
+
+    },[companyId])
   
     function UpdatePageCode (codeToAddOrRemove) {
      
@@ -246,10 +309,9 @@ export function Staff(){
     },[pageCode])
 
     async function GetAllData(){
-
         try{
-          
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/user`,{
+          console.log(`Display filtertable ${filterTableCompanyId}`)
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/user/${filterTableCompanyId}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
@@ -275,69 +337,93 @@ export function Staff(){
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      
+      setTimeout(GetAllData, 5000)
     }   
 
+    useEffect(() =>{
 
+      GetAllData();
+
+      return () =>{}
+    },[companyId, filterTableCompanyId])
 
   
     
     async function RegisterEmployeeCard(event) {
       try {
-
-        event?.preventDefault()
-        // Define the request data as an object
-        const requestData = {
-         firstName : firstName,
-          middleName : middleName,
-          lastName : lastName,
-          email : email,
-          role : role,
-          pageCode: pageCode,
-          password : password,
-          company : company
-        };
-    
-        const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/user`,
-          requestData, // Use the requestData object as the request data
-          {
-            headers: {
-              Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
-            },
-          }
-        );
-    
-        // Note that there's no need to use `await` on response.data directly
-        // as axios already returns the response data.
-        const responseData = response.data;
-          console.log(responseData)
-          if(responseData.messages[0].code === "0"){
+        if(role === "Administrator"){
+          setCompanyId(import.meta.env.VITE_COMPANY_ID); 
+        }
+        console.log(`Company id ${companyId}`)
+        console.log(`Company Name ${company}`)
+        if(company !== null && company[0] !== null && company[1] !== null && company[1] !== "" && company[1] !== null){
+          event?.preventDefault() 
+          // Define the request data as an object
+          const requestData = {
+           firstName : firstName,
+            middleName : middleName,
+            lastName : lastName,
+            email : email,
+            role : role,
+            pageCode: pageCode,
+            password : password,
+            company : company,
+            companyId: companyId,
+          };
+      
+          const response = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/user`,
+            requestData, // Use the requestData object as the request data
+            {
+              headers: {
+                Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+              },
+            }
+          );
+      
+          // Note that there's no need to use `await` on response.data directly
+          // as axios already returns the response data.
+          const responseData = response.data;
+            console.log(responseData)
+            if(responseData.messages[0].code === "0"){
+            
+              GetAllData();
           
-            GetAllData();
-        
-            toast.success("Successfully added!", {
-              position: "bottom-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-              });
-           }else{
-            toast.warning("Invalid fields!", {
-              position: "bottom-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-              });
-           }
+              toast.success("Successfully added!", {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
+             }else{
+              toast.warning("Invalid fields!", {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
+             }
+        }else{
+          toast.warning("Invalid fields!", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        }
+      
     
       } catch (error) {
         console.error(error);
@@ -437,7 +523,37 @@ export function Staff(){
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
             <GridToolbarExport style ={{color:"#161d6f"}} />
             <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
+            {localStorage.getItem('role') === "Administrator" ? 
+    <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+            <Select
+              labelId="filter-company-demo-demo-simple-select-autowidth-label"
+              id="filter-company-demo-demo-simple-select-autowidth"
+              value={filterTableCompanyId}
+              onChange={(event) => setFilterTableCompanyId(event.target.value)}
+              autoWidth
+              label="Company"
+            >
+             
+          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+        
+              {
+        Object(coopList).length === 0? (<></>) :
+        coopList.map((coop : ICooperative) =>{
+          console.log(coop)
+          console.log(coop.cooperativeCodeName)
+          return (
+            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+          )
+
+        })
+        }
             
+            </Select>
+    </FormControl>
+  :
+  null
+  }
           </GridToolbarContainer>
          
         </>
@@ -463,7 +579,7 @@ export function Staff(){
 return(
   <div  style={{
     backgroundColor: '#e2e8f0',
-    height:'100vh'
+    height:'auto'
   }}>
 <ToastContainer
         position="bottom-center"
@@ -566,18 +682,33 @@ return(
         />
       {localStorage.getItem('role') === "Administrator" ? (
          <FormControl fullWidth sx ={{marginTop: 1}}>
-         <InputLabel id="demo-simple-select-helper-label">Company</InputLabel>
+         <InputLabel id="sdsddemo-simple-select-helper-label">Company</InputLabel>
          <Select
-           labelId="demo-simple-select-helper-label"
-           id="demo-simple-select-helper"
-           value={company}
+           labelId="sdsddemo-simple-select-helper-label"
+           id="sdsddemo-simple-select-helper"
+           value={companyId}
+           defaultValue={companyId}
            label="Company"
            required
-           onChange={(event) => setCompany(event.target.value)}
-         >
-       
-           <MenuItem value={"Seapps-inc"}>Seapps-inc</MenuItem>
-           <MenuItem value={"DLTB"}>DLTB</MenuItem>
+         onChange={(event) => setCompanyId(event.target.value)}
+         > 
+        
+       {localStorage.getItem('role') === "Administrator" ? 
+       <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+       :
+       null
+      }
+           
+           {
+    Object(coopList).length === 0? (null) :
+    coopList.map((coop : ICooperative) =>{
+      
+      return (
+        <MenuItem key ={coop.id}  value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+      )
+
+    })
+    }
          </Select>
        
        </FormControl>
@@ -908,11 +1039,17 @@ return(
         disabled = {editData.company === "Seapps-inc" && localStorage.getItem('role') !== "Administrator" }
         onChange={(event) => setEditData({...editData, company: event.target.value})}
       >
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
-          <MenuItem value={"Seapps-inc"}>Seapps-inc</MenuItem>
-          <MenuItem value={"DLTB"}>DLTB</MenuItem>
+          {
+    Object(coopList).length === 0? (<></>) :
+    coopList.map((coop : ICooperative) =>{
+      console.log(coop)
+      console.log(coop.cooperativeCodeName)
+      return (
+        <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+      )
+
+    })
+    }
       </Select>
       {/* <FormHelperText>With label + helper text</FormHelperText> */}
     </FormControl>
