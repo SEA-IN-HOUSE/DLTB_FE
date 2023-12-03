@@ -1,25 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-
-import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect,  useState} from 'react'
+import {useEffect, useState, useLayoutEffect, useMemo} from 'react'
 import Box from '@mui/material/Box';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
+import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputAdornment, InputLabel, LinearProgress, ListSubheader, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
+import HeaderCard from "../components/HeaderCard";
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AddIcon from '@mui/icons-material/AddHomeWork';
 import { ICooperative } from "./Employee";
+import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 
 
-
+  
   const rows: GridRowsProp = [
    
   ];
@@ -27,31 +25,67 @@ import { useNavigate } from "react-router-dom";
 
 
 
-
-
-export function Station(){
+export function ActivityLog(){
   
-  // useEffect(() => {
-  //   console.log("TEST")
-  //   // Check if the socket is connected
-  //   if (socket.connected) {
-  //     console.log('Connected to the server');
-  //   } else {
-  //     console.log('Not connected to the server');
-  //   }
 
-  //   // Listen for disconnect event
-  //   socket.on('disconnect', () => {
-  //     console.log('Disconnected from the server');
-  //   });
-
-  //   // Clean up the event listener when the component unmounts
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
-
+  const [coopList, setCoopList] = useState([]);
+  const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
+  const columns: GridColDef[] = [
+  
+    // { 
+    //   field: 'userId', 
+    //   headerName: 'User Id', 
+    //   flex: 1,
+    //       minWidth: 0,
+    //   headerClassName: 'super-app-theme--header',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   editable: false,
+     
+    // },
+  
+    { 
+      field: 'action', 
+      headerName: 'ACTION', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+     
+    },
+  
+    { 
+      field: 'actionDescription', 
+      headerName: 'DESCRIPTION', 
+      
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+   
+      
+    },
+  
+  
+    { 
+      field: 'dataCreated', 
+      headerName: 'DATE CREATED', 
+      flex: 1,
+      minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+      valueFormatter: (params) => {
+        return moment(params.value).format('MMMM D, YYYY');
+      },
+    },
+  
+    ];
 
   const navigate = useNavigate();
   useEffect(() =>{
@@ -60,197 +94,129 @@ export function Station(){
       localStorage.clear();
       navigate('/login')
     }
-   
+    
 
-    if(!localStorage.getItem('pageCode')?.includes("sta, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
-      navigate('/dashboard')
-    }
+    // if(localStorage.getItem('role') !== "Administrator"){
+    //   navigate('/dashboard')
+    // }
 
     return () =>{}
 
 },[])
 
-const [coopList, setCoopList] = useState([]);
-const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
-
     const [tableRows, setTableRows] = useState(rows)
-
-    const columns: GridColDef[] = [
-  
-      { 
-        field: 'stationName', 
-        headerName: 'STATION NAME', 
-        flex: 1,
-            minWidth: 0,
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        align: 'center',
-        editable: false,
-       
-      },
-      { 
-        field: 'km', 
-        headerName: 'KILOMETER', 
-        flex: 1,
-            minWidth: 0,
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        align: 'center',
-        editable: false,
-       
-      },
+   
     
-      { 
-        field: 'viceVersaKM', 
-        headerName: 'VICE VERSA KM', 
-        flex: 1,
-            minWidth: 0,
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        align: 'center',
-        editable: false,
-       
-      },
-    
-      { 
-        field: 'routeId', 
-        headerName: 'ROUTE ID', 
-        flex: 1,
-            minWidth: 0,
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        align: 'center',
-        editable: false,
-       
-      },
-
-      {
-        field: 'coopId', // Assuming you have a 'name' field in your data source
-        headerName: 'COMPANY',
-        flex: 1,
-        minWidth: 180,
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        align: 'center',
-        editable: false,
-        valueGetter: (params) => {
-          // Assuming your data source is an array of objects with 'coopId' and 'name' fields
-          const { coopId } = params.row;
-          // Assuming your data is stored in a variable named 'data'
-          const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
-          return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
-        },
-      },
-    
-    //   { 
-    //     field: 'createdAt', 
-    //     headerName: 'DATE CREATED', 
-    //     flex: 1,
-    //     minWidth: 0,
-    //     headerClassName: 'super-app-theme--header',
-    //     headerAlign: 'center',
-    //     align: 'center',
-    //     editable: false,
-    //     valueFormatter: (params) => {
-    //       return moment(params.value).format('MMMM D, YYYY');
-    //     },
-    //   },
-    
-      { 
-        field: 'updatedAt', 
-        headerName: 'DATE CREATED', 
-        flex: 1,
-            minWidth: 0,
-        headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        align: 'center',
-        editable: false,
-        valueFormatter: (params) => {
-          return moment(params.value).format('MMMM D, YYYY');
-        },
-      }
-     
-      ];
-      
-
-
     useEffect(() =>{
+    
    
         GetAllData();
+        GetCooperative();
         setTableRows(rows)
-    
         
+    
         return () =>{}
 
     },[])
 
- 
+  
+  
     async function GetAllData(){
 
         try{
           
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/station/${filterTableCompanyId}`,{
+          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/activity-log/${filterTableCompanyId}`,{
             headers :{
                 Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
             }
         })
-            
             const response = await request.data;
-          console.log("THIS IS THE RESPONSE:")
+            console.log(`LOG`)
             console.log(response)
-         
-
             if(response.messages[0].code === 0){
-              if (JSON.stringify(response.response) !== JSON.stringify(tableRows)) {
-                setTableRows(
+                console.log(`TEST`)
+              setTableRows(
                 
-                  response.response.map((data : any) =>{
-               
-                    return {id: data._id, ...data}
-                  })
-                )
-              }
-             
+                response.response.map((data : any) =>{
+                  return {id: data._id, ...data}
+                })
+              )
             }
        
 
             // setClientTableRows(newRows)
-            
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-        setTimeout(GetAllData, 5000)
+      setTimeout(GetAllData, 5000)
     }   
+    useEffect(() =>{
+      GetAllData();
+      return () =>{}
+    },[filterTableCompanyId])
 
-    const [coopId, setCoopId] = useState("");
     
-const [stationName , setStationName] = useState("")
+    const [employee, setEmployee] = useState<any>([]);
+    const [empNo, setEmpNo] = useState("")
 
-const [km, setKm] = useState("")
+    const [cardId, setCardId] = useState("")
 
-const [viceVersaKM, setViceVersaKM] = useState("")
+    const [balance, setBalance] = useState("")
 
-const [routeId, setRouteId] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
-const [isModalOpen, setIsModalOpen] = useState(false)
+  const [coopId, setCoopId] = useState("");
+
+  async function GetCooperative(){
+
+    try{
+  
+      const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+        headers :{
+            Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+        }
+    })
+        
+        const response = await request.data;
+        
+        if(response.messages[0].code === '0'){
+          console.log(response);
+          setCoopList(
+            
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+            response.response.map((coop : any ) =>{
+              console.log(coop)
+              
+              if(coop._id){
+                return {id: coop._id, ...coop}
+              }
+              
+            })
+          )
+  
+          
+        }
+        
+    }catch(e){
+      console.log(`Error in getting coops: ${e}`)
+    }
+  }
 
 
-    async function AddStation() {
+    async function RegisterCard() {
       try {
-      
 
         event?.preventDefault()
         // Define the request data as an object
         const requestData = {
           coopId: coopId,
-          stationName: stationName, // Assuming empNo and cardId are variables in your scope
-          km : km,
-          viceVersaKM : viceVersaKM,
-          routeId : routeId
+          empNo: parseFloat(empNo), // Assuming empNo and cardId are variables in your scope
+          cardID: cardId,
+          balance: balance,
         };
-    
+        console.log(requestData)
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/station/${filterTableCompanyId}`,
+          `${import.meta.env.VITE_BASE_URL}/mastercard`,
           requestData, // Use the requestData object as the request data
           {
             headers: {
@@ -263,13 +229,12 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         // as axios already returns the response data.
         const responseData = response.data;
           console.log(responseData)
-       
+          
           if(responseData.messages[0].code === "0"){
           
-
             GetAllData();
         
-            toast.success("Successfully added!", {
+            toast.success("Success", {
               position: "bottom-center",
               autoClose: 5000,
               hideProgressBar: false,
@@ -280,7 +245,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
               theme: "colored",
               });
            }else{
-            toast.warning("Invalid fields!", {
+            toast.warning(responseData.messages[0].message, {
               position: "bottom-center",
               autoClose: 5000,
               hideProgressBar: false,
@@ -309,10 +274,6 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         setIsModalOpen(!isModalOpen)
       }
     }
-    useEffect(() =>{
-      GetAllData();
-      return () =>{}
-    },[filterTableCompanyId])
 
     function CustomToolbar() {
 
@@ -324,11 +285,11 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             marginBottom: '2px',
           }}
           >
-          <Button variant="contained"  startIcon = {<AddIcon />} color="success"  onClick={ () =>{
+          {/* <Button variant="contained"  startIcon = {<AddIcon />} color="success" onClick={ () =>{
             setIsModalOpen(true)
           }}>
-          Add station
-        </Button>
+          Register card
+        </Button> */}
   
         <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
             <GridToolbarFilterButton style ={{color:"#161d6f"}} />
@@ -374,56 +335,76 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         );
   
   }   
-  async function GetCooperative(){
 
-    try{
-  
-      const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
-        headers :{
-            Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-        }
-    })
+
+
+
+  const containsText = (text : string, searchText) =>
+  text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+
+ // const allOptions = ["Option One", "Option Two", "Option Three", "Option Four"];
+
+  //const [selectedOption, setSelectedOption] = useState(allOptions[0]);
+
+  const [searchText, setSearchText] = useState("");
+  const displayedOptions = useMemo(
+    () => employee.filter((option) => containsText(option, searchText)),
+    [searchText]
+  );
+      
+  async function GetAllEmployees(){
+
+    // setIsLoading(true)
+
+      try{
         
-        const response = await request.data;
-        
-        if(response.messages[0].code === '0'){
-          console.log(response);
-          setCoopList(
-            
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any  
-            response.response.map((coop : any ) =>{
-              console.log(coop)
-              
-              if(coop._id){
-                return {id: coop._id, ...coop}
-              }
-              
-            })
-          )
-  
+        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+          headers :{
+              Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+          }
+      })
           
-        }
- 
-    }catch(e){
-      console.log(`Error in getting coops: ${e}`)
-    }
-  }
-  
+          const response = await request.data;
+          
+          if(response.messages[0].code === '0'){
 
-   // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"}
-  useEffect(() =>{
-    GetCooperative();
-    return () =>{}
+            response.response.map((employee : any ) =>{
+            
+              if (employee?.empNo !== undefined &&
+                employee?.empNo !== null &&
+                employee?.empNo !== "" &&
+                employee._id !== undefined &&
+                employee._id !== null &&
+                employee._id !== "") {
+               
+                  const empNumber  = employee?.empNo.toString();
+                
+                setEmployee((employee: any) => [...employee, empNumber]);
+              }
+            })
 
-  },[isModalOpen, km, viceVersaKM, routeId ])
+          }
+     
+      }catch(e){
+          console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
+    
+      }
+    
+  } 
+
+  useLayoutEffect(() =>{
+    setEmployee([])
+    GetAllEmployees();
+
+    return () => {}
+  },[])
 
     return(
       <div  style={{
         backgroundColor: '#e2e8f0',
         height:'auto'
       }}>
-    <NavBar>
-    <ToastContainer
+      <ToastContainer
         position="bottom-center"
         autoClose={5000}
         hideProgressBar={false}
@@ -441,11 +422,13 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         }
         />
 
-<Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
-     <form onSubmit={AddStation}>
+    <NavBar>
 
-         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Add Station
+
+<Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
+     <form onSubmit={RegisterCard}>
+     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Add Master Card
         </DialogTitle>
         
         <IconButton
@@ -460,14 +443,13 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         >
       
           <CloseIcon />
-        </IconButton>       
-
+        </IconButton>
         <DialogContent dividers>
           <DialogContentText>
             {/* To subscribe to this website, please enter your email address here. We
             will send updates occasionally. */}
           </DialogContentText>
-          
+      
           <FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
   <Select
@@ -493,55 +475,93 @@ const [isModalOpen, setIsModalOpen] = useState(false)
    
   </Select>
 </FormControl>
+
+          {/* <TextField
+            autoFocus
+            margin="dense"
+            id="riderId"
+            name ="riderId"
+            label="Rider Id"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setRiderId(event.target.value)}
+          /> */}
+
+<FormControl fullWidth margin ="dense">
+          <InputLabel id="search-select-label">Employee No</InputLabel>
+          <Select
+            // Disables auto focus on MenuItems and allows TextField to be in focus
+            MenuProps={{ autoFocus: false }}
+            labelId="search-select-label"
+            id="search-select"
+            value={empNo}
+            label="Employee No"
+            onChange={(e) => setEmpNo(e.target.value)}
+            onClose={() => setSearchText("")}
+            // This prevents rendering empty string in Select's value
+            // if search text would exclude currently selected option.
+            renderValue={() => empNo}
+          >
+  
+           
+            <ListSubheader>
+              <TextField
+                size="small"
+                // Autofocus on textfield
+                autoFocus
+                placeholder="Type to search..."
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  )
+                }}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key !== "Escape") {
+                    // Prevents autoselecting item while typing (default Select behaviour)
+                    e.stopPropagation();
+                  }
+                }}
+              />
+            </ListSubheader>
+            {displayedOptions.map((option, i) => (
+              <MenuItem key={i} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="cardId"
+            name ="cardId"
+            label="Card Id"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setCardId(event.target.value)}
+            />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="balance"
+            name ="balance"
+            label="Balance"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setBalance(event.target.value)}
+          />
+
+        
          
-          <TextField
-            autoFocus
-            margin="dense"
-            id="stationName"
-            name ="stationName"
-            label="Station Name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setStationName(event.target.value)}
-          />
-
-          <TextField
-            autoFocus
-            margin="dense"
-            id="km"
-            name ="km"
-            label="Km"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setKm(event.target.value)}
-          />
-
-          <TextField
-            autoFocus
-            margin="dense"
-            id="km"
-            name ="viceVersaKM"
-            label="Vice Versa Km"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setViceVersaKM(event.target.value)}
-          />
-
-          <TextField
-            autoFocus
-            margin="dense"
-            id="routeId"
-            name ="routeId"
-            label="Route Id"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setRouteId(event.target.value)}
-          />
-
         </DialogContent>
         
         <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
@@ -552,7 +572,8 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         </form>
   </Dialog>
 
-    <HeaderCard title ="STATION" />
+
+    <HeaderCard title ="LOGS" />
         <Paper style={{width: '100%', marginTop: '10px' }}>
             <Box sx = {{
             '& .super-app-theme--header': {

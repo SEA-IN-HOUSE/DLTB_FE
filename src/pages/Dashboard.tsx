@@ -44,6 +44,7 @@ const initialState = [
     name: "Trouble",
     total: 0,
   },
+ 
 ];
 
 export function Dashboard() : JSX.Element{
@@ -68,6 +69,41 @@ export function Dashboard() : JSX.Element{
   
   },[])
 
+//   async function GetGrossSales(){
+
+//     try{
+  
+//         const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
+//           headers :{
+//               Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+//           }
+//       })
+          
+//           const response = await request.data;
+          
+//           if(response.messages[0].code === '0'){
+//             console.log(response);
+//             setCoopList(
+              
+//               // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+//               response.response.map((coop : any ) =>{
+//                 console.log(coop)
+                
+//                 if(coop._id){
+//                   return {id: coop._id, ...coop}
+//                 }
+                
+//               })
+//             )
+    
+            
+//           }
+          
+//       }catch(e){
+//         console.log(`Error in getting coops: ${e}`)
+//       }
+
+//   }
 
   
   async function GetCooperative(){
@@ -128,6 +164,44 @@ export function Dashboard() : JSX.Element{
     const [torTrouble, setTorTrouble] = useState(0);
 
     const [data, setData] = useState(initialState);
+
+    const [grossSales, setGrossSales] = useState("0");
+
+    // const [unitsOperational, setUnitsOperational] = useState(0)
+
+
+    async function GetTotalGrossSales(){
+
+        try{
+
+            const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/ticket/${filterTableCompanyId}`,{
+                headers :{
+                    Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+                }
+            })
+
+            const response = await request.data;
+
+            let totalFare = 0.00;
+
+            response.response.map((data : any) =>{
+              totalFare = totalFare + data.subtotal;
+             })
+             console.log(`total fare ${totalFare}`)
+             setGrossSales(() => `${totalFare}`)
+            // setTorTicketNumber(response.response.length)
+
+            setData((prevState) =>
+            prevState.map((item) =>
+                item.name === "Total Gross Sales" ? { ...item, total: totalFare } : item
+            )
+            );
+
+        }catch(e){
+            console.error("Error in getting all the tor main: "+e)
+        }
+        setTimeout(GetAllTORTicket, 5000)
+    }
 
 
     async function GetAllTORMain(){
@@ -367,6 +441,8 @@ export function Dashboard() : JSX.Element{
 
         GetAllTORTrouble();
 
+        GetTotalGrossSales();
+
         return () =>{}
 
 
@@ -440,9 +516,13 @@ export function Dashboard() : JSX.Element{
           <DashboardCard icon ={<BsFillExclamationTriangleFill />} title="TOR VIOLATION" cardNumber={torViolation}/>
           
           <DashboardCard icon ={<BsEmojiDizzyFill />} title="TOR TROUBLE" cardNumber={torTrouble}/>
+
+          
+        </div>
+        <div className= "mt-4">
+        <DashboardCard  icon ={<BsCurrencyExchange /> } title="TOTAL GROSS SALES" cardNumber={"₱ "+grossSales}/>
         </div>
         
-    
         
     </div>
 

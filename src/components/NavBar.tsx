@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ReactNode,  useEffect, useState, useLayoutEffect } from "react";
 //import { useNavigate, useLocation } from "react-router-dom";
-import { BsCurrencyExchange, BsEmojiDizzyFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace,BsTicketPerforatedFill, BsCarFrontFill  } from 'react-icons/bs';
+import { BsCurrencyExchange, BsEmojiDizzyFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace,BsTicketPerforatedFill, BsCarFrontFill,BsCardList  } from 'react-icons/bs';
 import { ProfileBoxList } from "./NavList";
 // import NotificationBell from "./NotificationBell";
 import axios from "axios";
@@ -431,12 +431,24 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
         ) :
 
         (<></>)
-      }
-    
-
-        
+      } 
 <li>
-
+<li>
+          <a
+              onClick={() => navigate("/log")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/log" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/log" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsCardList />
+              <span className="ml-3">Logs</span>
+              
+          </a>
+        </li>
             <button type="button" className="flex items-center w-full p-2 text-base text-neutral-100 transition duration-75 rounded-lg group hover:bg-indigo-950 mt-4" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example" onClick={() =>{
               if(localStorage.getItem("torIsOpen") === "true"){
                 localStorage.setItem("torIsOpen", "false");

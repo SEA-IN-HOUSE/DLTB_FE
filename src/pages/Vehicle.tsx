@@ -140,7 +140,7 @@ const columns: GridColDef[] = [
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      setTimeout(GetAllData, 15000)
+      setTimeout(GetAllData, 5000)
     }   
 
 

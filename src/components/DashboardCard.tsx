@@ -3,7 +3,7 @@
 interface DashboardCardProps {
 
 title: string;
-cardNumber: number;
+cardNumber:  number | string;
 icon: JSX.Element
 
 }

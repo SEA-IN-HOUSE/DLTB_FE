@@ -541,6 +541,7 @@ async function GetCooperative(){
           setIsLoading(false)
             console.log("ERROR = "+ e)
         }
+        setTimeout(GetAllData, 5000)
       
     } 
     useEffect(() =>{

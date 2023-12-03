@@ -2,53 +2,66 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
-import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter, useGridApiContext, gridFilteredSortedRowIdsSelector,useGridApiRef  } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarDensitySelector, GridToolbarExport,  } from '@mui/x-data-grid';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
-import { Button, FormControl, InputLabel, LinearProgress, MenuItem, Select } from "@mui/material";
+import { Button, FormControl, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
-import HeaderCard from "../components/HeaderCard";
 import SyncIcon from '@mui/icons-material/Sync';
 import { useNavigate } from "react-router-dom";
 import { ICooperative } from "./Employee";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import moment from 'moment';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import moment from 'moment'
+import { BsCurrencyExchange,BsTicketPerforatedFill,BsBagCheck  } from "react-icons/bs";
+import React, { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import PrintIcon from '@mui/icons-material/Print';
+import { ComponentToPrint } from '../components/ComponentToPrint';
 
   const rows: GridRowsProp = [
    
   ];
 
-  function CustomFooterStatusComponent(props) {
-    return (
-      <Box sx={{ p: 1, display: 'flex' }}>
-        {/* <FiberManualRecordIcon
-          fontSize="small"
-          sx={{
-            mr: 1,
-            color: props.status === 'connected' ? '#4caf50' : '#d9182e',
-          }}
-        /> */}
-       TOTAL FARE: ₱ {parseFloat(props.total).toFixed(2)}
-      </Box>
-    );
-  }
+  // function CustomFooterStatusComponent(props) {
+  //   return (
+  //     <Box sx={{ p: 1, display: 'flex' }}>
+  //       {/* <FiberManualRecordIcon
+  //         fontSize="small"
+  //         sx={{
+  //           mr: 1,
+  //           color: props.status === 'connected' ? '#4caf50' : '#d9182e',
+  //         }}
+  //       /> */}
+  //      TOTAL FARE: ₱ {parseFloat(props.total).toFixed(2)}
+  //     </Box>
+  //   );
+  // }
 
 
 export function TORTicket(){
 
- 
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [total, setTotal] = useState(0);
+
+  const [totalTicket, setTotalTicket] = useState(0);
+
+  const [totalBaggage, setTotalBaggage] = useState(0);
+
+  const [grandTotal, setGrandTotal] = useState(0);
+
+  
 
   const [coopList, setCoopList] = useState([]);
   const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
 
-  
-async function GetCooperative(){
 
+
+async function GetCooperative(){
+  setIsSyncing(false)
   try{
 
     const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
@@ -83,7 +96,7 @@ async function GetCooperative(){
 }
 
 useEffect(() =>{
-  GetAllData();
+
   GetCooperative();
   return () =>{}
 },[filterTableCompanyId])
@@ -130,7 +143,7 @@ useEffect(() =>{
       headerName: 'CONTROL NO', 
       headerClassName: 'super-app-theme--header',
       editable: false,
-      width: 230,
+      width: 280,
       headerAlign: 'center',
       align: 'center',
     },
@@ -154,19 +167,30 @@ useEffect(() =>{
       width: 180,
       headerAlign: 'center',
       align: 'center',
-      valueGetter: (params) => `₱${parseFloat(params.value).toFixed(2)}`,
+      valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
     },
-  
-    // { 
-    //   field: 'date_of_trip', 
-    //   headerName: 'DATE OF TRIP', 
-    //   headerClassName: 'super-app-theme--header',
-    //   editable: false,
-    //   width: 180,
-    //   headerAlign: 'center',
-    //   align: 'center',
-    // },
-  
+    {
+      field: 'subtotal',
+      headerName: 'SUBTOTAL',
+      headerClassName: 'super-app-theme--header',
+      type: 'number',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+      valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
+    },
+    {
+      field: 'baggage',
+      headerName: 'BAGGAGE',
+      headerClassName: 'super-app-theme--header',
+      type: 'number',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+      valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
+    },
     { 
       field: 'bus_no', 
       headerName: 'BUS NO', 
@@ -240,29 +264,6 @@ useEffect(() =>{
   
     },
   
-    // { 
-    //   field: 'ticket_status', 
-    //   headerName: 'TICKET STATUS', 
-    //   headerClassName: 'super-app-theme--header',
-    //   editable: false,
-    //   width: 180,
-    //   headerAlign: 'center',
-    //   align: 'center',
-  
-    // },
-  
-  
-    // { 
-    //   field: 'timestamp', 
-    //   headerName: 'TIMESTAMP', 
-    //   headerClassName: 'super-app-theme--header',
-    //   editable: false,
-    //   width: 180,
-    //   headerAlign: 'center',
-    //   align: 'center',
-  
-    // },
-  
     { 
       field: 'from_place', 
       headerName: 'FROM PLACE', 
@@ -317,9 +318,7 @@ useEffect(() =>{
       align: 'center',
   
     },
-  
-   
-  
+ 
     { 
       field: 'card_no', 
       headerName: 'CARD NO', 
@@ -330,18 +329,7 @@ useEffect(() =>{
       align: 'center',
   
     },
-  
-    // { 
-    //   field: 'status', 
-    //   headerName: 'STATUS', 
-    //   headerClassName: 'super-app-theme--header',
-    //   editable: false,
-    //   width: 180,
-    //   headerAlign: 'center',
-    //   align: 'center',
-  
-    // },
-  
+ 
     { 
       field: 'lat', 
       headerName: 'LAT', 
@@ -363,28 +351,7 @@ useEffect(() =>{
       align: 'center',
   
     },
-  
-    // { 
-    //   field: 'created_on', 
-    //   headerName: 'CREATED ON', 
-    //   headerClassName: 'super-app-theme--header',
-    //   editable: false,
-    //   width: 180,
-    //   headerAlign: 'center',
-    //   align: 'center',
-  
-    // },
-    // { 
-    //   field: 'updated_on', 
-    //   headerName: 'UPDATED ON', 
-    //   headerClassName: 'super-app-theme--header',
-    //   editable: false,
-    //   width: 180,
-    //   headerAlign: 'center',
-    //   align: 'center',
-  
-    // },
-  
+
     { 
       field:'previous_balance', 
       headerName: 'PREVIOUS BALANCE', 
@@ -415,10 +382,9 @@ useEffect(() =>{
       width: 180,
       headerClassName: 'super-app-theme--header',
       editable: false,
-     headerAlign: 'center',
+      headerAlign: 'center',
       align: 'center',
       renderCell: (params) => {
-      
         const formattedDate = moment(params.value).format('YYYY-MM-DD HH:mm:ss');
         return <div>{formattedDate}</div>;
       },
@@ -448,9 +414,9 @@ useEffect(() =>{
 
     const [tableRows, setTableRows] = useState(rows)
 
-    const [isLoading , setIsLoading] = useState(false);
 
-    const [isSyncing, setIsSyncing] = useState(false);
+
+    // const [isSyncing, setIsSyncing] = useState(false);
 
     const [fromDate , setFromDate] = useState(null);
 
@@ -465,132 +431,40 @@ useEffect(() =>{
 
     },[fromDate, toDate])
     
-  async function GetAllDataByFilterDate (){
-
-    if(fromDate !== null && toDate !== null){
-
-    
-      try{
-        console.log(`From date ${fromDate}`)
-        console.log(`To date ${toDate}`)
-          const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/ticket/${filterTableCompanyId}`,
-          {
-            "fromDate": fromDate,
-            "toDate": toDate
-        },
-          {
-            headers :{
-                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-            }
-        })
-            
-            const response = await request.data;
-        
-            console.log(response)
-
-            if(response.messages[0].code == 0){
-          
-              setTableRows(
-                
-                response.response.map((data : any) =>{
-                  return {id: data._id, ...data}
-                })
-              )
-            }
-          
-
-            // setClientTableRows(newRows)
-        }catch(e){
-       
-            console.log("ERROR = "+ e)
-        }
-
-    }
+ 
   
-    
-  } 
-
-
-    // useEffect(() =>{
       
-    //     GetAllData();
-    //     setTableRows(rows)
-
-    //     return () =>{}
-
-    // },[filterTableCompanyId])
-
-    async function GetAllData(){
-
-      setIsLoading(true);
-      try{
-          
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/ticket/${filterTableCompanyId}`,{
-            headers :{
-                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-            }
-        })
-            
-            const response = await request.data;
-            console.log("HEREs")
-            console.log(response.messages[0].code)
-
-            if(response.messages[0].code === 0){
-              console.log("HERE")
-
-              if (JSON.stringify(response.response) !== JSON.stringify(tableRows)) {
-                console.log("it match")
-
-                console.log(JSON.stringify(response.response))
-                setTableRows(
-                
-                  response.response.map((data : any) =>{
-                   console.log(data)
-                    return {id: data._id, ...data}
-                  })
-                )
-              }else{
-                console.log("does not match")
-              }
-              
-            }
-            setIsLoading(false)
-
-            // setClientTableRows(newRows)
-        }catch(e){
-          setIsLoading(false)
-            console.log("ERROR = "+ e)
-        }
-        setTimeout(GetAllData, 15000)
-    }   
+    
 
     useEffect(() =>{
 
     },[tableRows])
 
     async function SyncData(){
-      setIsSyncing(true);
-      try{
+      console.log("")
+      // setIsSyncing(true);
+      // try{
 
-        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/main`,{
-          headers :{
-              Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-          }
-      })
+      //   const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/main`,{
+      //     headers :{
+      //         Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      //     }
+      // })
           
-          const response = await request.data;
+      //     const response = await request.data;
 
-          if(response.messages[0].code === '0'){
+      //     if(response.messages[0].code === '0'){
 
-            setIsSyncing(false);
+      //       setIsSyncing(false);
            
-          }
+      //     }
 
-          setIsSyncing(false);
-      }catch(e){
-        console.error("Error in syncing data: "+e);
-        setIsSyncing(false);
-      }
+      //     setIsSyncing(false);
+      // }catch(e){
+      //   console.error("Error in syncing data: "+e);
+      //   setIsSyncing(false);
+      // }
+      // setTimeout(GetAllData, 5000)
 
     } 
 
@@ -627,10 +501,15 @@ function CustomToolbar() {
           }
          
             <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
-            <GridToolbarFilterButton style ={{color:"#161d6f"}} />
+            {/* <GridToolbarFilterButton style ={{color:"#161d6f"}} /> */}
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
             <GridToolbarExport style ={{color:"#161d6f"}} />
-            <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
+
+{/* 
+            <Button onClick={handlePrint} startIcon={<PrintIcon />} style ={{color:"#161d6f"}}>
+              Print
+            </Button>    */}
+            {/* <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/> */}
             {localStorage.getItem('role') === "Administrator" ? 
         
           <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
@@ -669,51 +548,122 @@ function CustomToolbar() {
   );
 
 }   
-const calculateTotalFare = (rows) => {
-  let totalFare = 0;
-  for (const row of rows) {
-    totalFare += row.fare;
-  }
-  return totalFare;
-};
-
-
-const totalFare = calculateTotalFare(tableRows);
-function CustomFooter(){
-
-  return(
-    <h1>{totalFare}</h1>
-  )
-}
-
-
-const apiRef = useGridApiRef();
-console.log("HERE")
-
-const [total, setTotal] = useState(0);
 
 useEffect(() => {
 
-  if(Object(tableRows).length > 0 ){
-    console.log(`this is is filtered: ${gridFilteredSortedRowIdsSelector(apiRef)}`)
-    setTotal(0)
-    for(const id of gridFilteredSortedRowIdsSelector(apiRef))
-    {
-      const matchingData = tableRows.find(item => item.id === id);
-
-      if(matchingData){
-        setTotal(
-          (total) => total = total + matchingData.fare
-        )
-      }else{
-        console.log("does not match")
-      }
-      
-    }
-  }
 
   return () => {}
 }, [tableRows])
+
+
+useEffect(() =>{
+
+  return () =>{}
+},[tableRows])
+
+const [filterType, setFilterType] = useState(null);
+
+const [filterData, setFilterData] = useState(null);
+
+
+async function GetFilterData(){
+
+
+  
+ 
+    setTotal(() => 0.00);
+    try{
+          const bodyParameters = {
+            filterData: filterData,
+            filterType: filterType,
+            fromDate: fromDate,
+            toDate:toDate,
+          }
+      const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/ticket/filter`,bodyParameters,{
+        headers :{
+            Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+        }
+    })
+        
+        const response = await request.data;
+        console.log("HEREs")
+        console.log(response.messages[0].code)
+
+        if(response.messages[0].code === 0){
+          console.log("HERE")
+
+  
+            setTableRows(
+            
+              response.response.map((data : any) =>{
+               console.log(data)
+                return {id: data._id, ...data}
+              })
+            )
+             
+            let totalFare = 0.00;
+
+            response.response.map((data : any) =>{
+              totalFare = totalFare + data.fare;
+             })
+            
+            setTotal(() => totalFare)
+         
+            setTotalTicket(() => 0)
+            setTotalTicket(() => response.response.length)
+
+            let totalBaggage = 0;
+
+            response.response.map((data : any) =>{
+              totalBaggage = totalBaggage + data.baggage;
+            })
+
+            setTotalBaggage(() => totalBaggage);
+
+            let grandTotal = 0;
+
+
+            response.response.map((data : any) =>{
+              grandTotal = grandTotal + data.subtotal;
+            })
+
+            setGrandTotal(() => grandTotal)
+        }
+   
+
+       setTimeout(GetAllData, 5000)
+    }catch(e){
+     
+        console.log("ERROR = "+ e)
+    }
+  
+
+
+}
+
+
+useEffect(()=>{
+  console.log(filterType)
+  GetFilterData();
+
+  return () =>{
+   
+  }
+
+},[filterData, filterType, toDate, fromDate ])
+
+useEffect(() =>{
+return() =>{}
+},[filterData, filterType, toDate, fromDate])
+
+
+
+const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
+
 
 return(
       <div 
@@ -723,7 +673,89 @@ return(
       }}
       >
     <NavBar>
-      <HeaderCard title ="TOR TICKET" />
+    <div className="invisible absolute">
+    <ComponentToPrint  
+    ref={componentRef} 
+    rows ={tableRows} 
+    columns ={columns}
+    grandTotal ={grandTotal}
+    />
+    </div>
+      
+  
+   
+    <div className="relative block mt-10  p-12 bg-white border border-gray-200 rounded-lg shadow-lg"
+        style ={{
+            height: 'auto'
+        }}
+        >
+            <h1 className="mb-2 text-5xl  font-bold tracking-tight text-indigo-900">TOR TICKET</h1>
+        </div>
+
+
+        <div className="sm:py-6">
+  <div className="space-y-0 md:grid md:grid-cols-0 lg:grid-cols-3 xl:grid-cols-3 md:gap-2 md:space-y-0">
+  
+     
+<div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
+  <div className="flex items-center">
+    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
+      
+        {<BsCurrencyExchange />}
+    </div>
+    <div className="flex-shrink-0 ml-3">
+      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl">₱ {total}</span>
+      <h3 className="text-base font-normal text-gray-500">{"TOTAL FARE "}</h3>
+    </div>
+  </div>
+</div>
+
+<div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
+  <div className="flex items-center">
+    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
+      
+        {<BsTicketPerforatedFill />}
+    </div>
+    <div className="flex-shrink-0 ml-3">
+      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl">{totalTicket}</span>
+      <h3 className="text-base font-normal text-gray-500">{"TOTAL TICKET "}</h3>
+    </div>
+  </div>
+</div>
+
+<div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
+  <div className="flex items-center">
+    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
+      
+        {<BsBagCheck  />}
+    </div>
+    <div className="flex-shrink-0 ml-3">
+      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl">{totalBaggage}</span>
+      <h3 className="text-base font-normal text-gray-500">{"TOTAL BAGGAGE "}</h3>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4 mt-4">  
+  <div className="flex items-center">
+    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
+      
+        {<BsBagCheck  />}
+    </div>
+    <div className="flex-shrink-0 ml-3">
+      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl">₱ {grandTotal}</span>
+      <h3 className="text-base font-normal text-gray-500">{"GRAND TOTAL "}</h3>
+    </div>
+  </div>
+
+
+</div>
+  </div>
+
+
+
         <Paper style={{width: '100%', marginTop: '10px' }}>
             <Box sx = {{
             '& .super-app-theme--header': {
@@ -732,47 +764,71 @@ return(
             },
             height:'400'
             }}>
-              {localStorage.getItem('role') === "Administrator" ?
-              
-              <div className="flex flex-row flex-wrap md:flex-no-wrap mb-4 md:mb-0">
-              
+           
+           <div className="flex flex-row space-x-4 items-center mb-2">
+           <LocalizationProvider dateAdapter={AdapterDayjs}  >
+              <DemoContainer components={['DateTimePicker']} >
+                <DateTimePicker 
+                label="Filter From" 
+             
+                onChange={(newValue) => setFromDate(() => newValue)}
+                 />
+              </DemoContainer>
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={['DateTimePicker']} >
+                <DateTimePicker 
+                label="Filter To" 
+                onChange={(newValue) => setToDate(() => newValue)}
+         
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </div>
+
         
-              <LocalizationProvider dateAdapter={AdapterDayjs} >
-                   <DemoContainer components={['DatePicker']} >
-                     <DatePicker label="From" value={fromDate} onChange={(newValue) => 
-                       {
-                         setFromDate(newValue)
-                         GetAllDataByFilterDate();
-                       }
-                       }/>
-                   </DemoContainer>
-                 </LocalizationProvider>
-              -
-              <LocalizationProvider dateAdapter={AdapterDayjs} >
-                   <DemoContainer components={['DatePicker']} >
-                     <DatePicker label="To" value = {toDate} onChange={(newValue) => {
-               setToDate(newValue);
-               GetAllDataByFilterDate();
-                     }
-                       
-                     } />
-                   </DemoContainer>
-                 </LocalizationProvider>
-                     </div>
-                     :
-                     null
-            }
-                    
-                     
-            <DataGrid rows={tableRows} columns={columns}
-            apiRef={apiRef}
-             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress, footer :CustomFooterStatusComponent}}
-            //  onStateChange={(e) => {
-            //   console.log("HEY")
-            //   console.log(e)
-            //   console.log(e.rowSelection)
-            // }}
-          
+
+              <div className="flex flex-row space-x-4 items-center">
+                <FormControl  margin="dense"  style={{ width: '100%', maxWidth: '500px' }}>
+                  <InputLabel id="demo-simple-select-label">Filter By</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={filterType}
+                    label="Filter By"
+                    value={filterType}
+                    onChange={(event) => setFilterType(event.target.value)}
+                    MenuProps={{ PaperProps: { style: { maxHeight: 264 } } }}
+                  >
+                    <MenuItem value={"None"}>{"None"}</MenuItem>
+                    {columns.map((column) => (
+                      <MenuItem value={column.field}>{column.field.replace(/_/g, ' ').toUpperCase()}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <TextField
+                 id="filterData" 
+                label="Filter Data" 
+                variant="outlined" 
+                margin="dense"
+                value={filterData}
+                style={{ width: '100%'}}
+                onChange={(event) => setFilterData(() => event.target.value)}
+                 />
+             
+              </div>
+
+              <div>
+         
+        
+        </div>
+
+            <DataGrid
+           
+            rows={tableRows} columns={columns}
+            
+             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress,}}
+
             slotProps={{
                 toolbar: {
                 showQuickFilter: true,
@@ -790,6 +846,7 @@ return(
                 padding: '15px',
               },
             }}
+
             initialState={{ 
 
               pagination: { 
@@ -799,13 +856,10 @@ return(
               }, 
             }} 
             pageSizeOptions={[5, 10, 25]}
+           
             />
         </Box>
-        </Paper>
-     
-
- 
-       
+        </Paper>   
     </NavBar>
     </div>)
 }

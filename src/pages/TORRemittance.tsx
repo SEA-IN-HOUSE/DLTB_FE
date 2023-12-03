@@ -424,7 +424,7 @@ async function GetCooperative(){
         console.error("Error in syncing data: "+e);
         setIsSyncing(false);
       }
-
+      setTimeout(GetAllData, 5000)
     } 
 
       //Toolbar

@@ -653,7 +653,16 @@ async function GetCooperative(){
                   fontSize: '1rem',
                   padding: '15px',
                 },
-              }}
+              }} 
+              initialState={{ 
+
+                pagination: { 
+                  paginationModel: { 
+                    pageSize: 5 
+                  } 
+                }, 
+              }} 
+              pageSizeOptions={[5, 10, 25]}
               />
           </Box>
           </Paper>

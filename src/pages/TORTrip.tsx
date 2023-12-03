@@ -67,7 +67,7 @@ export function TORTrip(){
       headerName: 'CONTROL NO', 
       headerClassName: 'super-app-theme--header',
       editable: false,
-      width: 180,
+      width: 240,
       headerAlign: 'center',
       align: 'center',
     },
@@ -603,7 +603,7 @@ export function TORTrip(){
    
   
     async function GetCooperative(){
-
+      setIsLoading(false)
       try{
     
         const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
@@ -658,7 +658,7 @@ export function TORTrip(){
 
     async function GetAllData(){
 
-      setIsLoading(true);
+      // setIsLoading(true);
       try{
           
           const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/trip/${filterTableCompanyId}`,{
@@ -674,23 +674,32 @@ export function TORTrip(){
             if(response.messages[0].code === 0){
               console.log("HEREUUUU")
 
+              response.response.map((data : any) =>{
+                console.log(data)
+              })
+
               console.log(response.response.fieldData)
-              setTableRows(
+              if (JSON.stringify(response.response) !== JSON.stringify(tableRows)) {
+                setTableRows(
                 
-                response.response[0].fieldData.map((data : any) =>{
-                 console.log(data)
-                  return {id: data._id, ...data}
-                })
-              )
+                  response.response.map((data : any) =>{
+                    console.log("RESULT TRIP")
+                    console.log(data._id)
+                    return {id: data.fieldData[0]._id, ...data.fieldData[0]}
+                  })
+                )
+              
+              }
+              
             }
-            setIsLoading(false)
+            // setIsLoading(false)
 
             // setClientTableRows(newRows)
         }catch(e){
-          setIsLoading(false)
+          //setIsLoading(false)
             console.log("ERROR = "+ e)
         }
-      setTimeout(GetAllData, 15000)
+      setTimeout(GetAllData, 5000)
     } 
   
 
@@ -703,7 +712,7 @@ export function TORTrip(){
       setIsSyncing(true);
       try{
 
-        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/main`,{
+        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/trip`,{
           headers :{
               Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
           }

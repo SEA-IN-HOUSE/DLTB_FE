@@ -353,7 +353,7 @@ export function TORTrouble(){
           setIsLoading(false)
             console.log("ERROR = "+ e)
         }
-      
+        setTimeout(GetAllData, 5000)
     }   
 
     useEffect(() =>{
