@@ -2,8 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
-import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
+import { GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect,useState} from 'react'
+import { DataGridPremium  } from '@mui/x-data-grid-premium/DataGridPremium';
 import Box from '@mui/material/Box';
 import { Button, FormControl, InputLabel, LinearProgress, MenuItem, Select } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -12,13 +13,22 @@ import HeaderCard from "../components/HeaderCard";
 import SyncIcon from '@mui/icons-material/Sync';
 import { useNavigate } from "react-router-dom";
 import { ICooperative } from "./Employee";
-
+import { styled} from '@mui/system';
   const rows: GridRowsProp = [
    
   ];
 
 
-
+  const StyledDataGrid = styled(DataGridPremium)((theme) => ({
+    "& .MuiDataGrid-sortIcon": {
+    opacity: 1,
+    color: "white",
+    },
+    "& .MuiDataGrid-menuIconButton": {
+    opacity: 1,
+    color: "white"
+    },
+    }));
 
 export function TORFuel(){
 
@@ -264,7 +274,7 @@ export function TORFuel(){
     },
   
     { 
-      field: 'remakrs', 
+      field: 'remarks', 
       headerName: 'REMARKS', 
       headerClassName: 'super-app-theme--header',
       editable: false,
@@ -284,7 +294,7 @@ export function TORFuel(){
       navigate('/login')
     }
     
-    if(!localStorage.getItem('pageCode')?.includes("tFuel, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+    if(!localStorage.getItem('pageCode')?.includes("tFuel, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin" && localStorage.getItem('role') !== "Attorney"){
       navigate('/dashboard')
     }
    
@@ -547,7 +557,7 @@ function CustomToolbar() {
             height:'400'
             }}>
 
-            <DataGrid rows={tableRows} columns={columns}
+            <StyledDataGrid rows={tableRows} columns={columns}
             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
             loading ={isLoading}
             slotProps={{

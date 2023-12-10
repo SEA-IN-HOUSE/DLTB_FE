@@ -3,7 +3,6 @@
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarDensitySelector, GridToolbarExport,  } from '@mui/x-data-grid';
-import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
 import { Button, FormControl, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
@@ -23,24 +22,27 @@ import { useReactToPrint } from 'react-to-print';
 import PrintIcon from '@mui/icons-material/Print';
 import { ComponentToPrint } from '../components/ComponentToPrint';
 import CountUp from 'react-countup';
-import { useInterval } from 'usehooks-ts'
-import { styled} from '@mui/system';
   const rows: GridRowsProp = [
    
   ];
 
-  const StyledDataGrid = styled(DataGridPremium)((theme) => ({
-    "& .MuiDataGrid-sortIcon": {
-    opacity: 1,
-    color: "white",
-    },
-    "& .MuiDataGrid-menuIconButton": {
-    opacity: 1,
-    color: "white"
-    },
-    }));
+  // function CustomFooterStatusComponent(props) {
+  //   return (
+  //     <Box sx={{ p: 1, display: 'flex' }}>
+  //       {/* <FiberManualRecordIcon
+  //         fontSize="small"
+  //         sx={{
+  //           mr: 1,
+  //           color: props.status === 'connected' ? '#4caf50' : '#d9182e',
+  //         }}
+  //       /> */}
+  //      TOTAL FARE: ₱ {parseFloat(props.total).toFixed(2)}
+  //     </Box>
+  //   );
+  // }
 
-export function TORTicket(){
+
+export function EmployeeReport(){
 
   const [isSyncing, setIsSyncing] = useState(false)
   const [total, setTotal] = useState(0);
@@ -56,17 +58,6 @@ export function TORTicket(){
   const [coopList, setCoopList] = useState([]);
   const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
 
-  const [fromDate , setFromDate] = useState(null);
-
-  const [toDate,  setToDate] = useState(null)
-
-  const [filterType, setFilterType] = useState("");
-
-  const [filterData, setFilterData] = useState(null);
-  
-  const [filterApplied, setFilterApplied] = useState(false)
-
-  const [isLoading, setIsLoading] = useState(false);
 
 
 async function GetCooperative(){
@@ -82,12 +73,12 @@ async function GetCooperative(){
       const response = await request.data;
       
       if(response.messages[0].code === '0'){
-  
+        console.log(response);
         setCoopList(
           
           // eslint-disable-next-line @typescript-eslint/no-explicit-any  
           response.response.map((coop : any ) =>{
-    
+            console.log(coop)
             
             if(coop._id){
               return {id: coop._id, ...coop}
@@ -111,8 +102,17 @@ useEffect(() =>{
 },[filterTableCompanyId])
   const columns: GridColDef[] = [
   
+    // { 
+    //   field: 'UUID', 
+    //   headerName: 'UUID', 
+    //   headerClassName: 'super-app-theme--header',
+    //   editable: false,
+    //   width: 180,
+    //   headerAlign: 'center',
+    //   align: 'center',
+    // },
     {
-      field: 'coopId', 
+      field: 'coopId', // Assuming you have a 'name' field in your data source
       headerName: 'COMPANY',
       flex: 1,
       minWidth: 180,
@@ -121,11 +121,11 @@ useEffect(() =>{
       align: 'center',
       editable: false,
       valueGetter: (params) => {
-       
+        // Assuming your data source is an array of objects with 'coopId' and 'name' fields
         const { coopId } = params.row;
-      
+        // Assuming your data is stored in a variable named 'data'
         const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
-        return matchingItem ? matchingItem.cooperativeCodeName : '';
+        return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
       },
     },
     { 
@@ -170,17 +170,6 @@ useEffect(() =>{
       valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
     },
     {
-      field: 'additionalFare',
-      headerName: 'ADDITIONAL FARE',
-      headerClassName: 'super-app-theme--header',
-      type: 'number',
-      editable: false,
-      width: 180,
-      headerAlign: 'center',
-      align: 'center',
-      valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
-    },
-    {
       field: 'subtotal',
       headerName: 'SUBTOTAL',
       headerClassName: 'super-app-theme--header',
@@ -191,22 +180,9 @@ useEffect(() =>{
       align: 'center',
       valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
     },
-
-   
     {
       field: 'baggage',
       headerName: 'BAGGAGE',
-      headerClassName: 'super-app-theme--header',
-      type: 'number',
-      editable: false,
-      width: 180,
-      headerAlign: 'center',
-      align: 'center',
-      valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
-    },
-    {
-      field: 'discount',
-      headerName: 'DISCOUNT',
       headerClassName: 'super-app-theme--header',
       type: 'number',
       editable: false,
@@ -428,7 +404,7 @@ useEffect(() =>{
     }
     
 
-    if(!localStorage.getItem('pageCode')?.includes("tTicket, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin" && localStorage.getItem('role') !== "Attorney"){
+    if(!localStorage.getItem('pageCode')?.includes("tTicket, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
       navigate('/dashboard')
     }
 
@@ -442,16 +418,53 @@ useEffect(() =>{
 
     // const [isSyncing, setIsSyncing] = useState(false);
 
-   
+    const [fromDate , setFromDate] = useState(null);
 
+    const [toDate,  setToDate] = useState(null)
+
+    useEffect(() =>{
+
+      },[fromDate, toDate])
+      
    
+    useEffect(() =>{
+
+    },[fromDate, toDate])
+    
  
   
       
-  
+    
+
+    useEffect(() =>{
+
+    },[tableRows])
 
     async function SyncData(){
+      console.log("")
+      // setIsSyncing(true);
+      // try{
 
+      //   const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/main`,{
+      //     headers :{
+      //         Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      //     }
+      // })
+          
+      //     const response = await request.data;
+
+      //     if(response.messages[0].code === '0'){
+
+      //       setIsSyncing(false);
+           
+      //     }
+
+      //     setIsSyncing(false);
+      // }catch(e){
+      //   console.error("Error in syncing data: "+e);
+      //   setIsSyncing(false);
+      // }
+      // setTimeout(GetAllData, 5000)
 
     } 
 
@@ -517,7 +530,8 @@ function CustomToolbar() {
               {
         Object(coopList).length === 0? (<></>) :
         coopList.map((coop : ICooperative) =>{
-      
+          console.log(coop)
+          console.log(coop.cooperativeCodeName)
           return (
             <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
           )
@@ -535,131 +549,122 @@ function CustomToolbar() {
 
 }   
 
-const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
+useEffect(() => {
 
 
-
-  async function GetFilterData(){
-
-
+  return () => {}
+}, [tableRows])
 
 
-   
+useEffect(() =>{
+
+  return () =>{}
+},[tableRows])
+
+const [filterType, setFilterType] = useState(null);
+
+const [filterData, setFilterData] = useState(null);
+
+
+async function GetFilterData(){
+
+    setTotal(() => 0.00);
+    try{
       
-      try{
-        setIsLoading(true)
-        const bodyParameters = {
-          filterData: filterData,
-          filterType: filterType,
-          fromDate: fromDate,
-          toDate:toDate,
+          const bodyParameters = {
+            filterData: filterData,
+            filterType: filterType,
+            fromDate: fromDate,
+            toDate:toDate,
+          }
+
+
+          console.log("PARAMETERS")
+          console.log(bodyParameters)
+      const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/ticket/filter/${filterTableCompanyId}`,bodyParameters,{
+        headers :{
+            Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
         }
+    })
         
-        console.log("Sample date ", fromDate)
+        const response = await request.data;
 
+        console.log("This is the message")
+        console.log(response.messages[0].code)
 
-    const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/ticket/filter/${filterTableCompanyId}`,bodyParameters,{
-      headers :{
-          Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-      }
-  })
-      
-      const response = await request.data;
-  
-      
-  
-  
-      if(response.messages[0].code === 0){
-  
-  
-        if(JSON.stringify(response.response) !== JSON.stringify(tableRows)){
-          
-      
-  
+        if(response.messages[0].code === 0){
+          console.log("DATA")
+          console.log(response)
             setTableRows(
             
               response.response.map((data : any) =>{
-            setTotal
+               console.log(data)
                 return {id: data._id, ...data}
               })
             )
              
             let totalFare = 0.00;
-  
+
             response.response.map((data : any) =>{
-              totalFare = totalFare + data.fare + data.additionalFare ;
+              totalFare = totalFare + data.fare;
              })
             
             setTotal(() => totalFare)
          
             setTotalTicket(() => 0)
             setTotalTicket(() => response.response.length)
-  
+
             let totalBaggage = 0;
-  
+
             response.response.map((data : any) =>{
               totalBaggage = totalBaggage + data.baggage;
             })
-  
+
             setTotalBaggage(() => totalBaggage);
-  
+
             let grandTotal = 0;
-  
+
             response.response.map((data : any) =>{
-              grandTotal = grandTotal + data.fare + data.additionalFare + data.baggage;
+              grandTotal = grandTotal + data.subtotal;
             })
-  
+
             setGrandTotal(() => grandTotal)
-  
-          
-  
-        }     
+        }
+   
+
+      //  setTimeout(GetFilterData, 15000)
+    }catch(e){
      
-      }
-  
-  setIsLoading(false)
-  }catch(e){
-
-    console.log("ERROR = "+ e)
-}finally{
-  setIsLoading(false)
-}
+        console.log("ERROR = "+ e)
+    }
   
 
+
 }
-
-
-useInterval(() => {
-  if(!isLoading){
-    GetFilterData();
-  }else{
-    () =>{}
-  }
- 
-}, 15000);
 
 
 useEffect(()=>{
-  
+  console.log(filterType)
   GetFilterData();
 
   return () =>{
    
   }
 
-},[filterData, filterType, toDate, fromDate])
+},[filterData, filterType, toDate, fromDate ])
 
 useEffect(() =>{
 
- 
-  return () => {
-    console.log(`Table refresh`)
-  }
+return() =>{}
+},[filterData, filterType, toDate, fromDate])
 
-}, [tableRows])
+
+
+const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
 
 
 return(
@@ -686,7 +691,7 @@ return(
             height: 'auto'
         }}
         >
-            <h1 className="mb-2 text-5xl  font-bold tracking-tight text-indigo-900">TOR TICKET</h1>
+            <h1 className="mb-2 text-5xl  font-bold tracking-tight text-indigo-900">EMPLOYEE REPORT</h1>
         </div>
 
 
@@ -759,7 +764,7 @@ return(
             backgroundColor: '#161d6f',
             color:'white',
             },
-            height:'auto'
+            height:'400'
             }}>
            
            <div className="flex flex-row space-x-4 items-center mb-2">
@@ -794,7 +799,7 @@ return(
                     value={filterType}
                     label="Filter By"
                     value={filterType}
-                    onChange={(event) => setFilterType( () => event.target.value)}
+                    onChange={(event) => setFilterType(event.target.value)}
                     MenuProps={{ PaperProps: { style: { maxHeight: 264 } } }}
                   >
                     <MenuItem value={"None"}>{"None"}</MenuItem>
@@ -820,29 +825,41 @@ return(
         
         </div>
 
-        <Box sx = {{
-            '& .super-app-theme--header': {
-            backgroundColor: '#161d6f',
-            color:'white',
-            },
-            height:700
-            }}>
-          <StyledDataGrid
-            initialState={{ pinnedColumns: { left: ['ticket_no']} }}
+            <DataGrid
+           
             rows={tableRows} columns={columns}
-            loading = {isLoading}
-             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
-             sx={{
+            
+             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress,}}
+
+            slotProps={{
+                toolbar: {
+                showQuickFilter: true,
+                quickFilterProps: {
+                    variant: 'filled',
+                    size: "medium"
+                },  
+              },
+              footer: { total },
+            }}
+           
+            sx={{
               '& .MuiDataGrid-cell': {
                 fontSize: '1rem',
                 padding: '15px',
               },
             }}
+
+            initialState={{ 
+
+              pagination: { 
+                paginationModel: { 
+                  pageSize: 5 
+                } 
+              }, 
+            }} 
+            pageSizeOptions={[5, 10, 25]}
+           
             />
-
-
-       </Box>
-       
         </Box>
         </Paper>   
     </NavBar>

@@ -243,7 +243,7 @@ export function TORTrouble(){
     }
     
    
-    if(!localStorage.getItem('pageCode')?.includes("tTro, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin"){
+    if(!localStorage.getItem('pageCode')?.includes("tTro, ") && localStorage.getItem('role') !== "Administrator" && localStorage.getItem('role') !== "User Admin" && localStorage.getItem('role') !== "Attorney"){
       navigate('/dashboard')
     }
     return () =>{}

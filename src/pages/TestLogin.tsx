@@ -81,7 +81,7 @@ export default function TestLogin() : JSX.Element {
                 InsertToStorage(response.response)
                 localStorage.setItem('token', response.response.email)
                 console.log("pumasokdito")
-                if(localStorage.getItem('token')){
+                if(localStorage.getItem('companyId')){
                     navigate('/dashboard')
                 }
                 

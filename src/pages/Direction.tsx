@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
@@ -36,47 +35,83 @@ const columns: GridColDef[] = [
   { 
     field: 'bound', 
     headerName: 'BOUND', 
-    flex: 1,
-        minWidth: 0,
     headerClassName: 'super-app-theme--header',
+    editable: false,
+    width: 180,
     headerAlign: 'center',
     align: 'center',
-    editable: false,
    
   },
   { 
     field: 'origin', 
     headerName: 'ORIGIN', 
-    flex: 1,
-        minWidth: 0,
     headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
+      editable: false,
+      width: 280,
+      headerAlign: 'center',
+      align: 'center',
   },
 
   { 
     field: 'destination', 
     headerName: 'DESTINATION', 
-    flex: 1,
-    minWidth: 0,
     headerClassName: 'super-app-theme--header',
+    editable: false,
+    width: 280,
     headerAlign: 'center',
     align: 'center',
-    editable: false,
    
   },
 
   { 
     field: 'code', 
     headerName: 'ROUTE CODE', 
-    flex: 1,
-    minWidth: 0,
     headerClassName: 'super-app-theme--header',
+    editable: false,
+    width: 180,
     headerAlign: 'center',
     align: 'center',
+   
+  },
+  { 
+    field: 'minimum_fare', 
+    headerName: 'MINIMUM FARE', 
+    headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+   
+  },
+
+  { 
+    field: 'discount', 
+    headerName: 'DISCOUNT', 
+    headerClassName: 'super-app-theme--header',
     editable: false,
+    width: 180,
+    headerAlign: 'center',
+    align: 'center',
+   
+  },
+  { 
+    field: 'first_km', 
+    headerName: 'FIRST KM', 
+    headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+   
+  },
+  { 
+    field: 'pricePerKM', 
+    headerName: 'PRICE PER KM', 
+    headerClassName: 'super-app-theme--header',
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
    
   },
   {
@@ -100,12 +135,11 @@ const columns: GridColDef[] = [
   { 
     field: 'createdAt', 
     headerName: 'DATE CREATED', 
-    flex: 1,
-    minWidth: 0,
     headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
     valueFormatter: (params) => {
       return moment(params.value).format('MMMM D, YYYY');
     },
@@ -208,6 +242,14 @@ const columns: GridColDef[] = [
 
   const [coopId, setCoopId] = useState("");
 
+  const [minimum_fare, setMinimumFare] = useState(0);
+
+  const [discount , setDiscount] = useState(0);
+
+  const [firstKm, setFirstKm] = useState(0);
+
+  const [pricePerKM, setPricePerKM] = useState(0);
+
   async function GetCooperative(){
 
     try{
@@ -246,6 +288,14 @@ const columns: GridColDef[] = [
   async function AddData() {
     try {
 
+      // minimum_fare
+      // 61
+      // discount
+      // 20
+      // first_km
+      // 26
+      // pricePerKM
+      // 2.35
       event?.preventDefault()
       // Define the request data as an object
       const requestData = {
@@ -254,6 +304,10 @@ const columns: GridColDef[] = [
         origin: origin,
         code : route_code,
         destination: destination,
+        minimum_fare: minimum_fare,
+        discount: discount,
+        first_km: firstKm,
+        pricePerKM: pricePerKM,
       };
   
       const response = await axios.post(
@@ -516,6 +570,54 @@ const columns: GridColDef[] = [
             variant="outlined"
             onChange={(event) => setDestination(event.target.value)}
           />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="discount"
+            name ="discount"
+            label="Discount"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setDiscount(parseFloat(event.target.value))}
+          />
+           <TextField
+            autoFocus
+            margin="dense"
+            id="firstKm"
+            name ="firstKm"
+            label="First KM"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setFirstKm(parseFloat(event.target.value))}
+          />
+
+<TextField
+            autoFocus
+            margin="dense"
+            id="miniumFare"
+            name ="miniumFare"
+            label="Minimum Fare"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setMinimumFare(parseFloat(event.target.value))}
+          />
+
+<TextField
+            autoFocus
+            margin="dense"
+            id="pricePerKM"
+            name ="pricePerKM"
+            label="Price Per KM"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setPricePerKM(parseFloat(event.target.value))}
+          />
+        
         
          
         </DialogContent>

@@ -1,9 +1,9 @@
 //import {  BsMenuAppFill } from "react-icons/bs";
-
+import CountUp from 'react-countup';
 interface DashboardCardProps {
 
 title: string;
-cardNumber:  number | string;
+cardNumber:  number;
 icon: JSX.Element
 
 }
@@ -20,7 +20,7 @@ export default function DashboardCard(props : DashboardCardProps){
         {props.icon}
     </div>
     <div className="flex-shrink-0 ml-3">
-      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl">{props.cardNumber}</span>
+      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl"><CountUp end={props.cardNumber} /></span>
       <h3 className="text-base font-normal text-gray-500">{props.title}</h3>
     </div>
   </div>

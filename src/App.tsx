@@ -23,6 +23,8 @@ import { Device } from "./pages/Device";
 import { Cooperative } from "./pages/Cooperative";
 import { Vehicle } from "./pages/Vehicle";
 import { ActivityLog } from "./pages/ActivityLog";
+import { EmployeeReport } from "./pages/EmployeeReport";
+import { AttorneyPage } from "./pages/AttorneyPage";
 
 // const pageCode = localStorage.getItem("pageCode");
 
@@ -67,6 +69,10 @@ function App() {
               <Route path ="/log" element ={<ActivityLog />} />
 
               <Route path ="/vehicle" element = {<Vehicle />} />
+
+              <Route path ="/employeereport" element = {<EmployeeReport />} />
+
+              <Route path ="/attorney" element = {<AttorneyPage />} />
 
               <Route path ="/tormain" element ={ <TORMain /> } />
 

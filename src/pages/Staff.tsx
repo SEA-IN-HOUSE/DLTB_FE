@@ -733,6 +733,8 @@ return(
           {company === "Seapps-inc" ? (
             <MenuItem value={"Administrator"}>Administrator</MenuItem>
           ) : (<></>) }
+
+          <MenuItem value={"Attorney"}>Attorney</MenuItem>
           <MenuItem value={"User Admin"}>User Admin</MenuItem>
           <MenuItem value={"User"}>User</MenuItem>
         </Select>
@@ -743,7 +745,7 @@ return(
 
 
 
-      {role === "User" ? 
+      {role === "User" || role === "Attorney"? 
         (
           <DialogContent dividers >
     
@@ -1022,6 +1024,7 @@ return(
           }
           
           <MenuItem value={"User Admin"}>User Admin</MenuItem>
+          <MenuItem value={"Attorney"}>Attorney</MenuItem>
           <MenuItem value={"User"}>User</MenuItem>
         </Select>
         {/* <FormHelperText>With label + helper text</FormHelperText> */}
@@ -1058,7 +1061,7 @@ return(
       }
       
         </DialogContent>
-        {editData.role === "User" ? 
+        {editData.role === "User" || role === "Attorney"? 
         (
           <DialogContent dividers >
     

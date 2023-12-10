@@ -1,3 +1,5 @@
+// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {useState, useEffect } from "react";
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
@@ -47,11 +49,34 @@ const initialState = [
  
 ];
 
+const companyIdInitialState = localStorage.getItem('companyId')
+
 export function Dashboard() : JSX.Element{
 
     const [coopList, setCoopList] = useState([]);
-    const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
+    const [filterTableCompanyId, setFilterTableCompanyId] = useState(companyIdInitialState);
     const navigate = useNavigate();
+
+    const [torMainNumber, setTorMainNumber] = useState(0);
+
+    const [torTicket, setTorTicketNumber] = useState(0);
+
+    const [torFuel, setTorFuelNumber] = useState(0);
+
+    const [torRemittance, setTorRemittance] = useState(0);
+
+    const [torTrip, setTorTrip] = useState(0);
+
+    const [torInspection, setTorInspection] = useState(0);
+
+    const [torViolation, setTorViolation] = useState(0);
+
+    const [torTrouble, setTorTrouble] = useState(0);
+
+    const [data, setData] = useState(initialState);
+
+    const [grossSales, setGrossSales] = useState(0);
+
     useEffect(() =>{
   
       if(!localStorage.getItem('token')){
@@ -147,25 +172,7 @@ export function Dashboard() : JSX.Element{
       return () =>{}
 
   },[])
-    const [torMainNumber, setTorMainNumber] = useState(0);
-
-    const [torTicket, setTorTicketNumber] = useState(0);
-
-    const [torFuel, setTorFuelNumber] = useState(0);
-
-    const [torRemittance, setTorRemittance] = useState(0);
-
-    const [torTrip, setTorTrip] = useState(0);
-
-    const [torInspection, setTorInspection] = useState(0);
-
-    const [torViolation, setTorViolation] = useState(0);
-
-    const [torTrouble, setTorTrouble] = useState(0);
-
-    const [data, setData] = useState(initialState);
-
-    const [grossSales, setGrossSales] = useState("0");
+  
 
     // const [unitsOperational, setUnitsOperational] = useState(0)
 
@@ -181,14 +188,16 @@ export function Dashboard() : JSX.Element{
             })
 
             const response = await request.data;
-
+            console.log(`Response`)
+            console.log(response)
             let totalFare = 0.00;
-
+           
             response.response.map((data : any) =>{
               totalFare = totalFare + data.subtotal;
              })
+             
              console.log(`total fare ${totalFare}`)
-             setGrossSales(() => `${totalFare}`)
+             setGrossSales(() => totalFare)
             // setTorTicketNumber(response.response.length)
 
             setData((prevState) =>
@@ -217,7 +226,10 @@ export function Dashboard() : JSX.Element{
             const response = await request.data;
             console.log("tor main")
             console.log(response.response.length)
-            setTorMainNumber(response.response.length)
+            if(response.response.length !== torMainNumber){
+                setTorMainNumber(response.response.length)
+            }
+            
             
             setData((prevState) =>
             prevState.map((item) =>
@@ -244,8 +256,10 @@ export function Dashboard() : JSX.Element{
             })
 
             const response = await request.data;
-
-            setTorTicketNumber(response.response.length)
+            if(response.response.length !== torTicket){
+                setTorTicketNumber(response.response.length)
+            }
+          
 
             setData((prevState) =>
             prevState.map((item) =>
@@ -273,7 +287,11 @@ export function Dashboard() : JSX.Element{
 
             console.log(response.response.length)
 
-            setTorFuelNumber(response.response.length)
+            if(response.response.length !== torFuel){
+                setTorFuelNumber(response.response.length)
+            }
+
+           
 
             setData((prevState) =>
             prevState.map((item) =>
@@ -300,7 +318,11 @@ export function Dashboard() : JSX.Element{
             const response = await request.data;
 
 
-            setTorRemittance(response.response.length)
+            if(response.response.length !== torRemittance){
+                setTorRemittance(response.response.length)
+            }
+
+            
 
             setData((prevState) =>
             prevState.map((item) =>
@@ -326,7 +348,10 @@ export function Dashboard() : JSX.Element{
 
             const response = await request.data;
 
-            setTorTrip(response.response.length)
+            if(response.response.length !== torTrip){
+                setTorTrip(response.response.length)
+            }
+            
 
             setData((prevState) =>
             prevState.map((item) =>
@@ -352,7 +377,11 @@ export function Dashboard() : JSX.Element{
 
             const response = await request.data;
 
-            setTorInspection(response.response.length)
+            if(response.respose.length !== torInspection){
+                setTorInspection(response.response.length)
+            }
+
+           
 
             setData((prevState) =>
             prevState.map((item) =>
@@ -379,7 +408,11 @@ export function Dashboard() : JSX.Element{
 
             const response = await request.data;
 
-            setTorViolation(response.response.length)
+            if(response.response.length !== torViolation){
+                setTorViolation(response.response.length)
+            }
+
+            
 
             setData((prevState) =>
             prevState.map((item) =>
@@ -405,7 +438,11 @@ export function Dashboard() : JSX.Element{
 
             const response = await request.data;
 
-            setTorTrouble(response.response.length)
+            if(response.response.length !== torTrouble){    
+                setTorTrouble(response.response.length)
+            }   
+
+           
 
             setData((prevState) =>
             prevState.map((item) =>
@@ -470,7 +507,9 @@ export function Dashboard() : JSX.Element{
               labelId="filter-company-demo-demo-simple-select-autowidth-label"
               id="filter-company-demo-demo-simple-select-autowidth"
               value={filterTableCompanyId}
-              onChange={(event) => setFilterTableCompanyId(event.target.value)}
+              defaultValue={filterTableCompanyId}
+            //   onChange={(event) => setFilterTableCompanyId(() => event.target.value)}
+              onChange={() => {}}
               autoWidth
               label="Company"
             >
@@ -520,7 +559,7 @@ export function Dashboard() : JSX.Element{
           
         </div>
         <div className= "mt-4">
-        <DashboardCard  icon ={<BsCurrencyExchange /> } title="TOTAL GROSS SALES" cardNumber={"₱ "+grossSales}/>
+        <DashboardCard  icon ={<BsCurrencyExchange /> } title="TOTAL GROSS SALES" cardNumber={grossSales}/>
         </div>
         
         

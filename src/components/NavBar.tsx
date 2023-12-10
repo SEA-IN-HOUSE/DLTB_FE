@@ -9,6 +9,7 @@ import axios from "axios";
 import { useNavigate, useLocation} from "react-router-dom";
 import { BsDeviceSsd } from "react-icons/bs";
 import { BsPeopleFill } from "react-icons/bs";
+import { TbPigMoney } from "react-icons/tb";
 import FilipayLogo from '../assets/Filipay-logo.png';
 interface NavBarProps {
     children: ReactNode;
@@ -46,6 +47,8 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
     const [torIsOpen , setTorIsOpen] = useState(false);
 
+
+
     const [userInformation] = useState(UserInformation)
 
     const [isBurgerClicked, setIsBurgerClicked] = useState(false)
@@ -71,7 +74,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
       
         return () => {}
-    },[userInformation, isOpenProfileBox,isBurgerClicked,torIsOpen, navigate])
+    },[userInformation, isOpenProfileBox,isBurgerClicked,torIsOpen,navigate])
 
   
     async function GetUserByEmail (){
@@ -432,8 +435,34 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
         (<></>)
       } 
+      
+
+      {
+         localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "Attorney" ? 
+        (
+        <li>
+          <a
+              onClick={() => navigate("/attorney")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/attorney" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/attorney" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <TbPigMoney  />
+              <span className="ml-3">Attorney</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+      } 
+
 <li>
-<li>
+        <li>
           <a
               onClick={() => navigate("/log")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -449,6 +478,50 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
               
           </a>
         </li>
+
+       
+{/* 
+        <button type="button" className="flex items-center w-full p-2 text-base text-neutral-100 transition duration-75 rounded-lg group hover:bg-indigo-950 mt-4" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example" onClick={() =>{
+              if(localStorage.getItem("reportIsOpen") === "true"){
+                localStorage.setItem("reportIsOpen", "false");
+              }else{
+                localStorage.setItem("reportIsOpen", "true");
+              }
+              setReportIsOpen(!reportIsOpen)
+            } }>
+            <div className="mr-4"></div>
+                 <BsFillFileEarmarkBarGraphFill className ="text-2xl" />
+                  <span className="flex-1 ml-3 text-left whitespace-nowrap text-2xl ">Reports</span>
+                      <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+                      </svg>
+                  </button>
+                  <ul id="dropdown-example" className= {`py-2 space-y-2 ${localStorage.getItem("reportIsOpen") === "true" ? "" : "hidden"}`}>
+
+
+                  <li>
+                        <a
+                            onClick={() => navigate("/employeereport")}
+                            className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+                            location.pathname === "/employeereport" ? 'bg-indigo-700' : ''
+                            }`}
+                        >
+                            {location.pathname === "/employeereport" && (
+                            <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm "></div>
+                            )}
+                            <div className="mr-4 ml-5"></div>
+                            <BsPersonWorkspace />
+                            <span className="ml-3">Employee</span>
+                            
+                        </a>
+                      </li>
+
+
+
+                  </ul> */}
+            
+
+
             <button type="button" className="flex items-center w-full p-2 text-base text-neutral-100 transition duration-75 rounded-lg group hover:bg-indigo-950 mt-4" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example" onClick={() =>{
               if(localStorage.getItem("torIsOpen") === "true"){
                 localStorage.setItem("torIsOpen", "false");
@@ -467,7 +540,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   <ul id="dropdown-example" className= {`py-2 space-y-2 ${localStorage.getItem("torIsOpen") === "true" ? "" : "hidden"}`}>
              
                     {
-                    localStorage.getItem('pageCode')?.includes("tMain, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? ( 
+                    localStorage.getItem('pageCode')?.includes("tMain, ") || localStorage.getItem('role') === "Administrator" ||  localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? ( 
                   
                       <li>
                         <a
@@ -494,7 +567,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
               }
                  
                  {
-                localStorage.getItem('pageCode')?.includes("tTicket, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? (
+                localStorage.getItem('pageCode')?.includes("tTicket, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? (
 
                     <li>
                         <a
@@ -521,7 +594,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                  ) : (<></>)}
 
                  {
-                localStorage.getItem('pageCode')?.includes("tFuel, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin"? (
+                localStorage.getItem('pageCode')?.includes("tFuel, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney"? (
                   <li>
                   <a
                       onClick={() => navigate("/torfuel")}
@@ -545,7 +618,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                  ) : (<></>)}
                   
                   {
-                  localStorage.getItem('pageCode')?.includes("tRem, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin"? (
+                  localStorage.getItem('pageCode')?.includes("tRem, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney"? (
                       // <li>
                       //   <NavLink to= "/torremittance" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsCurrencyExchange className ="mr-4"  />Remittance </NavLink>
                       // </li>
@@ -569,7 +642,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   ) :(<></>)}
                   
                   {
-                  localStorage.getItem('pageCode')?.includes("tTrip, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? (
+                  localStorage.getItem('pageCode')?.includes("tTrip, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? (
                     // <li>
                     //     <NavLink to= "/tortrip" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsFillSignpostFill className ="mr-4"  />Trip </NavLink>
                     // </li>
@@ -592,7 +665,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   ) : (<></>)}
 
                   {
-                  localStorage.getItem('pageCode')?.includes("tIns, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin"? (   
+                  localStorage.getItem('pageCode')?.includes("tIns, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney"? (   
                   
                   <li>
                   <a
@@ -613,7 +686,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   ):( <></>)}
                   
                   {
-                  localStorage.getItem('pageCode')?.includes("tVio, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? (
+                  localStorage.getItem('pageCode')?.includes("tVio, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? (
                  
                     <li>
                     <a
@@ -634,7 +707,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   ) :(<></>)}
                   
                   {
-                  localStorage.getItem('pageCode')?.includes("tTro, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+                  localStorage.getItem('pageCode')?.includes("tTro, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? 
                   (
  
                   <li>

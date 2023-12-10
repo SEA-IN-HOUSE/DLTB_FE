@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+//@ts-nocheck
 
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
@@ -100,9 +100,20 @@ const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.ge
        
       },
     
+      // { 
+      //   field: 'viceVersaKM', 
+      //   headerName: 'VICE VERSA KM', 
+      //   flex: 1,
+      //       minWidth: 0,
+      //   headerClassName: 'super-app-theme--header',
+      //   headerAlign: 'center',
+      //   align: 'center',
+      //   editable: false,
+       
+      // },
       { 
-        field: 'viceVersaKM', 
-        headerName: 'VICE VERSA KM', 
+        field: 'rowNo', 
+        headerName: 'ROW NO', 
         flex: 1,
             minWidth: 0,
         headerClassName: 'super-app-theme--header',
@@ -228,11 +239,15 @@ const [stationName , setStationName] = useState("")
 
 const [km, setKm] = useState("")
 
-const [viceVersaKM, setViceVersaKM] = useState("")
+const [viceVersaKM, setViceVersaKM] = useState(0)
 
 const [routeId, setRouteId] = useState("");
 
+const [rowNo, setRowNo] = useState(0);
+
 const [isModalOpen, setIsModalOpen] = useState(false)
+
+
 
 
     async function AddStation() {
@@ -246,7 +261,8 @@ const [isModalOpen, setIsModalOpen] = useState(false)
           stationName: stationName, // Assuming empNo and cardId are variables in your scope
           km : km,
           viceVersaKM : viceVersaKM,
-          routeId : routeId
+          routeId : routeId,
+          rowNo: rowNo
         };
     
         const response = await axios.post(
@@ -518,7 +534,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             onChange={(event) => setKm(event.target.value)}
           />
 
-          <TextField
+          {/* <TextField
             autoFocus
             margin="dense"
             id="km"
@@ -528,7 +544,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             fullWidth
             variant="outlined"
             onChange={(event) => setViceVersaKM(event.target.value)}
-          />
+          /> */}
 
           <TextField
             autoFocus
@@ -540,6 +556,18 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             fullWidth
             variant="outlined"
             onChange={(event) => setRouteId(event.target.value)}
+          />
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="rowNo"
+            name ="rowNo"
+            label="Row Number"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setRowNo(event.target.value)}
           />
 
         </DialogContent>
