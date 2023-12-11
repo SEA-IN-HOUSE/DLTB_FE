@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ReactNode,  useEffect, useState, useLayoutEffect } from "react";
 //import { useNavigate, useLocation } from "react-router-dom";
-import { BsCurrencyExchange, BsEmojiDizzyFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill, BsFillTruckFrontFill,  BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace,BsTicketPerforatedFill, BsCarFrontFill,BsCardList  } from 'react-icons/bs';
+import { BsCurrencyExchange, BsEmojiDizzyFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill,   BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace,BsTicketPerforatedFill, BsCarFrontFill,BsCardList  } from 'react-icons/bs';
 import { ProfileBoxList } from "./NavList";
 // import NotificationBell from "./NotificationBell";
 import axios from "axios";
@@ -198,7 +198,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
      <div className="mt-32"></div>
       <ul className="space-y-2 font-medium p-0">
 
-      <li>
+      <li className="cursor-pointer" >
             <a
                 onClick={() => navigate("/dashboard")}
                 className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -220,7 +220,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 {
         localStorage.getItem('pageCode')?.includes("empCard, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
         (
-        <li>
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/employeecard")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -244,7 +244,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 {
         localStorage.getItem('role') === "Administrator"  ? 
         (
-        <li>
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/mastercard")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -269,7 +269,32 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 {
         localStorage.getItem('pageCode')?.includes("rou, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
         (
-        <li>
+        <li className="cursor-pointer">
+          <a
+              onClick={() => navigate("/routes")}
+              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
+              location.pathname === "/routes" ? 'bg-indigo-700' : ''
+              }`}
+          >
+              {location.pathname === "/routes" && (
+              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
+              )}
+              <div className="mr-4"></div>
+              <BsFillMapFill  />
+              <span className="ml-3">Routes</span>
+              
+          </a>
+        </li>
+        ) :
+
+        (<></>)
+}
+
+
+{/* {
+        localStorage.getItem('pageCode')?.includes("rou, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
+        (
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/direction")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -281,19 +306,19 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
               )}
               <div className="mr-4"></div>
               <BsFillMapFill  />
-              <span className="ml-3">Route</span>
+              <span className="ml-3">Routes</span>
               
           </a>
         </li>
         ) :
 
         (<></>)
-}
+} */}
 
-{
+{/* {
         localStorage.getItem('pageCode')?.includes("sta, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
         (
-        <li>
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/station")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -312,12 +337,12 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
         ) :
 
         (<></>)
-}
+} */}
 
 {
         localStorage.getItem('pageCode')?.includes("veh, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
         (
-        <li>
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/vehicle")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -341,7 +366,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 {
         localStorage.getItem('pageCode')?.includes("emp, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
         (
-        <li>
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/employee")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -365,7 +390,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 {
         localStorage.getItem('pageCode')?.includes("dev, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
         (
-        <li>
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/device")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -391,7 +416,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 {
         localStorage.getItem('role') === "Administrator" ? 
         (
-        <li>
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/cooperative")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -415,7 +440,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
       {
         localStorage.getItem('pageCode')?.includes("user, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
         (
-        <li>
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/user")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -440,7 +465,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
       {
          localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "Attorney" ? 
         (
-        <li>
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/attorney")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -461,8 +486,8 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
         (<></>)
       } 
 
-<li>
-        <li>
+<li className="cursor-pointer">
+        <li className="cursor-pointer">
           <a
               onClick={() => navigate("/log")}
               className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -499,7 +524,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   <ul id="dropdown-example" className= {`py-2 space-y-2 ${localStorage.getItem("reportIsOpen") === "true" ? "" : "hidden"}`}>
 
 
-                  <li>
+                  <li className="cursor-pointer">
                         <a
                             onClick={() => navigate("/employeereport")}
                             className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -542,7 +567,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                     {
                     localStorage.getItem('pageCode')?.includes("tMain, ") || localStorage.getItem('role') === "Administrator" ||  localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? ( 
                   
-                      <li>
+                      <li className="cursor-pointer">
                         <a
                             onClick={() => navigate("/tormain")}
                             className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -559,7 +584,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                         </a>
                       </li>
 
-                //   <li>
+                //   <li className="cursor-pointer">
                 //     <NavLink to= "/tormain" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsFileEarmarkTextFill className ="mr-4"  />Main </NavLink>
         
                 //  </li>
@@ -569,7 +594,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                  {
                 localStorage.getItem('pageCode')?.includes("tTicket, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? (
 
-                    <li>
+                    <li className="cursor-pointer">
                         <a
                             onClick={() => navigate("/torticket")}
                             className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -587,7 +612,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                       </li>
 
 
-                  //  <li>
+                  //  <li className="cursor-pointer">
                   //   <NavLink to= "/torticket" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsTicketPerforatedFill className ="mr-4"  />Ticket </NavLink>
                   
                   // </li>
@@ -595,7 +620,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
                  {
                 localStorage.getItem('pageCode')?.includes("tFuel, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney"? (
-                  <li>
+                  <li className="cursor-pointer">
                   <a
                       onClick={() => navigate("/torfuel")}
                       className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -612,17 +637,17 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   </a>
                 </li>
 
-                    // <li>
+                    // <li className="cursor-pointer">
                     //   <NavLink to= "/torfuel" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsFillFuelPumpFill className ="mr-4"  />Fuel </NavLink>
                     // </li>
                  ) : (<></>)}
                   
                   {
                   localStorage.getItem('pageCode')?.includes("tRem, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney"? (
-                      // <li>
+                      // <li className="cursor-pointer">
                       //   <NavLink to= "/torremittance" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsCurrencyExchange className ="mr-4"  />Remittance </NavLink>
                       // </li>
-                      <li>
+                      <li className="cursor-pointer">
                       <a
                           onClick={() => navigate("/torremittance")}
                           className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -643,10 +668,10 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   
                   {
                   localStorage.getItem('pageCode')?.includes("tTrip, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? (
-                    // <li>
+                    // <li className="cursor-pointer">
                     //     <NavLink to= "/tortrip" className="no-underline flex items-center w-full p-2 text-neutral-100 transition duration-75 rounded-lg pl-11 group hover:bg-indigo-950  text-2xl mt-4"> <BsFillSignpostFill className ="mr-4"  />Trip </NavLink>
                     // </li>
-                    <li>
+                    <li className="cursor-pointer">
                     <a
                         onClick={() => navigate("/tortrip")}
                         className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -667,7 +692,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   {
                   localStorage.getItem('pageCode')?.includes("tIns, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney"? (   
                   
-                  <li>
+                  <li className="cursor-pointer">
                   <a
                       onClick={() => navigate("/torinspection")}
                       className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -688,7 +713,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   {
                   localStorage.getItem('pageCode')?.includes("tVio, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? (
                  
-                    <li>
+                    <li className="cursor-pointer">
                     <a
                         onClick={() => navigate("/torviolation")}
                         className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
@@ -710,7 +735,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
                   localStorage.getItem('pageCode')?.includes("tTro, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" || localStorage.getItem('role') === "Attorney" ? 
                   (
  
-                  <li>
+                  <li className="cursor-pointer">
                     <a
                         onClick={() => navigate("/tortrouble")}
                         className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${

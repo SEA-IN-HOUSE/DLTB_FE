@@ -707,7 +707,7 @@ const componentRef = useRef();
   
             response.response.map((data : any) =>{
 
-            totalBus = totalBus + data.bus_unit;
+            totalBus = parseFloat(totalBus) + parseFloat(data.bus_unit);
 
             totalTrips = totalTrips + data.trip;
 

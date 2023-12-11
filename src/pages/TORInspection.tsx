@@ -30,7 +30,16 @@ import { useInterval } from 'usehooks-ts'
   const rows: GridRowsProp = [
    
   ];
-
+  const StyledDataGrid = styled(DataGridPremium)((theme) => ({
+    "& .MuiDataGrid-sortIcon": {
+    opacity: 1,
+    color: "white",
+    },
+    "& .MuiDataGrid-menuIconButton": {
+    opacity: 1,
+    color: "white"
+    },
+    }));
 export function TORInspection(){
 
   const [isSyncing, setIsSyncing] = useState(false)

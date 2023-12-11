@@ -25,7 +25,7 @@ import { Vehicle } from "./pages/Vehicle";
 import { ActivityLog } from "./pages/ActivityLog";
 import { EmployeeReport } from "./pages/EmployeeReport";
 import { AttorneyPage } from "./pages/AttorneyPage";
-
+import { RoutesPage } from "./pages/RoutesPage";
 // const pageCode = localStorage.getItem("pageCode");
 
 
@@ -51,6 +51,8 @@ function App() {
               <Route path ="/test" element = {<TestLogin />}/>
             
               <Route path ="/employee" element = {<Employee />}/>
+
+              <Route path ="/routes" element = {<RoutesPage />}/>
           
               <Route path ="/user" element = {<Staff />} />
 

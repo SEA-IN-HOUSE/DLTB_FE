@@ -99,18 +99,7 @@ const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.ge
         editable: false,
        
       },
-    
-      // { 
-      //   field: 'viceVersaKM', 
-      //   headerName: 'VICE VERSA KM', 
-      //   flex: 1,
-      //       minWidth: 0,
-      //   headerClassName: 'super-app-theme--header',
-      //   headerAlign: 'center',
-      //   align: 'center',
-      //   editable: false,
-       
-      // },
+   
       { 
         field: 'rowNo', 
         headerName: 'ROW NO', 
@@ -126,12 +115,11 @@ const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.ge
       { 
         field: 'routeId', 
         headerName: 'ROUTE ID', 
-        flex: 1,
-            minWidth: 0,
+        width: 350,
         headerClassName: 'super-app-theme--header',
-        headerAlign: 'center',
-        align: 'center',
         editable: false,
+       headerAlign: 'center',
+        align: 'center',
        
       },
 
@@ -152,21 +140,7 @@ const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.ge
           return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
         },
       },
-    
-    //   { 
-    //     field: 'createdAt', 
-    //     headerName: 'DATE CREATED', 
-    //     flex: 1,
-    //     minWidth: 0,
-    //     headerClassName: 'super-app-theme--header',
-    //     headerAlign: 'center',
-    //     align: 'center',
-    //     editable: false,
-    //     valueFormatter: (params) => {
-    //       return moment(params.value).format('MMMM D, YYYY');
-    //     },
-    //   },
-    
+   
       { 
         field: 'updatedAt', 
         headerName: 'DATE CREATED', 
@@ -325,6 +299,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         setIsModalOpen(!isModalOpen)
       }
     }
+    
     useEffect(() =>{
       GetAllData();
       return () =>{}
