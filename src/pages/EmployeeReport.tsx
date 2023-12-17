@@ -600,6 +600,10 @@ async function GetFilterData(){
               response.response.map((data : any) =>{
                console.log(data)
                 return {id: data._id, ...data}
+              }).sort((a, b) => {
+                const dateCreatedA = new Date(a.dateCreated).getTime();
+                const dateCreatedB = new Date(b.dateCreated).getTime();
+                return dateCreatedA - dateCreatedB; // Sort by dateCreated in ascending order
               })
             )
              

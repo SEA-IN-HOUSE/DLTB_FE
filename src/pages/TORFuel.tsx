@@ -14,6 +14,8 @@ import SyncIcon from '@mui/icons-material/Sync';
 import { useNavigate } from "react-router-dom";
 import { ICooperative } from "./Employee";
 import { styled} from '@mui/system';
+import Chip from '@mui/material/Chip';
+import { ToastContainer, toast } from 'react-toastify';
   const rows: GridRowsProp = [
    
   ];
@@ -62,6 +64,25 @@ export function TORFuel(){
         const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
         return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
       },
+    },
+    {
+      field: 'isUploaded', 
+      headerName: 'SYNC STATUS', 
+      width: 180, 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (cellValues) => {
+            
+        return(
+        <>
+      {cellValues.value === true ? (<Chip  label={"Synchronized"} color ="success" size = "small" variant = "outlined"/>) : (<Chip label={"Unsynchronized"} color ="error" size = "small" variant = "outlined"/>)}
+            
+      
+        </>
+        );
+      }
     },
     { 
       field: 'device_id', 
@@ -350,7 +371,7 @@ async function GetCooperative(){
 
     useEffect(() =>{
       
-        GetAllData();
+       GetFilterData();
         setTableRows(rows)
         GetCooperative();
         return () =>{}
@@ -419,6 +440,10 @@ async function GetCooperative(){
                 response.response[0].fieldData.map((data : any) =>{
                  console.log(data)
                   return {id: data._id, ...data}
+                }).sort((a, b) => {
+                  const dateCreatedA = new Date(a.dateCreated).getTime();
+                  const dateCreatedB = new Date(b.dateCreated).getTime();
+                  return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
                 })
               )
             }
@@ -440,31 +465,53 @@ async function GetCooperative(){
 
     
     async function SyncData(){
-      setIsSyncing(true);
-      try{
 
-        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/main`,{
-          headers :{
-              Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-          }
-      })
-          
-          const response = await request.data;
+      setIsSyncing(true)
+  try{
 
-          if(response.messages[0].code === '0'){
+    const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/fuel/sync/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+      headers :{
+          Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      }
+  })
+      
+      const response = await request.data;
+  
+      if(response){
+        setIsSyncing(false)
+        
+  toast.success("Sync succesfully!", {
+    position: "bottom-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    });
 
-            setIsSyncing(false);
-           
-          }
-
-          setIsSyncing(false);
-      }catch(e){
-        console.error("Error in syncing data: "+e);
-        setIsSyncing(false);
       }
 
-    } 
+        
+  
+      
+  }catch(e){
+    console.log(`Error in getting coops: ${e}`)
+    setIsSyncing(false)
+    toast.success("Please check your internet connection, thank you!", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+  }
 
+    } 
       //Toolbar
 function CustomToolbar() {
 
@@ -492,11 +539,11 @@ function CustomToolbar() {
           }}
         >
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
-          {localStorage.getItem('role') === "Administrator" ? 
-          <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
-          :
-          null
-        }
+         {localStorage.getItem('role') === "Administrator" && filterTableCompanyId === import.meta.env.VITE_DLTB_COOP_ID? 
+            <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
+            :
+            null
+          }
         <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
             <GridToolbarFilterButton style ={{color:"#161d6f"}} />
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
@@ -546,6 +593,20 @@ function CustomToolbar() {
         backgroundColor: '#e2e8f0',
         height:'auto'
       }}>
+        
+ <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        />
+
     <NavBar>
       <HeaderCard title ="TOR FUEL"/>
         <Paper style={{width: '100%', marginTop: '10px' }}>

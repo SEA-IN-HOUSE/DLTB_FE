@@ -27,6 +27,7 @@ import '../styles/RemoveProWaterMark.css'
 import Chip from '@mui/material/Chip';
 import { useInterval } from 'usehooks-ts'
 import { styled} from '@mui/system';
+import { ToastContainer, toast } from 'react-toastify';
   const rows: GridRowsProp = [
    
   ];
@@ -106,7 +107,7 @@ async function GetCooperative(){
 }
 
 useEffect(() =>{
-
+  GetFilterData();
   GetCooperative();
   return () =>{}
 },[filterTableCompanyId])
@@ -130,16 +131,25 @@ const columns: GridColDef[] = [
       return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
     },
   },
-  // { 
-  //   field: 'UUID', 
-  //   headerName: 'UUID', 
-  //   headerClassName: 'super-app-theme--header',
-  //   editable: false,
-  //   width: 180,
-  //   headerAlign: 'center',
-  //   align: 'center',
-  // },
-
+  {
+    field: 'isUploaded', 
+    headerName: 'SYNC STATUS', 
+    width: 180, 
+    headerClassName: 'super-app-theme--header',
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: (cellValues) => {
+          
+      return(
+      <>
+    {cellValues.value === true ? (<Chip  label={"Synchronized"} color ="success" size = "small" variant = "outlined"/>) : (<Chip label={"Unsynchronized"} color ="error" size = "small" variant = "outlined"/>)}
+          
+    
+      </>
+      );
+    }
+  },
   { 
     field: 'device_id', 
     headerName: 'DEVICE ID', 
@@ -455,6 +465,50 @@ const columns: GridColDef[] = [
 
     async function SyncData(){
 
+      setIsSyncing(true)
+  try{
+
+    const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/remittance/sync/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+      headers :{
+          Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      }
+  })
+      
+      const response = await request.data;
+  
+      if(response){
+        setIsSyncing(false)
+        
+  toast.success("Sync succesfully!", {
+    position: "bottom-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    });
+
+      }
+
+        
+  
+      
+  }catch(e){
+    console.log(`Error in getting coops: ${e}`)
+    setIsSyncing(false)
+    toast.success("Please check your internet connection, thank you!", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+  }
 
     } 
 
@@ -484,7 +538,7 @@ function CustomToolbar() {
         >
           
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
-         {localStorage.getItem('role') === "Administrator" ? 
+       {localStorage.getItem('role') === "Administrator" && filterTableCompanyId === import.meta.env.VITE_DLTB_COOP_ID? 
             <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
             :
             null
@@ -586,6 +640,10 @@ const componentRef = useRef();
                 console.log(data.fieldData)
             
                 return {id: data.fieldData._id, ...data.fieldData}
+              }).sort((a, b) => {
+                const dateCreatedA = new Date(a.dateCreated).getTime();
+                const dateCreatedB = new Date(b.dateCreated).getTime();
+                return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
               })
             )
              
@@ -672,6 +730,19 @@ return(
         height:'auto'
       }}
       >
+        <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        />
+
     <NavBar>
     <div className="invisible absolute">
     <ComponentToPrint  

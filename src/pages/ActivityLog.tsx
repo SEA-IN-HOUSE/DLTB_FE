@@ -139,6 +139,10 @@ export function ActivityLog(){
                 
                 response.response.map((data : any) =>{
                   return {id: data._id, ...data}
+                }).sort((a, b) => {
+                  const dateCreatedA = new Date(a.dateCreated).getTime();
+                  const dateCreatedB = new Date(b.dateCreated).getTime();
+                  return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
                 })
               )
             }

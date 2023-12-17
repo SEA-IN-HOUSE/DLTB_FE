@@ -30,6 +30,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import { ToastContainer, toast } from 'react-toastify';
 import { styled} from '@mui/system';
+
+
   const rows: GridRowsProp = [
    
   ];
@@ -142,7 +144,25 @@ const columns: GridColDef[] = [
       return matchingItem ? matchingItem.cooperativeCodeName : ''; 
     },
   },  
-
+  {
+    field: 'isUploaded', 
+    headerName: 'SYNC STATUS', 
+    width: 180, 
+    headerClassName: 'super-app-theme--header',
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: (cellValues) => {
+          
+      return(
+      <>
+    {cellValues.value === true ? (<Chip  label={"Synchronized"} color ="success" size = "small" variant = "outlined"/>) : (<Chip label={"Unsynchronized"} color ="error" size = "small" variant = "outlined"/>)}
+          
+    
+      </>
+      );
+    }
+  },
   {
     field: 'status', 
     headerName: 'STATUS', 
@@ -151,11 +171,12 @@ const columns: GridColDef[] = [
     editable: false,
     headerAlign: 'center',
     align: 'center',
+    valueGetter: (params) => (params.row.final_remittance !== 0 ? 'Remitted' : 'Not Yet Remitted'),
     renderCell: (cellValues) => {
           console.log(cellValues)
       return(
       <>
-    {cellValues.row.final_remittance !== 0 ? (<Chip  label={"Remitted"} color ="success" size = "small" variant = "outlined"/>) : (<Chip label={"Not Yet Remitted"} color ="warning" size = "small" variant = "outlined"/>)}
+    {cellValues.row.final_remittance !== 0 ? (<Chip  label={"Remitted"} color ="success" size = "small" variant = "outlined"/>) : (<Chip label={"Unremitted"} color ="warning" size = "small" variant = "outlined"/>)}
           
     
       </>
@@ -242,15 +263,15 @@ const columns: GridColDef[] = [
     align: 'center',
   },
 
-  { 
-    field: 'emp_no_driver_2', 
-    headerName: 'EMP DRIVER 2', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'emp_no_driver_2', 
+  //   headerName: 'EMP DRIVER 2', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
   { 
     field: 'emp_no_conductor', 
@@ -272,15 +293,15 @@ const columns: GridColDef[] = [
     align: 'center',
   },
 
-  { 
-    field: 'emp_name_driver_2', 
-    headerName: 'EMP NAME DRIVER 2', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'emp_name_driver_2', 
+  //   headerName: 'EMP NAME DRIVER 2', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
   { 
     field: 'emp_name_conductor', 
@@ -292,45 +313,45 @@ const columns: GridColDef[] = [
     align: 'center',
   },
 
-  { 
-    field: 'eskirol_id_driver', 
-    headerName: 'ESKIROL ID DRIVER', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'eskirol_id_driver', 
+  //   headerName: 'ESKIROL ID DRIVER', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'eskirol_id_conductor', 
-    headerName: 'ESKIROL ID CONDUCTOR', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'eskirol_id_conductor', 
+  //   headerName: 'ESKIROL ID CONDUCTOR', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'eskirol_name_driver', 
-    headerName: 'ESKIROL NAME DRIVER', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'eskirol_name_driver', 
+  //   headerName: 'ESKIROL NAME DRIVER', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'eskirol_name_conductor', 
-    headerName: 'ESKIROL NAME CONDUCTOR', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'eskirol_name_conductor', 
+  //   headerName: 'ESKIROL NAME CONDUCTOR', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
   { 
     field: 'no_of_trips', 
@@ -644,266 +665,266 @@ const columns: GridColDef[] = [
     align: 'center',
   },
 
-  { 
-    field: 'commission_driver1_passenger', 
-    headerName: 'COMMISSION DRIVER1 PASSENGER', 
-     width: 270,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
+  // { 
+  //   field: 'commission_driver1_passenger', 
+  //   headerName: 'COMMISSION DRIVER1 PASSENGER', 
+  //    width: 270,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
     
-  },
+  // },
 
-  { 
-    field: 'auto_commission_driver1_passenger', 
-    headerName: 'AUTO TEST COMMISSION DRIVER1 PASSENGER', 
-     width: 350,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'auto_commission_driver1_passenger', 
+  //   headerName: 'AUTO TEST COMMISSION DRIVER1 PASSENGER', 
+  //    width: 350,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'commission_driver1_baggae', 
-    headerName: 'COMMISSION DRIVER1 BAGGAGE', 
-     width: 250,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'commission_driver1_baggae', 
+  //   headerName: 'COMMISSION DRIVER1 BAGGAGE', 
+  //    width: 250,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'commission_driver1_baggage', 
-    headerName: 'COMMISSION DRIVER1 BAGGAGE', 
-     width: 250,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'commission_driver1_baggage', 
+  //   headerName: 'COMMISSION DRIVER1 BAGGAGE', 
+  //    width: 250,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'auto_commission_driver1_baggage', 
-    headerName: 'AUTO COMMISSION DRIVER1 BAGGAGE', 
-     width: 300,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'auto_commission_driver1_baggage', 
+  //   headerName: 'AUTO COMMISSION DRIVER1 BAGGAGE', 
+  //    width: 300,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'commission_driver2_passenger', 
-    headerName: 'COMMISSION DRIVER2 PASSENGER', 
-     width: 290,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'commission_driver2_passenger', 
+  //   headerName: 'COMMISSION DRIVER2 PASSENGER', 
+  //    width: 290,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'auto_commission_driver2_passenger', 
-    headerName: 'AUTO COMMISSION DRIVER2 PASSENGER', 
-     width: 310,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'auto_commission_driver2_passenger', 
+  //   headerName: 'AUTO COMMISSION DRIVER2 PASSENGER', 
+  //    width: 310,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'commission_driver2_baggage', 
-    headerName: 'COMMISSION DRIVER2 BAGGAGE', 
-     width: 250,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'commission_driver2_baggage', 
+  //   headerName: 'COMMISSION DRIVER2 BAGGAGE', 
+  //    width: 250,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'auto_commission_driver2_baggage', 
-    headerName: 'AUTO COMMISSION DRIVER2 BAGGAGE', 
-     width: 300,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'auto_commission_driver2_baggage', 
+  //   headerName: 'AUTO COMMISSION DRIVER2 BAGGAGE', 
+  //    width: 300,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'commission_driver2', 
-    headerName: 'COMMISSION DRIVER2', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'commission_driver2', 
+  //   headerName: 'COMMISSION DRIVER2', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'auto_commission_driver2', 
-    headerName: 'AUTO COMMISSION DRIVER2', 
-     width: 220,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'auto_commission_driver2', 
+  //   headerName: 'AUTO COMMISSION DRIVER2', 
+  //    width: 220,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'commission_conductor_passenger', 
-    headerName: 'COMMISSION CONDUCTOR PASSENGER', 
-     width: 300,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'commission_conductor_passenger', 
+  //   headerName: 'COMMISSION CONDUCTOR PASSENGER', 
+  //    width: 300,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'auto_commission_conductor_passenger', 
-    headerName: 'AUTO COMMISSION CONDUCTOR PASSENGER', 
-     width: 340,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'auto_commission_conductor_passenger', 
+  //   headerName: 'AUTO COMMISSION CONDUCTOR PASSENGER', 
+  //    width: 340,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'commission_conductor_baggage', 
-    headerName: 'COMMISSION CONDUCTOR BAGGAGE', 
-     width: 280,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'commission_conductor_baggage', 
+  //   headerName: 'COMMISSION CONDUCTOR BAGGAGE', 
+  //    width: 280,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'commission_conductor', 
-    headerName: 'COMMISSION CONDUCTOR', 
-     width: 210,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'commission_conductor', 
+  //   headerName: 'COMMISSION CONDUCTOR', 
+  //    width: 210,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'auto_commission_conductor', 
-    headerName: 'AUTO COMMISSION CONDUCTOR', 
-     width: 250,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'auto_commission_conductor', 
+  //   headerName: 'AUTO COMMISSION CONDUCTOR', 
+  //    width: 250,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'incentive_driver1', 
-    headerName: 'INCENTIVE DRIVER1', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'incentive_driver1', 
+  //   headerName: 'INCENTIVE DRIVER1', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'incentive_driver2', 
-    headerName: 'INCENTIVE DRIVER2', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'incentive_driver2', 
+  //   headerName: 'INCENTIVE DRIVER2', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'incentive_conductor', 
-    headerName: 'INCENTIVE CONDUCTOR', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'incentive_conductor', 
+  //   headerName: 'INCENTIVE CONDUCTOR', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'allowance_driver1', 
-    headerName: 'ALLOWANCE DRIVER1', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'allowance_driver1', 
+  //   headerName: 'ALLOWANCE DRIVER1', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'allowance_driver2', 
-    headerName: 'ALLOWANCE DRIVER2', 
-     width: 180,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'allowance_driver2', 
+  //   headerName: 'ALLOWANCE DRIVER2', 
+  //    width: 180,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'allowance_conductor', 
-    headerName: 'ALLOWANCE CONDUCTOR', 
-     width: 200,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'allowance_conductor', 
+  //   headerName: 'ALLOWANCE CONDUCTOR', 
+  //    width: 200,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'eskirol_commission_driver', 
-    headerName: 'ESKIROL COMMISSION DRIVER', 
-     width: 240,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'eskirol_commission_driver', 
+  //   headerName: 'ESKIROL COMMISSION DRIVER', 
+  //    width: 240,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'eskirol_commission_conductor', 
-    headerName: 'ESKIROL COMMISSION CONDUCTOR', 
-     width: 270,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'eskirol_commission_conductor', 
+  //   headerName: 'ESKIROL COMMISSION CONDUCTOR', 
+  //    width: 270,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'eskirol_cash_bond_driver', 
-    headerName: 'ESKIROL CASH BOND DRIVER', 
-     width: 230,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'eskirol_cash_bond_driver', 
+  //   headerName: 'ESKIROL CASH BOND DRIVER', 
+  //    width: 230,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
-  { 
-    field: 'eskirol_cash_bond_conductor', 
-    headerName: 'ESKIROL CASH BOND CONDUCTOR', 
-     width: 260,
-    headerClassName: 'super-app-theme--header',
-    editable: false,
-   headerAlign: 'center',
-    align: 'center',
-  },
+  // { 
+  //   field: 'eskirol_cash_bond_conductor', 
+  //   headerName: 'ESKIROL CASH BOND CONDUCTOR', 
+  //    width: 260,
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: false,
+  //  headerAlign: 'center',
+  //   align: 'center',
+  // },
 
   { 
     field: 'toll_fees', 
@@ -1194,9 +1215,57 @@ const columns: GridColDef[] = [
 
     async function SyncData(){
 
+      setIsSyncing(true)
+  try{
+
+    const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/main/sync/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+      headers :{
+          Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      }
+  })
+      
+      const response = await request.data;
+  
+      if(response){
+        setIsSyncing(false)
+        
+  toast.success("Sync succesfully!", {
+    position: "bottom-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    });
+
+      }
+
+        
+  
+      
+  }catch(e){
+    console.log(`Error in getting coops: ${e}`)
+    setIsSyncing(false)
+    toast.success("Please check your internet connection, thank you!", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+  }
 
     } 
 
+useEffect(() =>{
+  GetFilterData();
+return () =>{}
+},[filterTableCompanyId])
       //Toolbar
 function CustomToolbar() {
 
@@ -1223,7 +1292,7 @@ function CustomToolbar() {
         >
           
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
-         {localStorage.getItem('role') === "Administrator" ? 
+         {localStorage.getItem('role') === "Administrator" && filterTableCompanyId === import.meta.env.VITE_DLTB_COOP_ID? 
             <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
             :
             null
@@ -1322,13 +1391,16 @@ const componentRef = useRef();
           
       
   
-            setTableRows(
-            
-              response.response.map((data : any) =>{
-            
-                return {id: data._id, ...data}
-              })
-            )
+          setTableRows(
+            response.response.map((data: any) => {
+              return { id: data._id, ...data };
+            })
+            .sort((a, b) => {
+              const dateCreatedA = new Date(a.dateCreated).getTime();
+              const dateCreatedB = new Date(b.dateCreated).getTime();
+              return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
+            })
+          );
              
             let totalFare = 0.00;
 
@@ -1813,8 +1885,8 @@ return(
             height:700
             }}>
             
-            <DataGridPremium
-            initialState={{ pinnedColumns: { left: ['tor_no', 'status'], right: ['actions']} }}
+            <StyledDataGrid
+            initialState={{ pinnedColumns: { left: [ 'status'], right: ['actions']} }}
             rows={tableRows} columns={columns}
             loading = {isLoading}
              slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}

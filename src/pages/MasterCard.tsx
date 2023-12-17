@@ -1,3 +1,4 @@
+//@ts-nocheck
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
@@ -36,6 +37,17 @@ export function MasterCard(){
     { 
       field: 'empNo', 
       headerName: 'Employee No', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+     
+    },
+    { 
+      field: 'sNo', 
+      headerName: 'SNO', 
       flex: 1,
           minWidth: 0,
       headerClassName: 'super-app-theme--header',
@@ -102,19 +114,19 @@ export function MasterCard(){
       },
     },
   
-    { 
-      field: 'updatedAt', 
-      headerName: 'LAST MODIFIED', 
-      flex: 1,
-          minWidth: 0,
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      align: 'center',
-      editable: false,
-      valueFormatter: (params) => {
-        return moment(params.value).format('MMMM D, YYYY');
-      },
-    }
+    // { 
+    //   field: 'updatedAt', 
+    //   headerName: 'LAST MODIFIED', 
+    //   flex: 1,
+    //       minWidth: 0,
+    //   headerClassName: 'super-app-theme--header',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   editable: false,
+    //   valueFormatter: (params) => {
+    //     return moment(params.value).format('MMMM D, YYYY');
+    //   },
+    // }
    
     ];
 
@@ -169,6 +181,10 @@ export function MasterCard(){
                 
                 response.response.map((data : any) =>{
                   return {id: data._id, ...data}
+                }).sort((a, b) => {
+                  const dateCreatedA = new Date(a.dateCreated).getTime();
+                  const dateCreatedB = new Date(b.dateCreated).getTime();
+                  return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
                 })
               )
             }
@@ -181,10 +197,14 @@ export function MasterCard(){
       
     }   
     useEffect(() =>{
+      if(filterTableCompanyId !== import.meta.env.VITE_DLTB_COOP_ID){
+        setEmployee(() => []);
+      }
       GetAllData();
       return () =>{}
     },[filterTableCompanyId])
 
+    
     
     const [employee, setEmployee] = useState<any>([]);
     const [empNo, setEmpNo] = useState("")
@@ -239,11 +259,12 @@ export function MasterCard(){
         event?.preventDefault()
         // Define the request data as an object
         const requestData = {
-          coopId: coopId,
+          coopId: filterTableCompanyId,
           empNo: parseFloat(empNo), // Assuming empNo and cardId are variables in your scope
           cardID: cardId,
-          balance: balance,
+          balance: parseFloat(balance),
         };
+        console.log(`This is the request data`)
         console.log(requestData)
         const response = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/mastercard`,
@@ -258,9 +279,10 @@ export function MasterCard(){
         // Note that there's no need to use `await` on response.data directly
         // as axios already returns the response data.
         const responseData = response.data;
+          console.log(`This is the response`)
           console.log(responseData)
           
-          if(responseData.messages[0].code === "0"){
+          if(responseData.messages[0].code === 0){
           
             GetAllData();
         
@@ -275,7 +297,7 @@ export function MasterCard(){
               theme: "colored",
               });
            }else{
-            toast.warning(responseData.messages[0].message, {
+            toast.error(responseData.messages[0].message, {
               position: "bottom-center",
               autoClose: 5000,
               hideProgressBar: false,
@@ -369,18 +391,22 @@ export function MasterCard(){
 
 
 
-  const containsText = (text : string, searchText) =>
+  const containsText = (text: string, searchText: string) =>
   text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
 
- // const allOptions = ["Option One", "Option Two", "Option Three", "Option Four"];
-
-  //const [selectedOption, setSelectedOption] = useState(allOptions[0]);
-
-  const [searchText, setSearchText] = useState("");
-  const displayedOptions = useMemo(
-    () => employee.filter((option) => containsText(option, searchText)),
-    [searchText]
-  );
+const [searchText, setSearchText] = useState("");
+const displayedOptions = useMemo(() => {
+  const uniqueOptions = new Set();
+  return employee
+    .filter((option) => containsText(option, searchText))
+    .filter((option) => {
+      if (!uniqueOptions.has(option)) {
+        uniqueOptions.add(option);
+        return true;
+      }
+      return false;
+    });
+}, [employee, searchText]);
       
   async function GetAllEmployees(){
 
@@ -428,6 +454,9 @@ export function MasterCard(){
 
     return () => {}
   },[])
+  useEffect(() =>{
+    return () =>{}
+  },[employee])
 
     return(
       <div  style={{
@@ -445,11 +474,7 @@ export function MasterCard(){
         draggable
         pauseOnHover
         theme="colored"
-        style={
-          {
-            width: "100%",
-          }
-        }
+        
         />
 
     <NavBar>
@@ -479,7 +504,7 @@ export function MasterCard(){
             {/* To subscribe to this website, please enter your email address here. We
             will send updates occasionally. */}
           </DialogContentText>
-      
+      {/*
           <FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
   <Select
@@ -506,6 +531,8 @@ export function MasterCard(){
   </Select>
 </FormControl>
 
+  */}
+
           {/* <TextField
             autoFocus
             margin="dense"
@@ -529,8 +556,6 @@ export function MasterCard(){
             label="Employee No"
             onChange={(e) => setEmpNo(e.target.value)}
             onClose={() => setSearchText("")}
-            // This prevents rendering empty string in Select's value
-            // if search text would exclude currently selected option.
             renderValue={() => empNo}
           >
   
@@ -558,11 +583,21 @@ export function MasterCard(){
                 }}
               />
             </ListSubheader>
-            {displayedOptions.map((option, i) => (
+            {/* {displayedOptions.map((option, i) => (
               <MenuItem key={i} value={option}>
                 {option}
               </MenuItem>
-            ))}
+            ))} */}
+            {filterTableCompanyId === import.meta.env.VITE_DLTB_COOP_ID ?
+            displayedOptions.map((option, i) => (
+              displayedOptions.indexOf(option) === i && (
+                <MenuItem key={i} value={option}>
+                  {option}
+                </MenuItem>
+              )
+            )) :
+            null
+            }
           </Select>
         </FormControl>
 

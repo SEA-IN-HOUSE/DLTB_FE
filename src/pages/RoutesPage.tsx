@@ -1,8 +1,8 @@
-// @ts-nocheck
+//@ts-nocheck
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
-import { GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton, GridToolbarQuickFilter  } from '@mui/x-data-grid';
+import { GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton, GridToolbarQuickFilter,useGridApiContext   } from '@mui/x-data-grid';
 import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
@@ -17,25 +17,18 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import moment from 'moment'
-import { BsCurrencyExchange,BsTicketPerforatedFill,BsBagCheck,BsFillSignpostFill,BsFillBusFrontFill,BsFillClipboardCheckFill,BsExclamationTriangle, BsFillEmojiSmileFill ,BsFillTruckFrontFill,BsFillMapFill    } from "react-icons/bs";
-import React, { useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
-import PrintIcon from '@mui/icons-material/Print';
+// import { BsCurrencyExchange,BsTicketPerforatedFill,BsBagCheck,BsFillSignpostFill,BsFillBusFrontFill,BsFillClipboardCheckFill,BsExclamationTriangle, BsFillEmojiSmileFill ,BsFillTruckFrontFill,BsFillMapFill    } from "react-icons/bs";
+import React, { useRef, useCallback } from 'react';
+// import PrintIcon from '@mui/icons-material/Print';
 import { ComponentToPrint } from '../components/ComponentToPrint';
 import CountUp from 'react-countup';
 import '../styles/RemoveProWaterMark.css'
-import Chip from '@mui/material/Chip';
+
 import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import { useInterval } from 'usehooks-ts'
 
-import { BiBus, BiMoney,BiTrip } from "react-icons/bi";
-
-import { IoIosPeople } from "react-icons/io";
-
-import { LuBaggageClaim } from "react-icons/lu";
-
-import { SiCashapp } from "react-icons/si";
+import {BsFillTruckFrontFill} from 'react-icons/bs'
 
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -53,7 +46,7 @@ import AddIcon from '@mui/icons-material/AddHomeWork';
    
   ];
 
-  const StyledDataGrid = styled(DataGridPremium)((theme) => ({
+  const StyledDataGrid = styled(DataGridPremium)(() => ({
     "& .MuiDataGrid-sortIcon": {
     opacity: 1,
     color: "white",
@@ -132,7 +125,7 @@ export  function RoutesPage(){
 
   const [filterType, setFilterType] = useState("");
 
-  const [filterData, setFilterData] = useState(null);
+  const [filterData, setFilterData] = useState("");
   
   const [filterApplied, setFilterApplied] = useState(false)
 
@@ -451,6 +444,7 @@ const routeColumns: GridColDef[] = [
       width: 220,
       headerAlign: 'center',
       align: 'center',
+      type:"Date"
     },
 
     ];
@@ -555,11 +549,10 @@ const routeColumns: GridColDef[] = [
         // Note that there's no need to use `await` on response.data directly
         // as axios already returns the response data.
         const responseData = response.data;
-          console.log(responseData)
   
           if(responseData.messages[0].code === "0"){
             
-            GetAllData();
+            GetFilterData();
         
             toast.success("Success", {
               position: "bottom-center",
@@ -644,8 +637,7 @@ const routeColumns: GridColDef[] = [
                 {
           Object(coopList).length === 0? (<></>) :
           coopList.map((coop : ICooperative) =>{
-            console.log(coop)
-            console.log(coop.cooperativeCodeName)
+      
             return (
               <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
             )
@@ -749,9 +741,9 @@ function BankCustomToolbar() {
 
 
 const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
+  // const handlePrint = useReactToPrint({
+  //   content: () => componentRef.current,
+  // });
 
 
 
@@ -775,9 +767,6 @@ const componentRef = useRef();
   })
       
       const response = await request.data;
-
-      console.log("THIS IS THE ROUTE RESPONSE")
-      console.log(response)
   
       if(response.messages[0].code === 0){
   
@@ -787,16 +776,16 @@ const componentRef = useRef();
       
           
        
-            setTableRows(
-            
-              response.response.map((data : any) =>{
-
-                console.log(`This is the response`)
-                console.log(data)
-            
-                return {id: data._id, ...data}
-              })
-            )
+          setTableRows(
+            response.response.map((data: any) => {
+              return { id: data._id, ...data };
+            }).sort((a, b) => {
+              const dateCreatedA = new Date(a.dateCreated).getTime();
+              const dateCreatedB = new Date(b.dateCreated).getTime();
+              return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
+            })
+          );
+          
             
             setNumberOfRoutes(() => response.response.length)
 
@@ -886,17 +875,17 @@ const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/transcation-re
     if(JSON.stringify(response.response) !== JSON.stringify(bankRows)){
       
   
-      
-      console.log(`Bank transfer`)
-      console.log(response.response)
         setBankTableRows(
         
           response.response.map((data : any) =>{
 
-            console.log(`This is the response`)
-            console.log(data)
-        
+         
             return {id: data._id, ...data}
+          })
+          .sort((a, b) => {
+            const dateCreatedA = new Date(a.dateCreated).getTime();
+            const dateCreatedB = new Date(b.dateCreated).getTime();
+            return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
           })
         )
          
@@ -1029,8 +1018,7 @@ return(
     {
     Object(coopList).length === 0? (<></>) :
     coopList.map((coop : ICooperative) =>{
-      console.log(coop)
-      console.log(coop.cooperativeCodeName)
+ 
       return (
         <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
       )
@@ -1299,7 +1287,7 @@ return(
                     id="demo-simple-select"
                     value={filterType}
                     label="Filter By"
-                    value={filterType}
+       
                     onChange={(event) => setFilterType( () => event.target.value)}
                     MenuProps={{ PaperProps: { style: { maxHeight: 264 } } }}
                   >
@@ -1375,8 +1363,7 @@ return(
       {
             Object(tableRows).length > 0  ?
             tableRows.map((data : any , index) =>{
-              console.log(`ROUTE ID ${data.id}`)
-              console.log(`COOP ID ${data.coopId}`)
+
               return (
                 <CustomTabPanel value={value} index={index+1}>
                 <Box sx = {{
@@ -1409,6 +1396,34 @@ return(
 }
 
 
+
+
+
+const useFakeMutation = () => {
+  return useCallback(
+    (user) =>
+      new Promise((resolve, reject) =>
+        setTimeout(() => {
+          if (user.name?.trim() === '') {
+            reject();
+          } else {
+            resolve(user);
+          }
+        }, 200),
+      ),
+    [],
+  );
+};
+
+function computeMutation(newRow, oldRow) {
+  if (newRow.rowNo !== oldRow.rowNo) {
+   
+    return `Row no from '${oldRow.rowNo}' to '${newRow.rowNo}'`;
+  }
+
+  return null;
+}
+
 function StationDatatables(props){
 
   const [isLoading ,setIsLoading] = useState(false)
@@ -1416,7 +1431,63 @@ function StationDatatables(props){
   const [coopList, setCoopList] = useState(props.coops)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const [filterTableCompanyId, setFilterTableCompanyId] = useState(props.coopId);
+
   
+const mutateRow = useFakeMutation();
+
+const noButtonRef = useRef(null);
+
+const [promiseArguments, setPromiseArguments] = useState(null);
+
+
+  function EditStatus(props) {
+    const { id, value, field } = props;
+    const apiRef = useGridApiContext();
+  
+    const handleChangeRow = async (event) => {
+      console.log(event.target.value);
+      await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+      if (event.key === 'Enter') {
+      
+        apiRef.current.stopCellEditMode({ id, field });
+      }
+    };
+  
+  
+    return (
+      <>
+        <TextField
+          type="number" // specify the input type as number
+          value={value}
+          onChange={handleChangeRow}
+          autoFocus
+          fullWidth
+        />
+      </>
+    );
+  }
+  
+  EditStatus.propTypes = {
+    /**
+     * The column field of the cell that triggered the event.
+     */
+    field: PropTypes.string.isRequired,
+    /**
+     * The grid row id.
+     */
+    id: PropTypes.oneOfType([PropTypes.number]).isRequired,
+    /**
+     * The cell value.
+     * If the column has `valueGetter`, use `params.row` to directly access the fields.
+     */
+    value: PropTypes.any,
+  };
+  
+  const renderEditRowNo = (params) => {
+    return <EditStatus {...params} />;
+  };
 
   const stationColumns: GridColDef[] = [
 
@@ -1424,9 +1495,9 @@ function StationDatatables(props){
       field: 'stationName', 
       headerName: 'STATION NAME', 
       flex: 1,
-          minWidth: 0,
-      headerClassName: 'super-app-theme--header',
+          minWidth: 180,
       headerAlign: 'center',
+      headerClassName: 'super-app-theme--header',
       align: 'center',
       editable: false,
      
@@ -1435,7 +1506,7 @@ function StationDatatables(props){
       field: 'km', 
       headerName: 'KILOMETER', 
       flex: 1,
-          minWidth: 0,
+      minWidth: 180,
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       align: 'center',
@@ -1445,27 +1516,28 @@ function StationDatatables(props){
  
     { 
       field: 'rowNo', 
-      headerName: 'ROW NO', 
+      headerName: 'ORDER', 
       flex: 1,
-          minWidth: 0,
+      minWidth: 180,
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       align: 'center',
-      editable: false,
-     
+      editable: true,
+      renderEditCell: renderEditRowNo,
     },
-  
+  /*
     { 
       field: 'routeId', 
       headerName: 'ROUTE ID', 
-      width: 350,
+      flex: 1,
+      minWidth: 350,
       headerClassName: 'super-app-theme--header',
       editable: false,
      headerAlign: 'center',
       align: 'center',
      
     },
-
+*/
     {
       field: 'coopId', // Assuming you have a 'name' field in your data source
       headerName: 'COMPANY',
@@ -1488,7 +1560,7 @@ function StationDatatables(props){
       field: 'updatedAt', 
       headerName: 'DATE CREATED', 
       flex: 1,
-          minWidth: 0,
+          minWidth: 180,
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       align: 'center',
@@ -1523,27 +1595,27 @@ function StationDatatables(props){
       
       const response = await request.data;
 
-      console.log("THIS IS THE STATION RESPONSE")
-      console.log(response)
   
       if(response.messages[0].code === 0){
-  console.log(`TEST PUMASOK SA MESSAGES 0`)
 
-  console.log(response.response)
   
         if(JSON.stringify(response.response) !== JSON.stringify(stationTableRows)){
           
-       console.log("PUMASOK DITO!")
-          setStationTableRows(
-            
-              response.response.map((data : any) =>{
-
-                console.log(`This is the response`)
-                console.log(data)
-            
-                return {id: data._id, ...data}
+          if (JSON.stringify(response.response) !== JSON.stringify(stationTableRows)) {
+            setStationTableRows(
+              response.response.map((data) => {
+                return { id: data._id, ...data };
               })
-            )
+              .sort((a, b) => {
+                const rowNoA = a.rowNo; // Assuming that the row number is stored in the 'rowNo' property
+                const rowNoB = b.rowNo;
+            
+                // Change the comparison logic to sort by rowNo
+                return rowNoA - rowNoB; // Sort by rowNo in ascending order
+                // If you want to sort in descending order, you can use: return rowNoB - rowNoA;
+              })
+            );
+          }
             
     
   
@@ -1584,7 +1656,7 @@ useEffect(() =>{
 },[stationTableRows])
 
 async function GetCooperative(){
-  setIsSyncing(false)
+ 
   try{
 
     const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
@@ -1659,8 +1731,7 @@ function CustomToolbar() {
           {
     Object(coopList).length === 0? (<></>) :
     coopList.map((coop : ICooperative) =>{
-      console.log(coop)
-      console.log(coop.cooperativeCodeName)
+
       return (
         <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
       )
@@ -1696,7 +1767,6 @@ const [rowNo, setRowNo] = useState(0);
 
 
 
-
     async function AddStation() {
       try {
       
@@ -1708,12 +1778,12 @@ const [rowNo, setRowNo] = useState(0);
           stationName: stationName, // Assuming empNo and cardId are variables in your scope
           km : km,
           viceVersaKM : viceVersaKM,
-          routeId : routeId,
+          routeId : props.routeId,
           rowNo: rowNo
         };
     
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/station/${filterTableCompanyId}`,
+          `${import.meta.env.VITE_BASE_URL}/station`,
           requestData, // Use the requestData object as the request data
           {
             headers: {
@@ -1725,12 +1795,11 @@ const [rowNo, setRowNo] = useState(0);
         // Note that there's no need to use `await` on response.data directly
         // as axios already returns the response data.
         const responseData = response.data;
-          console.log(responseData)
        
           if(responseData.messages[0].code === "0"){
           
 
-            GetAllData();
+            GetFilterData();
         
             toast.success("Successfully added!", {
               position: "bottom-center",
@@ -1774,7 +1843,131 @@ const [rowNo, setRowNo] = useState(0);
     }
     
 
+
+
+    // CONFIRM DIALOG
+
+    const processRowUpdate = useCallback(
+      (newRow, oldRow) =>
+        new Promise((resolve, reject) => {
+          const mutation = computeMutation(newRow, oldRow);
+          if (mutation) {
+            // Save the arguments to resolve or reject the promise later
+            setPromiseArguments({ resolve, reject, newRow, oldRow });
+          } else {
+            resolve(oldRow); // Nothing was changed
+          }
+        }),
+      [],
+    );
+  
+  
+    const handleNo = () => {
+      const { oldRow, resolve } = promiseArguments;
+      resolve(oldRow); // Resolve with the old row to not update the internal state
+      setPromiseArguments(null);
+    };
+  
+    const handleYes = async () => {
+      const { newRow, oldRow, reject, resolve } = promiseArguments;
+      try {
+       
+        const bodyParameters ={
+          id:newRow['id'],
+          rowNo:newRow['rowNo']
+        }
+
+        
+    const request = await axios.put(`${import.meta.env.VITE_BASE_URL}/station/rowNo/${newRow['coopId']}`,
+    bodyParameters,
+    {
+      headers :{
+          Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      }
+    })
+
+     
+    const responseGet = await request.data;
+    const response = await mutateRow(newRow);
+      if(responseGet.messages[0].code === 0){
+        GetFilterData();
+        resolve(response);
+        toast.success("Updated Succesfully!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+        setPromiseArguments(null);
+      }else{
+        toast.success("Failed to update!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }
+      } catch (error) {
+        reject(oldRow);
+        setPromiseArguments(null);
+        toast.success("Please check your internet connection!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }
+    }
+  
+    const handleEntered = () => {
+      // The `autoFocus` is not used because, if used, the same Enter that saves
+      // the cell triggers "No". Instead, we manually focus the "No" button once
+      // the dialog is fully open.
+      // noButtonRef.current?.focus();
+    };
+  
+    const renderConfirmDialog = () => {
+      if (!promiseArguments) {
+        return null;
+      }
+      const { newRow, oldRow } = promiseArguments;
+      const mutation = computeMutation(newRow, oldRow);
+  
+      return (
+        <Dialog
+          maxWidth="xs"
+          TransitionProps={{ onEntered: handleEntered }}
+          open={!!promiseArguments}
+        >
+          <DialogTitle>Are you sure?</DialogTitle>
+          <DialogContent dividers>
+            {`Pressing 'Yes' will change ${mutation}.`}
+          </DialogContent>
+          <DialogActions>
+            <Button ref={noButtonRef} onClick={handleNo}>
+              No
+            </Button>
+            <Button onClick={handleYes}>Yes</Button>
+          </DialogActions>
+        </Dialog>
+      );
+    };
+
+
     return (<>
+    {renderConfirmDialog()}
      <ToastContainer
         position="bottom-center"
         autoClose={5000}
@@ -1786,11 +1979,6 @@ const [rowNo, setRowNo] = useState(0);
         draggable
         pauseOnHover
         theme="colored"
-        style={
-          {
-            width: "100%",
-          }
-        }
         />
 
 <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
@@ -1834,8 +2022,7 @@ const [rowNo, setRowNo] = useState(0);
     {
     Object(coopList).length === 0? (<></>) :
     coopList.map((coop : ICooperative) =>{
-      console.log(coop)
-      console.log(coop.cooperativeCodeName)
+
       return (
         <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
       )
@@ -1882,7 +2069,7 @@ const [rowNo, setRowNo] = useState(0);
             onChange={(event) => setViceVersaKM(event.target.value)}
           /> */}
 
-          <TextField
+          {/* <TextField
             autoFocus
             margin="dense"
             id="routeId"
@@ -1892,7 +2079,7 @@ const [rowNo, setRowNo] = useState(0);
             fullWidth
             variant="outlined"
             onChange={(event) => setRouteId(event.target.value)}
-          />
+          /> */}
 
           <TextField
             autoFocus
@@ -1915,8 +2102,11 @@ const [rowNo, setRowNo] = useState(0);
         </DialogActions>
         </form>
   </Dialog>
+  
   <StyledDataGrid
-           initialState={{ pinnedColumns: { left: ['routeId']} }}
+  processRowUpdate={processRowUpdate}
+  experimentalFeatures={{ newEditingApi: true }}
+           initialState={{ pinnedColumns: { left: ['rowNo']} }}
             rows={stationTableRows} columns={stationColumns}
             loading = {isLoading}
              slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
