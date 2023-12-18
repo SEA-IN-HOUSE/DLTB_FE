@@ -11,7 +11,7 @@ import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 import { useNavigate } from "react-router-dom";
 import { ICooperative } from "./Employee";
 
-import { FormControl, InputLabel,  MenuItem, Select } from "@mui/material";
+import { FormControl, InputLabel,  MenuItem, Select} from "@mui/material";
 
 const initialState = [
   {
@@ -76,6 +76,27 @@ export function Dashboard() : JSX.Element{
     const [data, setData] = useState(initialState);
 
     const [grossSales, setGrossSales] = useState(0);
+
+    const [isTorMainLoading, setIsTorMainLoading] = useState(true);
+
+    const [isTorTicketLoading, setTorTicketIsLoading] = useState(true);
+
+    const [isTorFuelLoading, setIsTorFuelLoading] = useState(true);
+
+    const [isTorRemittanceLoading, setIsTorRemittanceLoading] = useState(true);
+
+    const [isTorTripLoading, setIsTorTripLoading] = useState(true);
+
+    const [torInspectionLoading, setTorInspectionLoading] = useState(true);
+
+    const [torViolationLoading, setTorViolationLoading] = useState(true);
+
+    const [torTroubleLoading, setTorTroubleLoading] = useState(true);
+
+    useEffect(() =>{
+
+        return () =>{}
+    },[isTorMainLoading, isTorTicketLoading, isTorFuelLoading, isTorRemittanceLoading, isTorTripLoading, torInspectionLoading, torViolationLoading, torTroubleLoading])
 
     useEffect(() =>{
   
@@ -482,22 +503,22 @@ export function Dashboard() : JSX.Element{
            <div className="py-8 mt-1 sm:py-16 ">
   <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-12 md:space-y-0">
 
+         
+          <DashboardCard icon ={<BsFileEarmarkTextFill /> } title="TOR MAIN" cardNumber={torMainNumber} onClick ={() => navigate("/tor/main")} isLoading = {isTorMainLoading}/>
           
-          <DashboardCard icon ={<BsFileEarmarkTextFill /> } title="TOR MAIN" cardNumber={torMainNumber} onClick ={() => navigate("/tor/main")}/>
+          <DashboardCard icon ={<BsTicketPerforatedFill /> } title="TOR TICKET" cardNumber={torTicket} onClick ={() => navigate("/tor/ticket")} isLoading = {isTorTicketLoading} />
 
-          <DashboardCard icon ={<BsTicketPerforatedFill /> } title="TOR TICKET" cardNumber={torTicket} onClick ={() => navigate("/tor/ticket")} />
+          <DashboardCard icon ={<BsFillFuelPumpFill /> } title="TOR FUEL" cardNumber={torFuel} onClick ={() => navigate("/tor/fuel")} isLoading = {isTorFuelLoading} />
 
-          <DashboardCard icon ={<BsFillFuelPumpFill /> } title="TOR FUEL" cardNumber={torFuel} onClick ={() => navigate("/tor/fuel")} />
+          <DashboardCard icon ={<BsCurrencyExchange /> } title="TOR REMITTANCE" cardNumber={torRemittance} onClick ={() => navigate("/tor/remittance")}  isLoading = {isTorRemittanceLoading} />
 
-          <DashboardCard icon ={<BsCurrencyExchange /> } title="TOR REMITTANCE" cardNumber={torRemittance} onClick ={() => navigate("/tor/remittance")} />
+          <DashboardCard icon ={<BsFillSignpostFill /> } title="TOR TRIP" cardNumber={torTrip} onClick ={() => navigate("/tor/trip")} isLoading = {isTorTripLoading}/>
 
-          <DashboardCard icon ={<BsFillSignpostFill /> } title="TOR TRIP" cardNumber={torTrip} onClick ={() => navigate("/tor/trip")}/>
+          <DashboardCard icon ={<BsFillClipboardCheckFill />} title="TOR INSPECTION" cardNumber={torInspection} onClick ={() => navigate("/tor/inspection")} isLoading = {torInspectionLoading}/>
 
-          <DashboardCard icon ={<BsFillClipboardCheckFill />} title="TOR INSPECTION" cardNumber={torInspection} onClick ={() => navigate("/tor/inspection")}/>
-
-          <DashboardCard icon ={<BsFillExclamationTriangleFill />} title="TOR VIOLATION" cardNumber={torViolation} onClick ={() => navigate("/tor/violation")}/>
+          <DashboardCard icon ={<BsFillExclamationTriangleFill />} title="TOR VIOLATION" cardNumber={torViolation} onClick ={() => navigate("/tor/violation")} isLoading ={torViolationLoading}/>
           
-          <DashboardCard icon ={<BsEmojiDizzyFill />} title="TOR TROUBLE" cardNumber={torTrouble} onClick ={() => navigate("/tor/trouble")}/>
+          <DashboardCard icon ={<BsEmojiDizzyFill />} title="TOR TROUBLE" cardNumber={torTrouble} onClick ={() => navigate("/tor/trouble")} isLoading ={torTroubleLoading}/>
 
         </div>
         <div className= "mt-4">
