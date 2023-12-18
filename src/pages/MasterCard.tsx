@@ -18,8 +18,22 @@ import { ICooperative } from "./Employee";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 
-
+import { styled} from '@mui/system';
+import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
+import '../styles/RemoveProWaterMark.css'
   
+const StyledDataGrid = styled(DataGridPremium)(() => ({
+  "& .MuiDataGrid-sortIcon": {
+  opacity: 1,
+  color: "white",
+  },
+  "& .MuiDataGrid-menuIconButton": {
+  opacity: 1,
+  color: "white"
+  },
+  }));
+
+
   const rows: GridRowsProp = [
    
   ];
@@ -36,7 +50,7 @@ export function MasterCard(){
   
     { 
       field: 'empNo', 
-      headerName: 'Employee No', 
+      headerName: 'EMPLOYEE NO', 
       flex: 1,
           minWidth: 0,
       headerClassName: 'super-app-theme--header',
@@ -197,9 +211,9 @@ export function MasterCard(){
       
     }   
     useEffect(() =>{
-      if(filterTableCompanyId !== import.meta.env.VITE_DLTB_COOP_ID){
-        setEmployee(() => []);
-      }
+      // if(filterTableCompanyId !== import.meta.env.VITE_DLTB_COOP_ID){
+      //   setEmployee(() => []);
+      // }
       GetAllData();
       return () =>{}
     },[filterTableCompanyId])
@@ -215,7 +229,7 @@ export function MasterCard(){
 
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const [coopId, setCoopId] = useState("");
+  //const [coopId, setCoopId] = useState("");
 
   async function GetCooperative(){
 
@@ -264,8 +278,7 @@ export function MasterCard(){
           cardID: cardId,
           balance: parseFloat(balance),
         };
-        console.log(`This is the request data`)
-        console.log(requestData)
+
         const response = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/mastercard`,
           requestData, // Use the requestData object as the request data
@@ -360,11 +373,7 @@ export function MasterCard(){
               autoWidth
               label="Company"
             >
-              {/* {localStorage.getItem('role') === "Administrator" ? 
-          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
-          :
-          null
-          } */}
+      
               {
         Object(coopList).length === 0? (<></>) :
         coopList.map((coop : ICooperative) =>{
@@ -387,10 +396,6 @@ export function MasterCard(){
         );
   
   }   
-
-
-
-
   const containsText = (text: string, searchText: string) =>
   text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
 
@@ -414,7 +419,7 @@ const displayedOptions = useMemo(() => {
 
       try{
         
-        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/${import.meta.env.VITE_DLTB_COOP_ID}`,{
+        const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/${filterTableCompanyId}`,{
           headers :{
               Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
           }
@@ -423,7 +428,7 @@ const displayedOptions = useMemo(() => {
           const response = await request.data;
           
           if(response.messages[0].code === '0'){
-
+         
             response.response.map((employee : any ) =>{
             
               if (employee?.empNo !== undefined &&
@@ -434,7 +439,7 @@ const displayedOptions = useMemo(() => {
                 employee._id !== "") {
                
                   const empNumber  = employee?.empNo.toString();
-                
+                console.log(`EMPLOYEE: ${empNumber}`)
                 setEmployee((employee: any) => [...employee, empNumber]);
               }
             })
@@ -453,7 +458,7 @@ const displayedOptions = useMemo(() => {
     GetAllEmployees();
 
     return () => {}
-  },[])
+  },[filterTableCompanyId])
   useEffect(() =>{
     return () =>{}
   },[employee])
@@ -501,49 +506,10 @@ const displayedOptions = useMemo(() => {
         </IconButton>
         <DialogContent dividers>
           <DialogContentText>
-            {/* To subscribe to this website, please enter your email address here. We
-            will send updates occasionally. */}
+           
           </DialogContentText>
-      {/*
-          <FormControl fullWidth margin="dense">
-  <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
-  <Select
-    labelId="demo-simple-select-label-coopId"
-    id="demo-simple-select-coopId"
-    value={coopId}
-    defaultValue= {coopId}
-    label="Cooperative"
-    onChange={(event) => setCoopId(event?.target.value)}
-    required
-  >
-    {
-    Object(coopList).length === 0? (<></>) :
-    coopList.map((coop : ICooperative) =>{
-      console.log(coop)
-      console.log(coop.cooperativeCodeName)
-      return (
-        <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
-      )
-
-    })
-    }
-   
-  </Select>
-</FormControl>
-
-  */}
-
-          {/* <TextField
-            autoFocus
-            margin="dense"
-            id="riderId"
-            name ="riderId"
-            label="Rider Id"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setRiderId(event.target.value)}
-          /> */}
+    
+       
 
 <FormControl fullWidth margin ="dense">
           <InputLabel id="search-select-label">Employee No</InputLabel>
@@ -583,20 +549,15 @@ const displayedOptions = useMemo(() => {
                 }}
               />
             </ListSubheader>
-            {/* {displayedOptions.map((option, i) => (
-              <MenuItem key={i} value={option}>
-                {option}
-              </MenuItem>
-            ))} */}
-            {filterTableCompanyId === import.meta.env.VITE_DLTB_COOP_ID ?
+         
+            {
             displayedOptions.map((option, i) => (
               displayedOptions.indexOf(option) === i && (
                 <MenuItem key={i} value={option}>
                   {option}
                 </MenuItem>
               )
-            )) :
-            null
+            )) 
             }
           </Select>
         </FormControl>
@@ -645,10 +606,10 @@ const displayedOptions = useMemo(() => {
             backgroundColor: '#161d6f',
             color:'white',
             },
-            height:'400'
+            height:700
             }}>
 
-            <DataGrid rows={tableRows} columns={columns}
+            <StyledDataGrid rows={tableRows} columns={columns}
             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
             slotProps={{
                 toolbar: {
@@ -665,15 +626,7 @@ const displayedOptions = useMemo(() => {
                 padding: '15px',
               },
             }}
-            initialState={{ 
-
-              pagination: { 
-                paginationModel: { 
-                  pageSize: 5 
-                } 
-              }, 
-            }} 
-            pageSizeOptions={[5, 10, 25]}
+           
             />
         </Box>
         </Paper>

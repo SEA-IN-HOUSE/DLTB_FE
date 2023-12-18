@@ -13,7 +13,7 @@ export default function DashboardCard(props : DashboardCardProps){
     return (
         <>
   
-   <div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
+   <div className="cursor-pointer bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
   <div className="flex items-center">
     <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
       

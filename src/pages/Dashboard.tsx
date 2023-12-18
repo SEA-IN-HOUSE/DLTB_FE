@@ -83,53 +83,10 @@ export function Dashboard() : JSX.Element{
         localStorage.clear();
         navigate('/login')
       }
-      
-    //   if(!localStorage.getItem('pageCode')?.includes("dash, ")){
-    //       navigate('/dashboard')
-    //   }
-  
-     
-  
+ 
       return () =>{}
   
   },[])
-
-//   async function GetGrossSales(){
-
-//     try{
-  
-//         const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/cooperative`,{
-//           headers :{
-//               Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-//           }
-//       })
-          
-//           const response = await request.data;
-          
-//           if(response.messages[0].code === '0'){
-//             console.log(response);
-//             setCoopList(
-              
-//               // eslint-disable-next-line @typescript-eslint/no-explicit-any  
-//               response.response.map((coop : any ) =>{
-//                 console.log(coop)
-                
-//                 if(coop._id){
-//                   return {id: coop._id, ...coop}
-//                 }
-                
-//               })
-//             )
-    
-            
-//           }
-          
-//       }catch(e){
-//         console.log(`Error in getting coops: ${e}`)
-//       }
-
-//   }
-
   
   async function GetCooperative(){
 
@@ -172,10 +129,6 @@ export function Dashboard() : JSX.Element{
       return () =>{}
 
   },[])
-  
-
-    // const [unitsOperational, setUnitsOperational] = useState(0)
-
 
     async function GetTotalGrossSales(){
 
@@ -198,7 +151,6 @@ export function Dashboard() : JSX.Element{
              
              console.log(`total fare ${totalFare}`)
              setGrossSales(() => totalFare)
-            // setTorTicketNumber(response.response.length)
 
             setData((prevState) =>
             prevState.map((item) =>
@@ -456,11 +408,7 @@ export function Dashboard() : JSX.Element{
         setTimeout(GetAllTORTrouble, 5000)
     }
 
-    //const navigate = useNavigate();
-
     useEffect(() =>{
-
-       
 
         GetAllTORRemittance();
 
@@ -482,25 +430,23 @@ export function Dashboard() : JSX.Element{
 
         return () =>{}
 
-
     },[filterTableCompanyId])
     
     useEffect(() => {
-
-    
 
         return () => {}
 
     },[torMainNumber, torTicket, torFuel, torRemittance, torTrip, torInspection, torViolation, torTrouble])
     return(
-        <div  >
+        <div style={{
+            backgroundColor: '#e2e8f0',
+            height:'auto'
+        }}>
         <NavBar>
            <HeaderCard title="DASHBOARD"/>
            {localStorage.getItem('role') === "Administrator" ? 
            <div className="mt-3  bg-white border border-gray-200 rounded-lg shadow-lg p-4"> 
-           
-           
-          
+         
           <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
             <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
             <Select
@@ -508,27 +454,23 @@ export function Dashboard() : JSX.Element{
               id="filter-company-demo-demo-simple-select-autowidth"
               value={filterTableCompanyId}
               defaultValue={filterTableCompanyId}
-            //   onChange={(event) => setFilterTableCompanyId(() => event.target.value)}
+              onChange={(event) => setFilterTableCompanyId(() => event.target.value)}
               onChange={() => {}}
               autoWidth
               label="Company"
             >
-              {/* {localStorage.getItem('role') === "Administrator" ? 
-          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
-          :
-          null
-          } */}
+            
               {
-        Object(coopList).length === 0? (<></>) :
-        coopList.map((coop : ICooperative) =>{
-          console.log(coop)
-          console.log(coop.cooperativeCodeName)
-          return (
-            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
-          )
+                Object(coopList).length === 0? (<></>) :
+                coopList.map((coop : ICooperative) =>{
+                console.log(coop)
+                console.log(coop.cooperativeCodeName)
+                return (
+                    <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+                )
 
-        })
-        }
+                })
+              }
             
             </Select>
     </FormControl> :
@@ -541,33 +483,29 @@ export function Dashboard() : JSX.Element{
   <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-12 md:space-y-0">
 
           
-          <DashboardCard icon ={<BsFileEarmarkTextFill /> } title="TOR MAIN" cardNumber={torMainNumber}/>
+          <DashboardCard icon ={<BsFileEarmarkTextFill /> } title="TOR MAIN" cardNumber={torMainNumber} onClick ={() => navigate("/tor/main")}/>
 
-          <DashboardCard icon ={<BsTicketPerforatedFill /> } title="TOR TICKET" cardNumber={torTicket}/>
+          <DashboardCard icon ={<BsTicketPerforatedFill /> } title="TOR TICKET" cardNumber={torTicket} onClick ={() => navigate("/tor/ticket")} />
 
-          <DashboardCard icon ={<BsFillFuelPumpFill /> } title="TOR FUEL" cardNumber={torFuel}/>
+          <DashboardCard icon ={<BsFillFuelPumpFill /> } title="TOR FUEL" cardNumber={torFuel} onClick ={() => navigate("/tor/fuel")} />
 
-          <DashboardCard icon ={<BsCurrencyExchange /> } title="TOR REMITTANCE" cardNumber={torRemittance}/>
+          <DashboardCard icon ={<BsCurrencyExchange /> } title="TOR REMITTANCE" cardNumber={torRemittance} onClick ={() => navigate("/tor/remittance")} />
 
-          <DashboardCard icon ={<BsFillSignpostFill /> } title="TOR TRIP" cardNumber={torTrip}/>
-          <DashboardCard icon ={<BsFillClipboardCheckFill />} title="TOR INSPECTION" cardNumber={torInspection}/>
+          <DashboardCard icon ={<BsFillSignpostFill /> } title="TOR TRIP" cardNumber={torTrip} onClick ={() => navigate("/tor/trip")}/>
 
-          <DashboardCard icon ={<BsFillExclamationTriangleFill />} title="TOR VIOLATION" cardNumber={torViolation}/>
+          <DashboardCard icon ={<BsFillClipboardCheckFill />} title="TOR INSPECTION" cardNumber={torInspection} onClick ={() => navigate("/tor/inspection")}/>
+
+          <DashboardCard icon ={<BsFillExclamationTriangleFill />} title="TOR VIOLATION" cardNumber={torViolation} onClick ={() => navigate("/tor/violation")}/>
           
-          <DashboardCard icon ={<BsEmojiDizzyFill />} title="TOR TROUBLE" cardNumber={torTrouble}/>
+          <DashboardCard icon ={<BsEmojiDizzyFill />} title="TOR TROUBLE" cardNumber={torTrouble} onClick ={() => navigate("/tor/trouble")}/>
 
-          
         </div>
         <div className= "mt-4">
         <DashboardCard  icon ={<BsCurrencyExchange /> } title="TOTAL GROSS SALES" cardNumber={grossSales}/>
         </div>
         
-        
-    </div>
-
-
-
-
+   </div>
+   
     <div className="mt-0  bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
    
     <ResponsiveContainer  className="flex items-center" width="100%" height={400}>
@@ -588,7 +526,6 @@ export function Dashboard() : JSX.Element{
           <Tooltip />
           <Legend />
           <Bar dataKey="total" fill="#161d6f" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-          {/* <Bar dataKey="uv" fill="#ff0000" activeBar={<Rectangle fill="gold" stroke="red" />} /> */}
         </BarChart>
         </ResponsiveContainer>
       
@@ -599,7 +536,3 @@ export function Dashboard() : JSX.Element{
     )
 
 }
-
-
-
-

@@ -74,13 +74,9 @@ export default function TestLogin() : JSX.Element {
             
             const response = await request.data;
 
-            console.log(response)
-   
-            console.log(response.messages[0].message)
             if(response.messages[0].message === "OK"){
                 InsertToStorage(response.response)
                 localStorage.setItem('token', response.response.email)
-                console.log("pumasokdito")
                 if(localStorage.getItem('companyId')){
                     navigate('/dashboard')
                 }
@@ -330,9 +326,7 @@ export default function TestLogin() : JSX.Element {
             border: '5px solid whitesmoke',
             height: 'auto', 
             }} onSubmit={handleSubmitLoggedIn} >
-                       
-                       {/* <img src={import.meta.env.VITE_ASSET_URL+"/assets/Filipay-logo.png"} alt=""  /> */}
-                    
+                   
                        <div className="loginInputs" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
         
                         <img src={FilipayLogo} alt="" className='w-44 m-auto mb-0 mt-0' />
@@ -342,22 +336,11 @@ export default function TestLogin() : JSX.Element {
                             </div>
 
                             <div className="form-group" style={{}}>
-                                {/* <label htmlFor="exampleInputEmail1" style={{marginBottom: '0.5rem', 
-                                
-                                fontFamily:defaultFont}}>Email</label>
-                                <input type="email" className="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter your email" required
-                                style={{marginBottom: '1em'}}
-                                onChange={(event) => setUsername(event.target.value)}
-                                />  */}
                                
                               </div>
                               <div className="form-group" style={{marginBottom: '16px'}}>
-                                {/* <label htmlFor="password"  style={{marginBottom: '0.5rem', fontFamily:defaultFont}} >Password</label>
-                                <input type="password" className="form-control" id="password" name="password" placeholder="Enter your password"
-                                style={{marginBottom: '1em'}}
-                                onChange={(event) => setPassword(event.target.value)}
-                                /> */}
-                                   <label htmlFor="email" className="block mb-2 mt-4 text-lg font-medium text-gray-900 ">Email</label>
+ 
+                                  <label htmlFor="email" className="block mb-2 mt-4 text-lg font-medium text-gray-900 ">Email</label>
                                   <input
                                     type="email"
                                     name="email"
@@ -396,16 +379,9 @@ export default function TestLogin() : JSX.Element {
                                             </div>
                                         </div>
 
-                                        {/* <div className='flex-1'>
-                                            <div className="forgotPassword">
-                                            <a href="#" style ={{color:'#007BFF', fontFamily:defaultFont}} onClick = {() => setIsOtpModalOpen(!isOtpModalOpen)}>Forgot password?</a>
-                                            </div>
-                                        </div> */}
-                                   
                                 </div>
-                               
-                              
-                            </div>
+ 
+                          </div>
                            
                            
                               <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800  font-medium rounded-xl text-lg px-5 py-2.5  mb-2 mt-6 h-16" disabled ={isLoading}>

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-
+import { useInterval } from 'usehooks-ts'
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
@@ -302,15 +301,25 @@ const columns: GridColDef[] = [
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
     
         }
-      setTimeout(GetAllData, 5000)
+   
     }   
 
 
-     
+
+
     useEffect(() =>{
       GetAllData();
       return () =>{}
     },[filterTableCompanyId])
+
+    useInterval(() => {
+     
+        GetAllData();
+     
+        return() =>{}
+     
+    }, 15000);
+
 
     function NoRowsOverlay() {
       return (

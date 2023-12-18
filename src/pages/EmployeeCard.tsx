@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-
+//@ts-nocheck
+import { useInterval } from 'usehooks-ts'
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
-import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
-import {useEffect,  useLayoutEffect,  useState} from 'react'
+import {  GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter, GridSearchIcon} from '@mui/x-data-grid';
+import {useEffect,  useLayoutEffect,  useState, useMemo} from 'react'
 import Box from '@mui/material/Box';
-import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,  FormControl,  IconButton,   InputLabel,  LinearProgress,   MenuItem,  Select,  TextField } from "@mui/material";
+import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,  FormControl,  IconButton,   InputAdornment,   InputLabel,  LinearProgress,   ListSubheader,   MenuItem,  Select,  TextField } from "@mui/material";
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
@@ -20,16 +20,24 @@ import AddIcon from '@mui/icons-material/AddCard';
 import { ICooperative } from "./Employee";
 import { useNavigate } from "react-router-dom";
 
+import { styled} from '@mui/system';
+import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
+import '../styles/RemoveProWaterMark.css'
+
+const StyledDataGrid = styled(DataGridPremium)(() => ({
+  "& .MuiDataGrid-sortIcon": {
+  opacity: 1,
+  color: "white",
+  },
+  "& .MuiDataGrid-menuIconButton": {
+  opacity: 1,
+  color: "white"
+  },
+  }));
   
   const rows: GridRowsProp = [
    
   ];
-
-  //Toolbar
-
-  // function TransitionUp(props) {
-  //   return <Slide {...props} direction="up" />;
-  // }
 
 export function EmployeeCard()
 {
@@ -159,9 +167,8 @@ export function EmployeeCard()
 
             
             if(response.messages[0].code === 0){
-              console.log("TEST")
+
               setTableRows(
-                
                 response.response.map((data : any) =>{
                 // console.log(data._id)
                   return {id: data._id, ...data}
@@ -176,13 +183,21 @@ export function EmployeeCard()
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      setTimeout(GetAllData, 5000)
+   
     }   
 
     useEffect(() =>{
       GetAllData();
       return () =>{}
     },[filterTableCompanyId])
+
+    useInterval(() => {
+     
+        GetAllData();
+     
+        return() =>{}
+     
+    }, 15000);
 
     const [empNo, setEmpNo] = useState("")
 
@@ -194,72 +209,73 @@ export function EmployeeCard()
 
 const [coopId, setCoopId] = useState("");
 
+  
+
+const containsText = (text: string, searchText: string) =>
+text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+
+const [searchText, setSearchText] = useState("");
+const displayedOptions = useMemo(() => {
+const uniqueOptions = new Set();
+return employee
+  .filter((option) => containsText(option, searchText))
+  .filter((option) => {
+    if (!uniqueOptions.has(option)) {
+      uniqueOptions.add(option);
+      return true;
+    }
+    return false;
+  });
+}, [employee, searchText]);
     
-    // const containsText = (text : string, searchText) =>
-    // text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+async function GetAllEmployees(){
 
-   // const allOptions = ["Option One", "Option Two", "Option Three", "Option Four"];
-
-    //const [selectedOption, setSelectedOption] = useState(allOptions[0]);
-
-    // const [searchText, setSearchText] = useState("");
-    // const displayedOptions = useMemo(
-    //   () => employee.filter((option) => containsText(option, searchText)),
-    //   [searchText]
-    // );
-        
-    async function GetAllEmployees(){
-
-      // setIsLoading(true)
-
-        try{
-          
-          const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/${import.meta.env.VITE_DLTB_COOP_ID}`,{
-            headers :{
-                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-            }
-        })
-            
-            const response = await request.data;
-            
-            if(response.messages[0].code === '0'){
-
-              if(employee.toString().equals(response.response)){
-
-              }else{
-                response.response.map((employee : any ) =>{
-              
-                  if (employee?.empNo !== undefined &&
-                    employee?.empNo !== null &&
-                    employee?.empNo !== "" &&
-                    employee._id !== undefined &&
-                    employee._id !== null &&
-                    employee._id !== "") {
-                   
-                      const empNumber  = employee?.empNo.toString();
-                    
-                    setEmployee((employee: any) => [...employee, empNumber]);
-                  }
-                })
-              }
-
-             
-
-            }
-       
-        }catch(e){
-            console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
+    try{
       
+      const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/employee/${filterTableCompanyId}`,{
+        headers :{
+            Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
         }
-      
-    } 
-    
-    useLayoutEffect(() =>{
+    })
+        
+        const response = await request.data;
+        
+        if(response.messages[0].code === '0'){
+       
+          response.response.map((employee : any ) =>{
+          
+            if (employee?.empNo !== undefined &&
+              employee?.empNo !== null &&
+              employee?.empNo !== "" &&
+              employee._id !== undefined &&
+              employee._id !== null &&
+              employee._id !== "") {
+             
+                const empNumber  = employee?.empNo.toString();
+             
+                setEmployee((employee: any) => [...employee, empNumber]);
+            
+              }
+          })
 
-      GetAllEmployees();
+        }
+   
+    }catch(e){
+        console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
+    }
+} 
 
-      return () => { }
-    },[])
+useLayoutEffect(() =>{
+  
+  setEmployee([])
+  GetAllEmployees();
+
+  return () => {}
+},[filterTableCompanyId])
+useEffect(() =>{
+  return () =>{}
+},[employee])
+   
 
 
     async function RegisterEmployeeCard() {
@@ -269,7 +285,7 @@ const [coopId, setCoopId] = useState("");
         // Define the request data as an object
         const requestData = {
           empNo: parseFloat(empNo), // Assuming empNo and cardId are variables in your scope
-          cardId: cardId,
+          cardId: filterTableCompanyId,
           coopId: coopId
         };
     
@@ -282,9 +298,7 @@ const [coopId, setCoopId] = useState("");
             },
           }
         );
-    
-        // Note that there's no need to use `await` on response.data directly
-        // as axios already returns the response data.
+
         const responseData = response.data;
        
           if(responseData.messages[0].code === "0"){
@@ -313,10 +327,9 @@ const [coopId, setCoopId] = useState("");
               theme: "colored",
               });
            }
-     
-    
+         
       } catch (error) {
-        console.error(error);
+        
         toast.error(`Action failed error: ${error}`, {
           position: "bottom-center",
           autoClose: 5000,
@@ -326,14 +339,14 @@ const [coopId, setCoopId] = useState("");
           draggable: true,
           progress: undefined,
           theme: "colored",
-          });
+        });
+
       }finally{
         setIsModalOpen(!isModalOpen)
       }
     }
 
     function CustomToolbar() {
-
 
       return (<>
           <GridToolbarContainer style=
@@ -345,7 +358,7 @@ const [coopId, setCoopId] = useState("");
             setIsModalOpen(true) 
           } }>
           Register card
-        </Button>
+          </Button>
             <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
             <GridToolbarFilterButton style ={{color:"#161d6f"}} />
             <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
@@ -402,7 +415,6 @@ const [coopId, setCoopId] = useState("");
     },[isModalOpen, empNo, cardId])
     
     useEffect(() =>{
-
     
       console.log(tableRows)
       return () =>{}
@@ -427,8 +439,7 @@ async function GetCooperative(){
       if(response.messages[0].code === '0'){
         console.log(response);
         setCoopList(
-          
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any  
+           
           response.response.map((coop : any ) =>{
             console.log(coop)
             
@@ -437,9 +448,7 @@ async function GetCooperative(){
             }
             
           })
-        )
-
-        
+        )       
       }
     
   }catch(e){
@@ -449,7 +458,8 @@ async function GetCooperative(){
 
       return(
         <div  style={{
-         
+          backgroundColor: '#e2e8f0',
+        height:'auto'
         }}>
           
         <ToastContainer
@@ -497,7 +507,7 @@ async function GetCooperative(){
               will send updates occasionally. */}
             </DialogContentText>
         
-         <FormControl fullWidth margin="dense">
+         {/* <FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
   <Select
     labelId="demo-simple-select-label-coopId"
@@ -521,7 +531,7 @@ async function GetCooperative(){
     }
    
   </Select>
-</FormControl>
+</FormControl> */}
 {/* 
 <FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Employee No</InputLabel>
@@ -597,17 +607,55 @@ async function GetCooperative(){
   </FormControl> */}
   
             
-           <TextField
-              autoFocus
-              margin="dense"
-              id="txtEmpNo"
-              name ="txtEmpNo"
-              label="Employee No"
-              type="number"
-              fullWidth
-              variant="outlined"
-              onChange={(event) => setEmpNo(event.target.value)}
-            />
+  <FormControl fullWidth margin ="dense">
+          <InputLabel id="search-select-label">Employee No</InputLabel>
+          <Select
+            // Disables auto focus on MenuItems and allows TextField to be in focus
+            MenuProps={{ autoFocus: false }}
+            labelId="search-select-label"
+            id="search-select"
+            value={empNo}
+            label="Employee No"
+            onChange={(e) => setEmpNo(e.target.value)}
+            onClose={() => setSearchText("")}
+            renderValue={() => empNo}
+          >
+  
+           
+            <ListSubheader>
+              <TextField
+                size="small"
+                // Autofocus on textfield
+                autoFocus
+                placeholder="Type to search..."
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <GridSearchIcon />
+                    </InputAdornment>
+                  )
+                }}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key !== "Escape") {
+                    // Prevents autoselecting item while typing (default Select behaviour)
+                    e.stopPropagation();
+                  }
+                }}
+              />
+            </ListSubheader>
+            {
+            displayedOptions.map((option, i) => (
+              displayedOptions.indexOf(option) === i && (
+                <MenuItem key={i} value={option}>
+                  {option}
+                </MenuItem>
+              )
+            )) 
+            }
+          </Select>
+        </FormControl>
 
             <TextField
               autoFocus
@@ -638,10 +686,10 @@ async function GetCooperative(){
               backgroundColor: '#161d6f',
               color:'white',
               },
-              height:'400'
+              height:700
               }}>
   
-              <DataGrid rows={tableRows} columns={columns}
+              <StyledDataGrid rows={tableRows} columns={columns}
               slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
               slotProps={{
                   toolbar: {
@@ -658,22 +706,10 @@ async function GetCooperative(){
                   padding: '15px',
                 },
               }} 
-              initialState={{ 
-
-                pagination: { 
-                  paginationModel: { 
-                    pageSize: 5 
-                  } 
-                }, 
-              }} 
-              pageSizeOptions={[5, 10, 25]}
+             
               />
           </Box>
-          </Paper>
-       
-  
-   
-         
+        </Paper>         
       </NavBar>
       </div>
       )

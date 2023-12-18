@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+//@ts-nocheck
 import { ReactNode,  useEffect, useState, useLayoutEffect } from "react";
 //import { useNavigate, useLocation } from "react-router-dom";
 import { BsCurrencyExchange, BsEmojiDizzyFill, BsFillClipboardCheckFill, BsFillCreditCard2FrontFill, BsFillCreditCardFill, BsFillExclamationTriangleFill, BsFillFileEarmarkBarGraphFill, BsFillFuelPumpFill, BsFillMapFill, BsFillSignpostFill,   BsMenuButtonWide, BsPersonFillLock, BsPersonWorkspace,BsTicketPerforatedFill, BsCarFrontFill,BsCardList  } from 'react-icons/bs';
@@ -11,6 +10,9 @@ import { BsDeviceSsd } from "react-icons/bs";
 import { BsPeopleFill } from "react-icons/bs";
 import { TbPigMoney } from "react-icons/tb";
 import FilipayLogo from '../assets/Filipay-logo.png';
+import { Button, IconButton, Menu, MenuItem } from "@mui/material";
+import * as React from 'react';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 interface NavBarProps {
     children: ReactNode;
 }
@@ -38,16 +40,12 @@ interface IUserInformation{
   
 
 export default function NavBar ({children} : NavBarProps) : JSX.Element{
-    
-    
-  
+      
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(UserInformation)
 
     const [torIsOpen , setTorIsOpen] = useState(false);
-
-
 
     const [userInformation] = useState(UserInformation)
 
@@ -60,6 +58,14 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
     const  [isOpenProfileBox, setIsOpenProfileBox] = useState(false);
 
 
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
     
     function handleBtnProfileBox() : any{
         setIsOpenProfileBox(!isOpenProfileBox)
@@ -138,9 +144,52 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
     
       {/* <h1 className="text-white">{lastPart?.toUpperCase()}</h1> */}
 
-<div className="z-50 flex items-center relative ml-3">
+<div className="z-50 flex items-center relative ml-10">
 
-{/* <NotificationBell /> */}
+
+<div>
+      <IconButton 
+       id="basic-button"
+       aria-controls={open ? 'basic-menu' : undefined}
+       aria-haspopup="true"
+       aria-expanded={open ? 'true' : undefined}
+       onClick={handleClick}
+       style={{
+        "color":'white'
+       }}
+      >
+        <NotificationsNoneIcon />
+      </IconButton>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+        PaperProps={{
+          style: {
+            maxHeight: 48 * 4.5,
+            width: '20ch',
+          },
+        }}
+      >
+        {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>Logout</MenuItem> */}
+      </Menu>
+</div>
+
   <div>
     
     <button type="button" className="flex items-center text-sm bg-gray rounded-full focus:ring-4 focus:ring-gray-300" onClick={handleBtnProfileBox}>
@@ -289,55 +338,6 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 
         (<></>)
 }
-
-
-{/* {
-        localStorage.getItem('pageCode')?.includes("rou, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
-        (
-        <li className="cursor-pointer">
-          <a
-              onClick={() => navigate("/direction")}
-              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
-              location.pathname === "/direction" ? 'bg-indigo-700' : ''
-              }`}
-          >
-              {location.pathname === "/direction" && (
-              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
-              )}
-              <div className="mr-4"></div>
-              <BsFillMapFill  />
-              <span className="ml-3">Routes</span>
-              
-          </a>
-        </li>
-        ) :
-
-        (<></>)
-} */}
-
-{/* {
-        localStorage.getItem('pageCode')?.includes("sta, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
-        (
-        <li className="cursor-pointer">
-          <a
-              onClick={() => navigate("/station")}
-              className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
-              location.pathname === "/station" ? 'bg-indigo-700' : ''
-              }`}
-          >
-              {location.pathname === "/station" && (
-              <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm"></div>
-              )}
-              <div className="mr-4"></div>
-              <BsFillTruckFrontFill  />
-              <span className="ml-3">Station</span>
-              
-          </a>
-        </li>
-        ) :
-
-        (<></>)
-} */}
 
 {
         localStorage.getItem('pageCode')?.includes("veh, ") || localStorage.getItem('role') === "Administrator" || localStorage.getItem('role') === "User Admin" ? 
@@ -503,49 +503,6 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
               
           </a>
         </li>
-
-       
-{/* 
-        <button type="button" className="flex items-center w-full p-2 text-base text-neutral-100 transition duration-75 rounded-lg group hover:bg-indigo-950 mt-4" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example" onClick={() =>{
-              if(localStorage.getItem("reportIsOpen") === "true"){
-                localStorage.setItem("reportIsOpen", "false");
-              }else{
-                localStorage.setItem("reportIsOpen", "true");
-              }
-              setReportIsOpen(!reportIsOpen)
-            } }>
-            <div className="mr-4"></div>
-                 <BsFillFileEarmarkBarGraphFill className ="text-2xl" />
-                  <span className="flex-1 ml-3 text-left whitespace-nowrap text-2xl ">Reports</span>
-                      <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
-                      </svg>
-                  </button>
-                  <ul id="dropdown-example" className= {`py-2 space-y-2 ${localStorage.getItem("reportIsOpen") === "true" ? "" : "hidden"}`}>
-
-
-                  <li className="cursor-pointer">
-                        <a
-                            onClick={() => navigate("/employeereport")}
-                            className={`no-underline relative  flex items-center text-2xl mt-4 p-2 text-neutral-100  hover:bg-indigo-950 ${
-                            location.pathname === "/employeereport" ? 'bg-indigo-700' : ''
-                            }`}
-                        >
-                            {location.pathname === "/employeereport" && (
-                            <div className="absolute top-0 left-0 h-full bg-white w-2 hover: rounded-e-sm "></div>
-                            )}
-                            <div className="mr-4 ml-5"></div>
-                            <BsPersonWorkspace />
-                            <span className="ml-3">Employee</span>
-                            
-                        </a>
-                      </li>
-
-
-
-                  </ul> */}
-            
-
 
             <button type="button" className="flex items-center w-full p-2 text-base text-neutral-100 transition duration-75 rounded-lg group hover:bg-indigo-950 mt-4" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example" onClick={() =>{
               if(localStorage.getItem("torIsOpen") === "true"){
