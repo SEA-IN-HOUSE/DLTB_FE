@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+//@ts-nocheck
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
@@ -15,7 +16,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/Add';
 import { ICooperative } from "./Employee";
 import { useNavigate } from "react-router-dom";
+import {useInterval} from '../components/useInterval'
 
+
+//DATAGRID PREMIUM HACK
+import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
+import { styled} from '@mui/system';
 export interface IVehicle {
     _id: string,
     coopId: string
@@ -84,15 +90,16 @@ const columns: GridColDef[] = [
   { 
     field: 'createdAt', 
     headerName: 'DATE CREATED', 
-    flex: 1,
-    minWidth: 0,
     headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
+      editable: false,
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => {
+        
+        const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+        return <div>{formattedDate}</div>;
+      },
   },
 
 
@@ -144,7 +151,7 @@ const columns: GridColDef[] = [
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      setTimeout(GetAllData, 5000)
+ 
     }   
 
 
@@ -153,6 +160,13 @@ const columns: GridColDef[] = [
       GetAllData();
       return () =>{}
     },[filterTableCompanyId])
+
+    useInterval(() => {
+     
+      GetAllData();
+       return () =>{}
+     
+    }, 15000);
     // "riderId" : "6535ee6209cc1d199faf2cbd",
     // "cardId": "123456",
     // "balance" : 100000

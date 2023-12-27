@@ -437,7 +437,313 @@ useEffect(() =>{
   
     ];
     
-
+    const seaColumns: GridColDef[] = [
+  
+      {
+        field: 'coopId', 
+        headerName: 'COMPANY',
+        flex: 1,
+        minWidth: 180,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+        valueGetter: (params) => {
+         
+          const { coopId } = params.row;
+        
+          const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+          return matchingItem ? matchingItem.cooperativeCodeName : '';
+        },
+      },
+     
+      { 
+        field: 'device_id', 
+        headerName: 'DEVICE ID', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'control_no', 
+        headerName: 'CONTROL NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 280,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'tor_no', 
+        headerName: 'TOR NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        flex:1,
+        minWidth: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+      {
+        field: 'fare',
+        headerName: 'FARE',
+        headerClassName: 'super-app-theme--header',
+        type: 'number',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+        valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
+      },
+      {
+        field: 'additionalFare',
+        headerName: 'ADDITIONAL FARE',
+        headerClassName: 'super-app-theme--header',
+        type: 'number',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+        valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
+      },
+      {
+        field: 'subtotal',
+        headerName: 'SUBTOTAL',
+        headerClassName: 'super-app-theme--header',
+        type: 'number',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+        valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
+      },
+  
+     
+      {
+        field: 'baggage',
+        headerName: 'BAGGAGE',
+        headerClassName: 'super-app-theme--header',
+        type: 'number',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+        valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
+      },
+      {
+        field: 'discount',
+        headerName: 'DISCOUNT',
+        headerClassName: 'super-app-theme--header',
+        type: 'number',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+        valueGetter: (params) => `${Math.round(parseFloat(params.value))}`,
+      },
+      { 
+        field: 'bus_no', 
+        headerName: 'BUS NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'route', 
+        headerName: 'ROUTE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 330,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'route_code', 
+        headerName: 'ROUTE CODE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'bound', 
+        headerName: 'BOUND', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'trip_no', 
+        headerName: 'TRIP NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+    
+      { 
+        field: 'ticket_no', 
+        headerName: 'TICKET NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 240,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+    
+      { 
+        field: 'ticket_type', 
+        headerName: 'TICKET TYPE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+    
+      { 
+        field: 'from_place', 
+        headerName: 'FROM PLACE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 230,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+    
+      { 
+        field: 'to_place', 
+        headerName: 'TO PLACE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+    
+      { 
+        field: 'from_km', 
+        headerName: 'FROM KM', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+    
+      { 
+        field: 'to_km', 
+        headerName: 'TO KM', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+    
+      { 
+        field: 'km_run', 
+        headerName: 'KM RUN', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+   
+      { 
+        field: 'card_no', 
+        headerName: 'CARD NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+   
+      { 
+        field: 'lat', 
+        headerName: 'LAT', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+    
+      { 
+        field: 'long', 
+        headerName: 'LONG', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+    
+      },
+  
+      { 
+        field:'previous_balance', 
+        headerName: 'PREVIOUS BALANCE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        type:"number",
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+        valueGetter: (params) => `₱${parseFloat(params.value).toFixed(2)}`,
+    
+      },
+    
+      { 
+        field: 'current_balance', 
+        headerName: 'CURRENT BALANCE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        type:"number",
+        headerAlign: 'center',
+        align: 'center',
+        valueGetter: (params) => `₱${parseFloat(params.value).toFixed(2)}`,
+      },
+      {
+        field: 'dateCreated',
+        headerName: 'DATE CREATED',
+        width: 180,
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        headerAlign: 'center',
+        align: 'center',
+        renderCell: (params) => {
+          const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+          return <div>{formattedDate}</div>;
+        },
+      }
+    
+      ];
     
 
   const navigate = useNavigate();
@@ -911,7 +1217,11 @@ return(
             }}>
           <StyledDataGrid
             initialState={{ pinnedColumns: { left: ['ticket_no']} }}
-            rows={tableRows} columns={columns}
+            rows={tableRows}
+            columns={
+              filterTableCompanyId === import.meta.env.VITE_DLTB_COOP_ID ?
+              columns : seaColumns
+            }
             loading = {isLoading}
              slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
              sx={{

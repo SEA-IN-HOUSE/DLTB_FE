@@ -11,7 +11,6 @@ import {  Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialo
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/AddCard';
@@ -87,19 +86,21 @@ export function EmployeeCard()
         return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
       },
     },
-    { 
-      field: 'createdAt', 
-      headerName: 'DATE CREATED', 
-      flex: 1,
-      minWidth: 0,
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      align: 'center',
-      editable: false,
-      valueFormatter: (params) => {
-        return moment(params.value).format('MMMM D, YYYY');
+    
+      {
+        field: 'createdAt',
+        headerName: 'DATE CREATED',
+        width: 180,
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+       headerAlign: 'center',
+        align: 'center',
+        renderCell: (params) => {
+        
+          const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+          return <div>{formattedDate}</div>;
+        },
       },
-    },
   
     { 
       field: 'updatedAt', 
@@ -110,9 +111,11 @@ export function EmployeeCard()
       headerAlign: 'center',
       align: 'center',
       editable: false,
-      valueFormatter: (params) => {
-        return moment(params.value).format('MMMM D, YYYY');
-      },
+      renderCell: (params) => {
+        
+          const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+          return <div>{formattedDate}</div>;
+        },
     }
   
     ];

@@ -147,49 +147,6 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
 <div className="z-50 flex items-center relative ml-10">
 
 
-<div>
-      <IconButton 
-       id="basic-button"
-       aria-controls={open ? 'basic-menu' : undefined}
-       aria-haspopup="true"
-       aria-expanded={open ? 'true' : undefined}
-       onClick={handleClick}
-       style={{
-        "color":'white'
-       }}
-      >
-        <NotificationsNoneIcon />
-      </IconButton>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-        PaperProps={{
-          style: {
-            maxHeight: 48 * 4.5,
-            width: '20ch',
-          },
-        }}
-      >
-        {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem> */}
-      </Menu>
-</div>
-
   <div>
     
     <button type="button" className="flex items-center text-sm bg-gray rounded-full focus:ring-4 focus:ring-gray-300" onClick={handleBtnProfileBox}>

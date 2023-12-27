@@ -421,6 +421,11 @@ const columns: GridColDef[] = [
       width: 220,
       headerAlign: 'center',
       align: 'center',
+      renderCell: (params) => {
+        
+        const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+        return <div>{formattedDate}</div>;
+      },
     },
 
     ];

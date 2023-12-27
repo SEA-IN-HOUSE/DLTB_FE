@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+//@ts-nocheck
 // import 'bootstrap/dist/css/bootstrap.min.css'
 // import '../styles/LogIn.css'
 import { FormEvent} from 'react';
@@ -233,7 +233,16 @@ export default function TestLogin() : JSX.Element {
       },[isSubmitOtp, isLoading])
   
     return(
-        <>
+      <div className="bg-white min-h-screen overflow-hidden">
+      <style>
+      {`
+        body {
+          overflow: hidden !important;
+          margin: 0 !important;
+          padding: 0;
+        }
+      `}
+    </style>
          <Dialog open={isOtpModalOpen} onClose={() => setIsOtpModalOpen(!isOtpModalOpen)}>
     {isSubmitOtp ? 
     (
@@ -291,10 +300,7 @@ export default function TestLogin() : JSX.Element {
     }
       </Dialog>
 
-<div style={{overflow:'hidden',
-        margin: 0,
-    backgroundColor:"white"
-        }}>
+      <div >
 
         <ToastContainer
         position="bottom-right"
@@ -316,14 +322,14 @@ export default function TestLogin() : JSX.Element {
         >
         <div className="divform"
         style ={{
-            marginTop: '7em',
+          height: '95vh',
             marginBottom: '6em'
         }}
         >
                 <form id="loginform" className="loginform" style=
             {{background:'white',
             padding: '1em',
-            border: '5px solid whitesmoke',
+            border: 'transparent',
             height: 'auto', 
             }} onSubmit={handleSubmitLoggedIn} >
                    
@@ -390,9 +396,9 @@ export default function TestLogin() : JSX.Element {
                               </button>
                      
                         </div>
-                        <div className="msgicon">
+                        {/* <div className="msgicon">
                             <img src={MessageIcon} alt="" />
-                        </div>
+                        </div> */}
                      
                 </form>
         </div>
@@ -404,7 +410,7 @@ export default function TestLogin() : JSX.Element {
     </div>
         </div>
 
-        </>
+        </div>
   
     )
 

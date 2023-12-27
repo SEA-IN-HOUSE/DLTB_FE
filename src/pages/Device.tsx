@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+//@ts-nocheck
 
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect,  useLayoutEffect,  useState} from 'react'
+import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
 import Box from '@mui/material/Box';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -16,7 +17,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BsDeviceSsd } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-
+import {useInterval} from '../components/useInterval'
+import { styled} from '@mui/system';
             // "_id": "655321a339c1307c069616e9",
             // "cooperativeName": "Del Monte Land Transport Bus Company",
             // "cooperativeCodeName": "DLTB",
@@ -31,6 +33,16 @@ interface ICooperative{
 }
 
 
+const StyledDataGrid = styled(DataGridPremium)(() => ({
+  "& .MuiDataGrid-sortIcon": {
+  opacity: 1,
+  color: "white",
+  },
+  "& .MuiDataGrid-menuIconButton": {
+  opacity: 1,
+  color: "white"
+  },
+  }));
 
 
 
@@ -58,20 +70,32 @@ export function Device(){
 
 const columns: GridColDef[] = [
   
-  // { 
-  //   field: 'id', 
-  //   headerName: 'ID', 
-  //   flex: 1,
-  //       minWidth: 0,
-  //   headerClassName: 'super-app-theme--header',
-  //   headerAlign: 'center',
-  //   align: 'center',
-  //   editable: false,
-   
-  // },
+
   { 
     field: 'deviceId', 
     headerName: 'DEVICE ID', 
+    flex: 1,
+        minWidth: 0,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: false,
+   
+  },
+  { 
+    field: 'deviceName', 
+    headerName: 'NAME', 
+    flex: 1,
+        minWidth: 0,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: false,
+   
+  },
+  { 
+    field: 'deviceType', 
+    headerName: 'TYPE', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
@@ -98,21 +122,23 @@ const columns: GridColDef[] = [
       return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
     },
   },
+ 
 
-
-  { 
-    field: 'dateCreated', 
-    headerName: 'DATE CREATED', 
-    flex: 1,
-    minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
-  },
+  // { 
+  //   field: 'dateCreated', 
+  //   headerName: 'DATE CREATED', 
+  //   type:"date",
+  //   flex: 1,
+  //   minWidth: 0,
+  //   headerClassName: 'super-app-theme--header',
+  //   headerAlign: 'center',
+  //   align: 'center',
+  //   editable: false,
+  //   renderCell: (params) => {
+  //     const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+  //     return <div>{formattedDate}</div>;
+  //   },
+  // },
 
   // { 
   //   field: 'updatedAt', 
@@ -124,7 +150,7 @@ const columns: GridColDef[] = [
   //   align: 'center',
   //   editable: false,
   //   valueFormatter: (params) => {
-  //     return moment(params.value).format('MMMM D, YYYY');
+  //     const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
   //   },
   // }
  
@@ -204,17 +230,20 @@ const columns: GridColDef[] = [
 
             if(response.messages[0].code === '0'){
 
-              setTableRows(
+              if(Object(response.response).length > 0){
+                setTableRows(
                 
-                response.response.map((data : any) =>{
+                  response.response.map((data : any) =>{
+               
+                    return {id: data._id, ...data}
+                  }).sort((a, b) => {
+                    const dateCreatedA = new Date(a.dateCreated).getTime();
+                    const dateCreatedB = new Date(b.dateCreated).getTime();
+                    return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
+                  })
+                )
+              }
              
-                  return {id: data._id, ...data}
-                }).sort((a, b) => {
-                  const dateCreatedA = new Date(a.dateCreated).getTime();
-                  const dateCreatedB = new Date(b.dateCreated).getTime();
-                  return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
-                })
-              )
             }
        
 
@@ -222,13 +251,21 @@ const columns: GridColDef[] = [
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      setTimeout(GetAllData, 5000)
+      
     } 
     
     useEffect(() =>{
       GetAllData();
       return () =>{}
     },[filterTableCompanyId])
+
+    useInterval(() => {
+      
+        GetAllData();
+        // GetTransactionData();
+      
+        return () =>{}
+    }, 15000);
 
     async function GetAllCoop(){
 
@@ -451,7 +488,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
           }
         }
         />
-
+{/* ADD DEVICE  */}
 <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
      <form onSubmit={AddData}>
 
@@ -478,18 +515,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             {/* To subscribe to this website, please enter your email address here. We
             will send updates occasionally. */}
           </DialogContentText>
-         
-          <TextField
-            autoFocus
-            margin="dense"
-            id="deviceId"
-            name ="deviceId"
-            label="Device Id"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setDeviceId(event.target.value)}
-          />
+        
 
 <FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
@@ -513,21 +539,40 @@ const [isModalOpen, setIsModalOpen] = useState(false)
    
   </Select>
 </FormControl>
-
-<FormControl fullWidth  margin="dense">
-  <InputLabel id="deviceNameLabel">Name</InputLabel>
-  <Select
-    labelId="deviceNameLabel"
+ 
+<TextField
+            autoFocus
+            margin="dense"
+            id="deviceId"
+            name ="deviceId"
+            label="Device Id"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setDeviceId(event.target.value)}
+          />
+<TextField
+    autoFocus
+    margin="dense"         
+    type="text"
+    fullWidth
+    variant="outlined"
     id="deviceName"
     value={deviceName}
     label="Device Name"
-    onChange={(event) => setDeviceName(event?.target.value)}
+    onChange={(event) => setDeviceId(event.target.value)}
+          />
+
+{/* <FormControl fullWidth  margin="dense">
+  <InputLabel id="deviceNameLabel">Name</InputLabel>
+  <Select
+  
   >
    
         <MenuItem value={"sumni"}>SUMNI</MenuItem>
 
   </Select>
-</FormControl>
+</FormControl> */}
 
 <FormControl fullWidth  margin="dense">
   <InputLabel id="deviceTypeLbl">Type</InputLabel>
@@ -565,7 +610,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             height:'400'
             }}>
 
-            <DataGrid rows={tableRows} columns={columns}
+            <StyledDataGrid rows={tableRows} columns={columns}
             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
             slotProps={{
                 toolbar: {

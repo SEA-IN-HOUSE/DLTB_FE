@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+//@ts-nocheck
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
 import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
@@ -15,8 +16,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ICooperative } from "./Employee";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
-
-
+import { useInterval } from "../components/useInterval";
   
   const rows: GridRowsProp = [
    
@@ -80,9 +80,11 @@ export function ActivityLog(){
       headerAlign: 'center',
       align: 'center',
       editable: false,
-      valueFormatter: (params) => {
-        return moment(params.value).format('MMMM D, YYYY');
-      },
+      renderCell: (params) => {
+        
+          const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+          return <div>{formattedDate}</div>;
+        },
     },
   
     ];
@@ -152,12 +154,18 @@ export function ActivityLog(){
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      setTimeout(GetAllData, 5000)
+   
     }   
     useEffect(() =>{
       GetAllData();
       return () =>{}
     },[filterTableCompanyId])
+    useInterval(() => {
+     
+      GetAllData();
+       return () =>{}
+     
+    }, 15000);
 
     
     const [employee, setEmployee] = useState<any>([]);

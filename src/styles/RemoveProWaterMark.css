@@ -1,3 +1,6 @@
 .MuiDataGrid-main > *:nth-child(3) {
     display: none;
   }  
+.MuiDateRangeCalendar-root > *:nth-child(1){
+  display: none;
+}

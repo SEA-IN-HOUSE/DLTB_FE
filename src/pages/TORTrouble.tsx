@@ -253,6 +253,235 @@ export function TORTrouble(){
    
     ];
     
+    const seaColumns: GridColDef[] = [
+  
+      // { 
+      //   field: 'UUID', 
+      //   headerName: 'UUID', 
+      //   headerClassName: 'super-app-theme--header',
+      //   editable: false,
+      //   width: 180,
+      //   headerAlign: 'center',
+      //   align: 'center',
+      // },
+      {
+        field: 'coopId', // Assuming you have a 'name' field in your data source
+        headerName: 'COMPANY',
+        flex: 1,
+        minWidth: 180,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+        valueGetter: (params) => {
+          // Assuming your data source is an array of objects with 'coopId' and 'name' fields
+          const { coopId } = params.row;
+          // Assuming your data is stored in a variable named 'data'
+          const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+          return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
+        },
+      },
+      {
+        field: 'isUploaded', 
+        headerName: 'SYNC STATUS', 
+        width: 180, 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        headerAlign: 'center',
+        align: 'center',
+        renderCell: (cellValues) => {
+              
+          return(
+          <>
+        {cellValues.value === true ? (<Chip  label={"Synchronized"} color ="success" size = "small" variant = "outlined"/>) : (<Chip label={"Unsynchronized"} color ="error" size = "small" variant = "outlined"/>)}
+              
+        
+          </>
+          );
+        }
+      },
+      { 
+        field: 'device_id', 
+        headerName: 'DEVICE ID', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'control_no', 
+        headerName: 'CONTROL NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'tor_no', 
+        headerName: 'TOR NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+      
+      { 
+        field: 'date_of_trip', 
+        headerName: 'DATE OF TRIP', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'bus_no', 
+        headerName: 'BUS NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'route', 
+        headerName: 'ROUTE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'route_code', 
+        headerName: 'ROUTE CODE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'bound', 
+        headerName: 'BOUND', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'trip_no', 
+        headerName: 'TRIP NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'inspector_emp_no', 
+        headerName: 'INSPECTOR EMP NO', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'inspector_emp_name', 
+        headerName: 'INSPECTOR EMP NAME', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'onboard_time', 
+        headerName: 'ONBOARD TIME', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'onboard_place', 
+        headerName: 'ONBOARD PLACE', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'onboard_km_post', 
+        headerName: 'ONBOARD KM POST', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'trouble_description', 
+        headerName: 'TROUBLE DESCRIPTION', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 240,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'timestamp', 
+        headerName: 'TIMESTAMP', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+    
+      { 
+        field: 'lat', 
+        headerName: 'LAT', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+     
+    
+      { 
+        field: 'long', 
+        headerName: 'LONG', 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+      },
+     
+      ];
   
   const navigate = useNavigate();
   useEffect(() =>{
@@ -540,7 +769,11 @@ function CustomToolbar() {
             height:'400'
             }}>
 
-            <DataGrid rows={tableRows} columns={columns}
+            <DataGrid rows={tableRows}
+            columns={
+              filterTableCompanyId === import.meta.env.VITE_DLTB_COOP_ID ?
+              columns : seaColumns
+            }
             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
             loading ={isLoading}
             slotProps={{

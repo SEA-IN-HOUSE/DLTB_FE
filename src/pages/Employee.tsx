@@ -11,7 +11,7 @@ import axios from 'axios';
 import NoRowBackGround from "../components/NoRowBackGround";
 import {BsFillPersonPlusFill  } from "react-icons/bs";
 import CloseIcon from '@mui/icons-material/Close';
-
+import moment from "moment";
 import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -236,7 +236,13 @@ const columns: GridColDef[] = [
     editable: false,
     headerAlign: 'center',
     align: 'center',
+    renderCell: (params) => {
+          
+      const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+      return <div>{formattedDate}</div>;
+    },
   },
+
   
   ];
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+//@ts-nocheck
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
@@ -141,7 +141,7 @@ const columns: GridColDef[] = [
       headerAlign: 'center',
       align: 'center',
     valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
+      const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
     },
   },
 
@@ -155,7 +155,7 @@ const columns: GridColDef[] = [
   //   align: 'center',
   //   editable: false,
   //   valueFormatter: (params) => {
-  //     return moment(params.value).format('MMMM D, YYYY');
+  //     const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
   //   },
   // }
 

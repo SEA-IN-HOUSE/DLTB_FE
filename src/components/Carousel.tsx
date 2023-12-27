@@ -94,7 +94,7 @@ export default function Carousel(): JSX.Element {
     },[currentSlide])
   return (
     
-    <div className="w-full overflow-hidden relative mt-4 mr-7">
+    <div className="w-full overflow-hidden relative  mr-7">
       <Slider {...settings}>
         <div className='flex'>
           
@@ -160,7 +160,7 @@ export default function Carousel(): JSX.Element {
               >
               Get in touch today.  
               </h3>
-
+                <a href ="https://filipay.com.ph/">
               <button  className='text-white'
               style={{
                 position: 'relative',
@@ -169,9 +169,11 @@ export default function Carousel(): JSX.Element {
                 padding:'1rem',
                 background:'linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(0,69,145,1) 0%, rgba(0,195,246,1) 94%, rgba(0,136,199,1) 100%)',
               }}
+              
               >
                 Learn more about FILIPAY
               </button>
+              </a>
             </div>
         </div>
         <div className=''>

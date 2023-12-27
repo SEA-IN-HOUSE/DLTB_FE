@@ -15,10 +15,10 @@ export default function LoginGallery() : JSX.Element{
             >
 
                 <a href="#">
-                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-white">Lorem ipsum dolor sit amet .</h5>
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-white">WHAT IS AN FMDS?</h5>
                 </a>
-                <p className="mb-3 font-normal text-slate-100 ">Lorem ipsum dolor sit, amet. </p>
-                <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300" style ={{
+                <p className="mb-3 font-normal text-slate-100 ">The FILIPAY Management Dashboard System is an online portal to provide transport cooperatives with exclusive and downloadable files of the daily ride transactions and other easy-to-understand data from our wide list of linked FILIPAY devices and applications.  </p>
+                <a href="https://filipay.com.ph/fmd" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300" style ={{
                     background:'linear-gradient(149deg, rgba(0,136,199,1) 0%, rgba(0,157,215,1) 65%)',
                 }}>
                     Read more
@@ -39,10 +39,10 @@ export default function LoginGallery() : JSX.Element{
             >
 
                 <a href="#">
-                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h5>
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-white">HOW CAN WE AVAIL IT?</h5>
                 </a>
-                <p className="mb-3 font-normal text-slate-100 ">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </p>
-                <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300" style ={{
+                <p className="mb-3 font-normal text-slate-100 ">The FMDS is packaged with our tapping devices. If you opt in to use our AFCS you will have the privilege to use this system FREE of charge!</p>
+                <a href="https://filipay.com.ph/book-a-meeting-1" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300" style ={{
                     background:'linear-gradient(149deg, rgba(0,136,199,1) 0%, rgba(0,157,215,1) 65%)',
                 }}>
                     Read more

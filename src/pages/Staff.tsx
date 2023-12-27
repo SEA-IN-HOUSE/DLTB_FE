@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+//@ts-nocheck
 
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
@@ -19,7 +19,7 @@ import AddIcon from '@mui/icons-material/PersonAdd';
 import { useNavigate } from "react-router-dom";
 import { ICooperative } from "./Employee";
   //Toolbar
-
+import { useInterval } from "../components/useInterval";
 interface IEditState{
   id: string,
   profileImageUrl: string,
@@ -157,9 +157,11 @@ export function Staff(){
       headerAlign: 'center',
       align: 'center',
       editable: false,
-      valueFormatter: (params) => {
-        return moment(params.value).format('MMMM D, YYYY');
-      },
+      renderCell: (params) => {
+        
+          const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+          return <div>{formattedDate}</div>;
+        },
     },
     {
       field: 'actions',
@@ -341,7 +343,7 @@ export function Staff(){
         }catch(e){
             console.log("ERROR IN GETTING ALL EMPLOYEE = "+ e)
         }
-      setTimeout(GetAllData, 5000)
+     
     }   
 
     useEffect(() =>{
@@ -351,6 +353,14 @@ export function Staff(){
       return () =>{}
     },[companyId, filterTableCompanyId])
 
+    
+    useInterval(() => {
+      
+      GetAllData();
+      // GetTransactionData();
+      return () =>{}
+   
+  }, 15000);
   
     
     async function RegisterEmployeeCard(event) {
@@ -539,7 +549,7 @@ export function Staff(){
               label="Company"
             >
              
-          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+          
         
               {
         Object(coopList).length === 0? (<></>) :

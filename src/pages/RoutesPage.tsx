@@ -38,6 +38,7 @@ import { FaCashRegister } from "react-icons/fa";
 import { styled} from '@mui/system';
 
 import AddIcon from '@mui/icons-material/AddHomeWork';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
   const rows: GridRowsProp = [
    
   ];
@@ -94,9 +95,74 @@ import AddIcon from '@mui/icons-material/AddHomeWork';
   }
 
 
+  
+const useFakeMutationRoute = () => {
+  return useCallback(
+    (user) =>
+      new Promise((resolve, reject) =>
+        setTimeout(() => {
+          if (user.name?.trim() === '') {
+            reject();
+          } else {
+            resolve(user);
+          }
+        }, 200),
+      ),
+    [],
+  );
+};
+
+function computeMutationRoute(newRow, oldRow) {
+  console.log("TEST")
+  if (newRow.bound !== oldRow.bound) {
+   
+    return `Bound from '${oldRow.bound}' to '${newRow.bound}'`;
+  }
+  if (newRow.origin !== oldRow.origin) {
+   
+    return `Origin from '${oldRow.origin}' to '${newRow.origin}'`;
+  }
+  if (newRow.destination !== oldRow.destination) {
+   
+    return `Destination from '${oldRow.destination}' to '${newRow.destination}'`;
+  }
+
+  if (newRow.code !== oldRow.code) {
+   
+    return `Route code from '${oldRow.code}' to '${newRow.code}'`;
+  }
+
+  if (newRow.minimum_fare !== oldRow.minimum_fare) {
+   
+    return `Minimum fare from '${oldRow.minimum_fare}' to '${newRow.minimum_fare}'`;
+  }
+
+  if (newRow.discount !== oldRow.discount) {
+   
+    return `Discount fare from '${oldRow.discount}' to '${newRow.discount}'`;
+  }
+  
+  if (newRow.first_km !== oldRow.first_km) {
+   
+    return `FIRST KM fare from '${oldRow.first_km}' to '${newRow.first_km}'`;
+  }
+  
+  if (newRow.pricePerKM !== oldRow.pricePerKM) {
+   
+    return `Price Per Km fare from '${oldRow.pricePerKM}' to '${newRow.pricePerKM}'`;
+  }
+  return null;
+}
+
+
+
 export  function RoutesPage(){
 
+const mutateRow = useFakeMutationRoute();
 
+const noButtonRef = useRef(null);
+
+const [promiseArguments, setPromiseArguments] = useState(null);
   //tab
 
   const [value, setValue] = React.useState(0);
@@ -105,6 +171,427 @@ export  function RoutesPage(){
     setValue(newValue);
   };
 
+
+  
+
+  
+function EditBound(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+
+    if (event.key === 'Enter') {
+      console.log("TEST")
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+        <Select
+        value={value}
+        onChange={handleChangeRow}
+
+      fullWidth
+
+        autoFocus
+      > 
+      <MenuItem value ={'SOUTH'}>SOUTH</MenuItem>
+      <MenuItem value ={'NORTH'}>NORTH</MenuItem>
+      <MenuItem value ={'EAST'}>EAST</MenuItem>
+      <MenuItem value ={'WEST'}>WEST</MenuItem>
+      </Select>
+      </>
+  );
+}
+
+EditBound.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditBound = (params) => {
+  return <EditBound {...params} />;
+};
+
+//ORIGIN
+
+function EditOrigin(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+
+    if (event.key === 'Enter') {
+      console.log("TEST")
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+       <TextField
+          type="text" // specify the input type as number
+          value={value}
+          onChange={handleChangeRow}
+          autoFocus
+          fullWidth
+        />
+      </>
+  );
+}
+
+EditOrigin.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditOrigin = (params) => {
+  return <EditOrigin {...params} />;
+};
+
+////DESTINATION
+
+
+function EditDestination(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+
+    if (event.key === 'Enter') {
+      console.log("TEST")
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+       <TextField
+          type="text" // specify the input type as number
+          value={value}
+          onChange={handleChangeRow}
+          autoFocus
+          fullWidth
+        />
+      </>
+  );
+}
+
+EditDestination.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditDestination= (params) => {
+  return <EditDestination {...params} />;
+};
+
+
+////CODE
+
+
+function EditCode(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+
+    if (event.key === 'Enter') {
+      console.log("TEST")
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+       <TextField
+          type="text" // specify the input type as number
+          value={value}
+          onChange={handleChangeRow}
+          autoFocus
+          fullWidth
+        />
+      </>
+  );
+}
+
+EditCode.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditCode= (params) => {
+  return <EditCode {...params} />;
+};
+
+//// MINIMUM FARE
+
+
+function EditMinimumFare(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+
+    if (event.key === 'Enter') {
+      console.log("TEST")
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+       <TextField
+          type="number" // specify the input type as number
+          value={value}
+          onChange={handleChangeRow}
+          autoFocus
+          fullWidth
+        />
+      </>
+  );
+}
+
+EditMinimumFare.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditMinimumFare= (params) => {
+  return <EditMinimumFare {...params} />;
+};
+
+//DISCOUNT
+
+
+function EditDiscount(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+
+    if (event.key === 'Enter') {
+      console.log("TEST")
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+       <TextField
+          type="number" // specify the input type as number
+          value={value}
+          onChange={handleChangeRow}
+          autoFocus
+          fullWidth
+        />
+      </>
+  );
+}
+
+EditDiscount.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditDiscount= (params) => {
+  return <EditDiscount {...params} />;
+};
+
+
+
+
+//FIRST KM
+
+
+function EditFirstKM(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+
+    if (event.key === 'Enter') {
+      console.log("TEST")
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+       <TextField
+          type="number" // specify the input type as number
+          value={value}
+          onChange={handleChangeRow}
+          autoFocus
+          fullWidth
+        />
+      </>
+  );
+}
+
+EditFirstKM.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditFirstKM= (params) => {
+  return <EditFirstKM {...params} />;
+};
+
+
+
+//PRICE PER KM
+
+
+function EditPricePerKM(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+
+    if (event.key === 'Enter') {
+      console.log("TEST")
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+       <TextField
+          type="number" // specify the input type as number
+          value={value}
+          onChange={handleChangeRow}
+          autoFocus
+          fullWidth
+        />
+      </>
+  );
+}
+
+EditPricePerKM.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditPricePerKM= (params) => {
+  return <EditPricePerKM {...params} />;
+};
+  //////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////
 
   const [isSyncing, setIsSyncing] = useState(false)
   const [total, setTotal] = useState(0);
@@ -190,83 +677,84 @@ const routeColumns: GridColDef[] = [
     field: 'bound', 
     headerName: 'BOUND', 
     headerClassName: 'super-app-theme--header',
-    editable: false,
+    editable: true,
     width: 180,
     headerAlign: 'center',
     align: 'center',
-   
+    renderEditCell: renderEditBound
   },
   { 
     field: 'origin', 
     headerName: 'ORIGIN', 
     headerClassName: 'super-app-theme--header',
-      editable: false,
+      editable: true,
       width: 280,
       headerAlign: 'center',
       align: 'center',
+      renderEditCell: renderEditOrigin
   },
 
   { 
     field: 'destination', 
     headerName: 'DESTINATION', 
     headerClassName: 'super-app-theme--header',
-    editable: false,
+    editable: true,
     width: 280,
     headerAlign: 'center',
     align: 'center',
-   
+    renderEditCell: renderEditDestination
   },
 
   { 
     field: 'code', 
     headerName: 'ROUTE CODE', 
     headerClassName: 'super-app-theme--header',
-    editable: false,
+    editable: true,
     width: 180,
     headerAlign: 'center',
     align: 'center',
-   
+    renderEditCell: renderEditCode
   },
   { 
     field: 'minimum_fare', 
     headerName: 'MINIMUM FARE', 
     headerClassName: 'super-app-theme--header',
-      editable: false,
+      editable: true,
       width: 180,
       headerAlign: 'center',
       align: 'center',
-   
+   renderEditCell: renderEditMinimumFare
   },
 
   { 
     field: 'discount', 
     headerName: 'DISCOUNT', 
     headerClassName: 'super-app-theme--header',
-    editable: false,
+    editable: true,
     width: 180,
     headerAlign: 'center',
     align: 'center',
-   
+    renderEditCell:renderEditDiscount
   },
   { 
     field: 'first_km', 
     headerName: 'FIRST KM', 
     headerClassName: 'super-app-theme--header',
-      editable: false,
+      editable: true,
       width: 180,
       headerAlign: 'center',
       align: 'center',
-   
+   renderEditCell:renderEditFirstKM
   },
   { 
     field: 'pricePerKM', 
     headerName: 'PRICE PER KM', 
     headerClassName: 'super-app-theme--header',
-      editable: false,
+      editable: true,
       width: 180,
       headerAlign: 'center',
       align: 'center',
-   
+   renderEditCell:renderEditPricePerKM
   },
   {
     field: 'coopId', // Assuming you have a 'name' field in your data source
@@ -294,162 +782,182 @@ const routeColumns: GridColDef[] = [
       width: 180,
       headerAlign: 'center',
       align: 'center',
-    valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
-    },
+      renderCell: (params) => {
+        
+        const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+        return <div>{formattedDate}</div>;
+      },
   },
+  { field: 'actions', 
+  headerName: 'ACTIONS', 
+  width: 100, 
+  headerClassName: 'super-app-theme--header',
+  editable: false,
+ headerAlign: 'center',
+  align: 'center',
+  renderCell: (params) => {
+    return (
+      <IconButton aria-label="edit" size="small" onClick={() => {
+        setDeleteId(params.row.id);
+        setShowDeleteDialog(true)
+        }}>
+        <DeleteForeverIcon fontSize="small" color={"error"}/>
+    </IconButton>
+    );
+  } },
 
   ];
   
 
-
   
 
-  const columnsBank: GridColDef[] = [
-    { 
-      field: 'reference_no', 
-      headerName: 'REFERENCE NO', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
+    // CONFIRM DIALOG
 
-    { 
-      field: 'trace_no', 
-      headerName: 'TRACE NO', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
-
-    { 
-      field: 'batch_no', 
-      headerName: 'BATCH NO', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
-
-    { 
-      field: 'funding_account_no', 
-      headerName: 'FUNDING ACCOUNT NO', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
+    const processRowUpdate = useCallback(
+      (newRow, oldRow) =>
+        new Promise((resolve, reject) => {
+          console.log('TEST')
+          const mutation = computeMutationRoute(newRow, oldRow);
+          if (mutation) {
+            // Save the arguments to resolve or reject the promise later
+            setPromiseArguments({ resolve, reject, newRow, oldRow });
+          } else {
+            resolve(oldRow); // Nothing was changed
+          }
+        }),
+      [],
+    );
   
-    { 
-      field: 'sender_name', 
-      headerName: 'SENDER NAME', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
   
-    { 
-      field: 'destination_bank', 
-      headerName: 'DESTINATION BANK', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
+    const handleNo = () => {
+      const { oldRow, resolve } = promiseArguments;
+      resolve(oldRow); // Resolve with the old row to not update the internal state
+      setPromiseArguments(null);
+    };
+  
+    const handleYes = async () => {
+      const { newRow, oldRow, reject, resolve } = promiseArguments;
+      try {
 
-    { 
-      field: 'recipient_name', 
-      headerName: 'RECIPIENT NAME', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
+      // bound
+  
+      // origin
+  
+      // destination
 
-    { 
-      field: 'amount', 
-      headerName: 'AMOUNT', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
+      // code
+   
+      // minimum_fare
+  
+      // discount
+  
+      // pricePerKM
+  
+      // first_km
+       
+        const bodyParameters ={
+          id:newRow['id'],
+          bound: newRow['bound'],
+          origin: newRow['origin'],
+          destination: newRow['destination'],
+          code: newRow['code'],
+          minimum_fare: newRow['minimum_fare'],
+          discount: newRow['discount'],
+          pricePerKM: newRow['pricePerKM'],
+          first_km: newRow['first_km']
+        }
 
-    { 
-      field: 'total_fee', 
-      headerName: 'TOTAL FEE', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
+        console.log(bodyParameters)
+    const request = await axios.put(`${import.meta.env.VITE_BASE_URL}/directions/${newRow['id']}`,
+    bodyParameters,
+    {
+      headers :{
+          Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      }
+    })
 
-    { 
-      field: 'status', 
-      headerName: 'STATUS', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
+     
+    const responseGet = await request.data;
+    console.log(responseGet)
+    const response = await mutateRow(newRow);
+      if(responseGet.messages[0].code === 0){
+        GetFilterData();
+        resolve(response);
+        toast.success("Updated Succesfully!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+        setPromiseArguments(null);
+      }else{
+        toast.error("Failed to update!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }
+      } catch (error) {
+        reject(oldRow);
+        setPromiseArguments(null);
+        toast.error("Please check your internet connection!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }
+    }
 
-    { 
-      field: 'remarks', 
-      headerName: 'REMARKS', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
 
-    { 
-      field: 'transaction_date_and_time', 
-      headerName: 'DATE/TIME OF TRANSACTION', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
+    const handleEntered = () => {
+      // The `autoFocus` is not used because, if used, the same Enter that saves
+      // the cell triggers "No". Instead, we manually focus the "No" button once
+      // the dialog is fully open.
+      // noButtonRef.current?.focus();
+    };
+  
+    const renderConfirmDialog = () => {
+      console.log("TESTSSS")
+      if (!promiseArguments) {
+        return null;
+      }
+      const { newRow, oldRow } = promiseArguments;
+      const mutation = computeMutationRoute(newRow, oldRow);
+  
+      return (
+        <Dialog
+          maxWidth="xs"
+          TransitionProps={{ onEntered: handleEntered }}
+          open={!!promiseArguments}
+        >
+          <DialogTitle>Are you sure?</DialogTitle>
+          <DialogContent dividers>
+            {`Pressing 'Yes' will change ${mutation}.`}
+          </DialogContent>
+          <DialogActions>
+            <Button ref={noButtonRef} onClick={handleNo}>
+              No
+            </Button>
+            <Button onClick={handleYes}>Yes</Button>
+          </DialogActions>
+        </Dialog>
+      );
+    };
 
-    { 
-      field: 'date', 
-      headerName: 'DATE REMITTED', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-    },
-
-    { 
-      field: 'dateCreated', 
-      headerName: 'DATE CREATED', 
-      headerClassName: 'super-app-theme--header',
-      editable: false,
-      width: 220,
-      headerAlign: 'center',
-      align: 'center',
-      type:"Date"
-    },
-
-    ];
-    
-    
 
   const navigate = useNavigate();
   useEffect(() =>{
@@ -506,10 +1014,7 @@ const routeColumns: GridColDef[] = [
 
     },[tableRows])
 
-    async function SyncData(){
-
-
-    } 
+   
 
     async function AddData() {
       try {
@@ -617,38 +1122,7 @@ const routeColumns: GridColDef[] = [
               <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
               <GridToolbarExport style ={{color:"#161d6f"}} />
               <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
-              {localStorage.getItem('role') === "Administrator" ? 
-            
-            <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
-              <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
-              <Select
-                labelId="filter-company-demo-demo-simple-select-autowidth-label"
-                id="filter-company-demo-demo-simple-select-autowidth"
-                value={filterTableCompanyId}
-                onChange={(event) => setFilterTableCompanyId(event.target.value)}
-                autoWidth
-                label="Company"
-              >
-                {/* {localStorage.getItem('role') === "Administrator" ? 
-            <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
-            :
-            null
-            } */}
-                {
-          Object(coopList).length === 0? (<></>) :
-          coopList.map((coop : ICooperative) =>{
-      
-            return (
-              <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
-            )
-  
-          })
-          }
-              
-              </Select>
-      </FormControl> :
-      null
-            }
+          
             </GridToolbarContainer>
            
           </>
@@ -656,88 +1130,6 @@ const routeColumns: GridColDef[] = [
         } 
 
 
-function BankCustomToolbar() {
-
-  const spinnerStyle = {
-    animation: 'spin 1s linear infinite',
-  };
-
-  const keyframesStyle = `
-    @keyframes spin {
-      0% { transform: rotate(360deg); }
-      100% { transform: rotate(0deg); }
-    }
-  `;
-
-
-  return (
-    <>
-     
-     <GridToolbarContainer
-          style=
-          {{
-            marginBottom: '2px',
-          }}
-        >
-          
-          {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
-         {localStorage.getItem('role') === "Administrator" ? 
-            <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
-            :
-            null
-          }
-          <Button variant="contained"  startIcon = {<FaCashRegister  />} color="success"  onClick={ () =>{
-          setIsModalOpen(true)
-        }}>
-        Add Transaction
-      </Button>
-            <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
-            {/* <GridToolbarFilterButton style ={{color:"#161d6f"}} /> */}
-            <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
-            <GridToolbarExport style ={{color:"#161d6f"}} />
-
-{/* 
-            <Button onClick={handlePrint} startIcon={<PrintIcon />} style ={{color:"#161d6f"}}>
-              Print
-            </Button>    */}
-            {/* <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/> */}
-            {localStorage.getItem('role') === "Administrator" ? 
-        
-          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
-            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
-            <Select
-              labelId="filter-company-demo-demo-simple-select-autowidth-label"
-              id="filter-company-demo-demo-simple-select-autowidth"
-              value={filterTableCompanyId}
-              onChange={(event) => setFilterTableCompanyId(event.target.value)}
-              autoWidth
-              label="Company"
-            >
-              {/* {localStorage.getItem('role') === "Administrator" ? 
-          <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
-          :
-          null
-          } */}
-              {
-        Object(coopList).length === 0? (<></>) :
-        coopList.map((coop : ICooperative) =>{
-      
-          return (
-            <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
-          )
-
-        })
-        }
-            
-            </Select>
-    </FormControl> :
-    null
-          }
-      </GridToolbarContainer>
-    </>
-  );
-
-}   
 
 
 const componentRef = useRef();
@@ -944,8 +1336,82 @@ useEffect(() =>{
 }, [filterData])
 
 
+useEffect(()=>{
+  GetFilterData()
+return () =>{}
+},[filterTableCompanyId])
 
 
+//delete modal
+const [deleteId, setDeleteId] = useState("");
+const [showDeleteDialog, setShowDeleteDialog] =useState(false)
+
+async function handleYesDelete(){
+  try {
+   
+    
+const request = await axios.delete(`${import.meta.env.VITE_BASE_URL}/directions/${deleteId}`,
+{
+  headers :{
+      Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+  }
+})
+
+ 
+const responseGet = await request.data;
+
+console.log(responseGet)
+
+  if(responseGet.messages[0].code === 0){
+    GetFilterData();
+ 
+    toast.success("Deleted Succesfully!", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+
+  }else{
+    toast.error("Failed to delete!", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+  }
+  setShowDeleteDialog(!showDeleteDialog)
+  } catch (error) {
+    console.log(`ERROR IN DELETING ${error.message}`)
+    setShowDeleteDialog(!showDeleteDialog)
+    toast.error("Please check your internet connection!", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+  }
+}
+
+
+useEffect(() =>{
+
+return()=>{
+  console.log(showDeleteDialog)
+}
+},[showDeleteDialog])
 
 return(
       <div 
@@ -955,6 +1421,32 @@ return(
       }}
       >
     <NavBar>
+{renderConfirmDialog()}
+<Dialog
+          maxWidth="xs"
+          open={showDeleteDialog}
+        >
+          <DialogTitle>Are you sure you want to delete?</DialogTitle>
+          <DialogActions>
+            <Button onClick={() =>  setShowDeleteDialog(!showDeleteDialog)}>
+              No
+            </Button>
+            <Button onClick={handleYesDelete}>Yes</Button>
+          </DialogActions>
+        </Dialog>
+    {renderConfirmDialog()}
+     <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        />
 
     <ToastContainer
         position="bottom-center"
@@ -1093,6 +1585,7 @@ return(
             label="Discount"
             type="number"
             fullWidth
+            inputProps={{ step: "any" }}
             variant="outlined"
             onChange={(event) => setDiscount(parseFloat(event.target.value))}
           />
@@ -1115,6 +1608,7 @@ return(
             name ="miniumFare"
             label="Minimum Fare"
             type="number"
+            inputProps={{ step: "any" }}
             fullWidth
             variant="outlined"
             onChange={(event) => setMinimumFare(parseFloat(event.target.value))}
@@ -1127,6 +1621,7 @@ return(
             name ="pricePerKM"
             label="Price Per KM"
             type="number"
+            inputProps={{ step: "any" }}
             fullWidth
             variant="outlined"
             onChange={(event) => setPricePerKM(parseFloat(event.target.value))}
@@ -1171,74 +1666,6 @@ return(
   </div>
 </div>
 
-{/* <div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
-  <div className="flex items-center">
-    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
-      
-        {<BsFillMapFill    />}
-    </div>
-    <div className="flex-shrink-0 ml-3">
-      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl"><CountUp end={totalTicket} /></span>
-      <h3 className="text-base font-normal text-gray-500">{"TOTAL STATION "}</h3>
-    </div>
-  </div>
-</div> */}
-{/* 
-<div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
-  <div className="flex items-center">
-    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
-      
-        {<BiTrip    />}
-    </div>
-    <div className="flex-shrink-0 ml-3">
-      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl"><CountUp end={totalBaggage} /></span>
-      <h3 className="text-base font-normal text-gray-500">{"TOTAL TRIP "}</h3>
-    </div>
-  </div>
-</div>
-
-
-<div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
-  <div className="flex items-center">
-    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
-      
-        {<IoIosPeople     />}
-    </div>
-    <div className="flex-shrink-0 ml-3">
-      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl"><CountUp end={totalPassenger} /></span>
-      <h3 className="text-base font-normal text-gray-500">{"TOTAL PASSENGER "}</h3>
-    </div>
-  </div>
-</div>
-
-<div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
-  <div className="flex items-center">
-    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
-      
-        {<LuBaggageClaim     />}
-    </div>
-    <div className="flex-shrink-0 ml-3">
-      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl"><CountUp end={totalBaggageGet} /></span>
-      <h3 className="text-base font-normal text-gray-500">{"TOTAL BAGGAGE "}</h3>
-    </div>
-  </div>
-</div>
-
-
-<div className=" bg-white border border-gray-200 rounded-lg shadow-lg p-4">  
-  <div className="flex items-center">
-    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-900 to-[#161d6f] rounded-lg" >
-      
-        {<SiCashapp     />}
-    </div>
-    <div className="flex-shrink-0 ml-3">
-      <span className="text-2xl font-bold leading-none text-gray-900 sm:text-3xl">₱ <CountUp end={totalCashCollection} /></span>
-      <h3 className="text-base font-normal text-gray-500">{"TOTAL CASH COLLECTION "}</h3>
-    </div>
-  </div>
-</div> */}
-
-
 
   </div>
 
@@ -1257,6 +1684,42 @@ return(
             }}>
            
            <div className="flex flex-row space-x-4 items-center mb-2">
+
+
+            
+{localStorage.getItem('role') === "Administrator" ? 
+        
+        <FormControl  margin ="dense" style={{width:100}}>
+          <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+          <Select
+            labelId="filter-company-demo-demo-simple-select-autowidth-label"
+            id="filter-company-demo-demo-simple-select-autowidth"
+            value={filterTableCompanyId}
+            onChange={(event) => setFilterTableCompanyId(event.target.value)}
+            autoWidth
+            label="Company"
+          >
+            {/* {localStorage.getItem('role') === "Administrator" ? 
+        <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
+        :
+        null
+        } */}
+            {
+      Object(coopList).length === 0? (<></>) :
+      coopList.map((coop : ICooperative) =>{
+    
+        return (
+          <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+        )
+
+      })
+      }
+          
+          </Select>
+  </FormControl> :
+  null
+        }
+
            <LocalizationProvider dateAdapter={AdapterDayjs}  >
               <DemoContainer components={['DateTimePicker']} >
                 <DateTimePicker 
@@ -1275,6 +1738,8 @@ return(
                 />
               </DemoContainer>
             </LocalizationProvider>
+            
+         
           </div>
 
         
@@ -1306,7 +1771,8 @@ return(
                 fullWidth
                 onChange={(event) => setFilterData(() => event.target.value)}
                  />
-             
+
+
               </div>
 
               <div>
@@ -1346,7 +1812,10 @@ return(
             }}>
              
             <StyledDataGrid
-           initialState={{ pinnedColumns: { left: ['reference_no']} }}
+            
+  processRowUpdate={processRowUpdate}
+  experimentalFeatures={{ newEditingApi: true }}
+           initialState={{ pinnedColumns: { left: ['reference_no'], right:['actions']} }}
             rows={tableRows} columns={routeColumns}
             loading = {isLoading}
              slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
@@ -1395,10 +1864,9 @@ return(
     </div>)
 }
 
-
-
-
-
+////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////STATIONS
+////////////////////////////////////////////////////////////////////////////////////
 const useFakeMutation = () => {
   return useCallback(
     (user) =>
@@ -1421,8 +1889,21 @@ function computeMutation(newRow, oldRow) {
     return `Row no from '${oldRow.rowNo}' to '${newRow.rowNo}'`;
   }
 
+  if (newRow.km !== oldRow.km) {
+   
+    return `KM from '${oldRow.km}' to '${newRow.km}'`;
+  }
+
+  if (newRow.stationName !== oldRow.stationName) {
+   
+    return `Station name from '${oldRow.stationName}' to '${newRow.stationName}'`;
+  }
+
   return null;
 }
+
+
+//STATIONS
 
 function StationDatatables(props){
 
@@ -1440,6 +1921,102 @@ const mutateRow = useFakeMutation();
 const noButtonRef = useRef(null);
 
 const [promiseArguments, setPromiseArguments] = useState(null);
+
+function EditStationName(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+    if (event.key === 'Enter') {
+    
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+      <TextField
+        type="text" // specify the input type as number
+        value={value}
+        onChange={handleChangeRow}
+        autoFocus
+        fullWidth
+      />
+    </>
+  );
+}
+
+EditStationName.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditStationName = (params) => {
+  return <EditStationName {...params} />;
+};
+
+  
+function EditKm(props) {
+  const { id, value, field } = props;
+  const apiRef = useGridApiContext();
+
+  const handleChangeRow = async (event) => {
+    console.log(event.target.value);
+    await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+    if (event.key === 'Enter') {
+    
+      apiRef.current.stopCellEditMode({ id, field });
+    }
+  };
+
+
+  return (
+    <>
+      <TextField
+        type="number" // specify the input type as number
+        value={value}
+        onChange={handleChangeRow}
+        autoFocus
+        fullWidth
+      />
+    </>
+  );
+}
+
+EditKm.propTypes = {
+  /**
+   * The column field of the cell that triggered the event.
+   */
+  field: PropTypes.string.isRequired,
+  /**
+   * The grid row id.
+   */
+  id: PropTypes.oneOfType([PropTypes.number]).isRequired,
+  /**
+   * The cell value.
+   * If the column has `valueGetter`, use `params.row` to directly access the fields.
+   */
+  value: PropTypes.any,
+};
+
+const renderEditKm = (params) => {
+  return <EditKm {...params} />;
+};
+
 
 
   function EditStatus(props) {
@@ -1499,8 +2076,8 @@ const [promiseArguments, setPromiseArguments] = useState(null);
       headerAlign: 'center',
       headerClassName: 'super-app-theme--header',
       align: 'center',
-      editable: false,
-     
+      editable: true,
+      renderEditCell: renderEditStationName,
     },
     { 
       field: 'km', 
@@ -1510,8 +2087,8 @@ const [promiseArguments, setPromiseArguments] = useState(null);
       headerClassName: 'super-app-theme--header',
       headerAlign: 'center',
       align: 'center',
-      editable: false,
-     
+      editable: true,
+     renderEditCell: renderEditKm,
     },
  
     { 
@@ -1565,11 +2142,29 @@ const [promiseArguments, setPromiseArguments] = useState(null);
       headerAlign: 'center',
       align: 'center',
       editable: false,
-      valueFormatter: (params) => {
-        return moment(params.value).format('MMMM D, YYYY');
-      },
-    }
-   
+      renderCell: (params) => {
+        
+          const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+          return <div>{formattedDate}</div>;
+        },
+    },
+    { field: 'actions', 
+      headerName: 'ACTIONS', 
+      width: 100, 
+      headerClassName: 'super-app-theme--header',
+      editable: false,
+     headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => {
+        return (
+          <IconButton aria-label="edit" size="small" onClick={() => {
+            setDeleteId(params.row.id);
+            setShowDeleteDialog(true)
+            }}>
+            <DeleteForeverIcon fontSize="small" color={"error"}/>
+        </IconButton>
+        );
+      } },
     ];
 
     const stationRows: GridRowsProp = [
@@ -1711,7 +2306,7 @@ function CustomToolbar() {
         <GridToolbarDensitySelector style ={{color:"#161d6f"}} />
         <GridToolbarExport style ={{color:"#161d6f"}} />
         <GridToolbarQuickFilter  style ={{color:"#161d6f"}}/>
-        {localStorage.getItem('role') === "Administrator" ? 
+        {/* {localStorage.getItem('role') === "Administrator" ? 
       
       <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
         <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
@@ -1723,11 +2318,7 @@ function CustomToolbar() {
           autoWidth
           label="Company"
         >
-          {/* {localStorage.getItem('role') === "Administrator" ? 
-      <MenuItem key ="seapps" value={"Sburoot@123" }>Seapps-inc</MenuItem>
-      :
-      null
-      } */}
+       
           {
     Object(coopList).length === 0? (<></>) :
     coopList.map((coop : ICooperative) =>{
@@ -1742,7 +2333,7 @@ function CustomToolbar() {
         </Select>
 </FormControl> :
 null
-      }
+      } */}
       </GridToolbarContainer>
      
     </>
@@ -1871,14 +2462,30 @@ const [rowNo, setRowNo] = useState(0);
     const handleYes = async () => {
       const { newRow, oldRow, reject, resolve } = promiseArguments;
       try {
+
+        // coopId: string,
+    
+        // stationName: string,
+    
+        // km: number,
+    
+        // viceVersaKM: number,
+    
+        // routeId: string
+    
        
         const bodyParameters ={
           id:newRow['id'],
-          rowNo:newRow['rowNo']
+          rowNo:newRow['rowNo'],
+          coopId: newRow['coopId'],
+          stationName: newRow['stationName'],
+          km: parseFloat(newRow['km']),
+          viceVersaKM: newRow['viceVersaKM'],
+          routeId: newRow['routeId']
         }
 
-        
-    const request = await axios.put(`${import.meta.env.VITE_BASE_URL}/station/rowNo/${newRow['coopId']}`,
+        console.log(bodyParameters)
+    const request = await axios.put(`${import.meta.env.VITE_BASE_URL}/station/${newRow['id']}`,
     bodyParameters,
     {
       headers :{
@@ -1888,6 +2495,7 @@ const [rowNo, setRowNo] = useState(0);
 
      
     const responseGet = await request.data;
+    console.log(responseGet)
     const response = await mutateRow(newRow);
       if(responseGet.messages[0].code === 0){
         GetFilterData();
@@ -1904,7 +2512,7 @@ const [rowNo, setRowNo] = useState(0);
           });
         setPromiseArguments(null);
       }else{
-        toast.success("Failed to update!", {
+        toast.error("Failed to update!", {
           position: "bottom-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -1918,7 +2526,7 @@ const [rowNo, setRowNo] = useState(0);
       } catch (error) {
         reject(oldRow);
         setPromiseArguments(null);
-        toast.success("Please check your internet connection!", {
+        toast.error("Please check your internet connection!", {
           position: "bottom-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -1965,8 +2573,87 @@ const [rowNo, setRowNo] = useState(0);
       );
     };
 
+    const [deleteId, setDeleteId] = useState("");
+    const [showDeleteDialog, setShowDeleteDialog] =useState(false)
 
+    async function handleYesDelete(){
+      try {
+       
+        
+    const request = await axios.delete(`${import.meta.env.VITE_BASE_URL}/station/${deleteId}`,
+    {
+      headers :{
+          Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+      }
+    })
+
+     
+    const responseGet = await request.data;
+
+    console.log(responseGet)
+    
+      if(responseGet.messages[0].code === 0){
+        GetFilterData();
+     
+        toast.success("Deleted Succesfully!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+
+      }else{
+        toast.error("Failed to delete!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }
+      setShowDeleteDialog(!showDeleteDialog)
+      } catch (error) {
+        setShowDeleteDialog(!showDeleteDialog)
+        toast.error("Please check your internet connection!", {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }
+    }
+
+
+  useEffect(() =>{
+    
+    return()=>{
+      console.log(showDeleteDialog)
+    }
+  },[showDeleteDialog])
     return (<>
+    <Dialog
+          maxWidth="xs"
+          open={showDeleteDialog}
+        >
+          <DialogTitle>Are you sure you want to delete?</DialogTitle>
+          <DialogActions>
+            <Button onClick={() =>  setShowDeleteDialog(!showDeleteDialog)}>
+              No
+            </Button>
+            <Button onClick={handleYesDelete}>Yes</Button>
+          </DialogActions>
+        </Dialog>
     {renderConfirmDialog()}
      <ToastContainer
         position="bottom-center"
@@ -2086,7 +2773,7 @@ const [rowNo, setRowNo] = useState(0);
             margin="dense"
             id="rowNo"
             name ="rowNo"
-            label="Row Number"
+            label="Order number"
             type="text"
             fullWidth
             variant="outlined"
@@ -2106,7 +2793,7 @@ const [rowNo, setRowNo] = useState(0);
   <StyledDataGrid
   processRowUpdate={processRowUpdate}
   experimentalFeatures={{ newEditingApi: true }}
-           initialState={{ pinnedColumns: { left: ['rowNo']} }}
+           initialState={{ pinnedColumns: { left: ['rowNo'], right: ['actions']} }}
             rows={stationTableRows} columns={stationColumns}
             loading = {isLoading}
              slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}

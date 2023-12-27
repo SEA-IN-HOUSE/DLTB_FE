@@ -12,6 +12,10 @@ import { useNavigate } from "react-router-dom";
 import { ICooperative } from "./Employee";
 
 import { FormControl, InputLabel,  MenuItem, Select} from "@mui/material";
+import { useInterval } from '../components/useInterval'
+import BasicRangeShortcuts from "../components/DateRange";
+
+//DA
 
 const initialState = [
   {
@@ -50,6 +54,11 @@ const initialState = [
 ];
 
 const companyIdInitialState = localStorage.getItem('companyId')
+
+const initialValues = {
+    start: new Date('2023-01-01'),
+    end: new Date('2023-01-10'),
+};
 
 export function Dashboard() : JSX.Element{
 
@@ -92,6 +101,13 @@ export function Dashboard() : JSX.Element{
     const [torViolationLoading, setTorViolationLoading] = useState(true);
 
     const [torTroubleLoading, setTorTroubleLoading] = useState(true);
+
+    //DATERANGE
+   
+
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+  const [toDate, setToDate] = useState<Date | null>(null);
+
 
     useEffect(() =>{
 
@@ -155,11 +171,21 @@ export function Dashboard() : JSX.Element{
 
         try{
 
-            const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/ticket/${filterTableCompanyId}`,{
-                headers :{
-                    Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-                }
-            })
+            const bodyParameters = {
+                filterData: "",
+                filterType: "",
+                fromDate: fromDate,
+                toDate:toDate,
+              }
+              
+              console.log("Sample date ", fromDate)
+      
+      
+          const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/ticket/filter/${filterTableCompanyId}`,bodyParameters,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
 
             const response = await request.data;
             console.log(`Response`)
@@ -167,7 +193,7 @@ export function Dashboard() : JSX.Element{
             let totalFare = 0.00;
            
             response.response.map((data : any) =>{
-              totalFare = totalFare + data.subtotal;
+              totalFare = totalFare + data.fare + data.additionalFare + data.baggage;
              })
              
              console.log(`total fare ${totalFare}`)
@@ -182,19 +208,29 @@ export function Dashboard() : JSX.Element{
         }catch(e){
             console.error("Error in getting all the tor main: "+e)
         }
-        setTimeout(GetAllTORTicket, 5000)
+  
     }
 
 
     async function GetAllTORMain(){
 
         try{
-
-            const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/main/${filterTableCompanyId}`,{
-                headers :{
-                    Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-                }
-            })
+            const bodyParameters = {
+                filterData: "",
+                filterType: "",
+                fromDate: fromDate,
+                toDate:toDate,
+              }
+              
+              console.log("Sample date ", fromDate)
+      
+      
+          const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/main/filter/${filterTableCompanyId}`,bodyParameters,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
+          
 
             const response = await request.data;
             console.log("tor main")
@@ -214,7 +250,7 @@ export function Dashboard() : JSX.Element{
             console.error("Error in getting all the tor main: "+e)
         }
 
-        setTimeout(GetAllTORMain, 5000)
+        
 
     }
 
@@ -222,11 +258,21 @@ export function Dashboard() : JSX.Element{
 
         try{
 
-            const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/ticket/${filterTableCompanyId}`,{
-                headers :{
-                    Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-                }
-            })
+            const bodyParameters = {
+                filterData: "",
+                filterType: "",
+                fromDate: fromDate,
+                toDate:toDate,
+              }
+              
+              console.log("Sample date ", fromDate)
+      
+      
+          const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/ticket/filter/${filterTableCompanyId}`,bodyParameters,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
 
             const response = await request.data;
             if(response.response.length !== torTicket){
@@ -243,7 +289,7 @@ export function Dashboard() : JSX.Element{
         }catch(e){
             console.error("Error in getting all the tor main: "+e)
         }
-        setTimeout(GetAllTORTicket, 5000)
+        
     }
 
     async function GetAllTORFuel(){
@@ -275,18 +321,28 @@ export function Dashboard() : JSX.Element{
         }catch(e){
             console.error("Error in getting all the tor main: "+e)
         }
-        setTimeout(GetAllTORFuel, 5000)
+       
     }
 
     async function GetAllTORRemittance(){
 
         try{
 
-            const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/remittance/${filterTableCompanyId}`,{
-                headers :{
-                    Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-                }
-            })
+            const bodyParameters = {
+                filterData: "",
+                filterType: "",
+                fromDate: fromDate,
+                toDate:toDate,
+              }
+              
+              console.log("Sample date ", fromDate)
+      
+      
+          const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/remittance/filter/${filterTableCompanyId}`,bodyParameters,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
 
             const response = await request.data;
 
@@ -306,18 +362,28 @@ export function Dashboard() : JSX.Element{
         }catch(e){
             console.error("Error in getting all the tor remittance: "+e)
         }
-        setTimeout(GetAllTORRemittance, 5000)
+    
     }
 
     async function GetAllTORTrip(){
 
         try{
 
-            const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/trip/${filterTableCompanyId}`,{
-                headers :{
-                    Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-                }
-            })
+            const bodyParameters = {
+                filterData: "",
+                filterType: "",
+                fromDate: fromDate,
+                toDate:toDate,
+              }
+              
+              console.log("Sample date ", fromDate)
+      
+      
+          const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/trip/filter/${filterTableCompanyId}`,bodyParameters,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
 
             const response = await request.data;
 
@@ -335,18 +401,28 @@ export function Dashboard() : JSX.Element{
         }catch(e){
             console.error("Error in getting all the tor main: "+e)
         }
-        setTimeout(GetAllTORTrip, 5000)
+      
     }
 
     async function GetAllTORInspection(){
 
         try{
 
-            const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/inspection/${filterTableCompanyId}`,{
-                headers :{
-                    Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-                }
-            })
+            const bodyParameters = {
+                filterData: "",
+                filterType: "",
+                fromDate: fromDate,
+                toDate:toDate,
+              }
+              
+              console.log("Sample date ", fromDate)
+      
+      
+          const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/inspection/filter/${filterTableCompanyId}`,bodyParameters,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
 
             const response = await request.data;
 
@@ -365,7 +441,7 @@ export function Dashboard() : JSX.Element{
         }catch(e){
             console.error("Error in getting all the tor main: "+e)
         }
-        setTimeout(GetAllTORInspection, 5000)
+   
     }
 
 
@@ -373,11 +449,21 @@ export function Dashboard() : JSX.Element{
 
         try{
 
-            const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/violation/${filterTableCompanyId}`,{
-                headers :{
-                    Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-                }
-            })
+            const bodyParameters = {
+                filterData: "",
+                filterType: "",
+                fromDate: fromDate,
+                toDate:toDate,
+              }
+              
+              console.log("Sample date ", fromDate)
+      
+      
+          const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/violation/filter/${filterTableCompanyId}`,bodyParameters,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
 
             const response = await request.data;
 
@@ -396,18 +482,28 @@ export function Dashboard() : JSX.Element{
         }catch(e){
             console.error("Error in getting all the tor main: "+e)
         }
-        setTimeout(GetAllTORViolation, 5000)
+
     }
 
     async function GetAllTORTrouble(){
 
         try{
 
-            const request = await axios.get(`${import.meta.env.VITE_BASE_URL}/tor/trouble/${filterTableCompanyId}`,{
-                headers :{
-                    Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
-                }
-            })
+            const bodyParameters = {
+                filterData: "",
+                filterType: "",
+                fromDate: fromDate,
+                toDate:toDate,
+              }
+              
+              console.log("Sample date ", fromDate)
+      
+      
+          const request = await axios.post(`${import.meta.env.VITE_BASE_URL}/tor/trouble/filter/${filterTableCompanyId}`,bodyParameters,{
+            headers :{
+                Authorization : `Bearer ${import.meta.env.VITE_TOKEN}`
+            }
+        })
 
             const response = await request.data;
 
@@ -426,8 +522,32 @@ export function Dashboard() : JSX.Element{
         }catch(e){
             console.error("Error in getting all the tor main: "+e)
         }
-        setTimeout(GetAllTORTrouble, 5000)
+       
     }
+
+    useInterval(() => {
+       
+        GetAllTORRemittance();
+
+        GetAllTORMain();
+
+        GetAllTORTicket();
+
+        GetAllTORFuel();
+
+        GetAllTORTrip();
+
+        GetAllTORInspection();
+
+        GetAllTORViolation(); 
+
+        GetAllTORTrouble();
+
+        GetTotalGrossSales();
+     
+          return() =>{}
+       
+      }, 15000);
 
     useEffect(() =>{
 
@@ -451,7 +571,7 @@ export function Dashboard() : JSX.Element{
 
         return () =>{}
 
-    },[filterTableCompanyId])
+    },[filterTableCompanyId, fromDate, toDate])
     
     useEffect(() => {
 
@@ -465,41 +585,48 @@ export function Dashboard() : JSX.Element{
         }}>
         <NavBar>
            <HeaderCard title="DASHBOARD"/>
-           {localStorage.getItem('role') === "Administrator" ? 
+          
            <div className="mt-3  bg-white border border-gray-200 rounded-lg shadow-lg p-4"> 
-         
-          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
-            <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
-            <Select
-              labelId="filter-company-demo-demo-simple-select-autowidth-label"
-              id="filter-company-demo-demo-simple-select-autowidth"
-              value={filterTableCompanyId}
-              defaultValue={filterTableCompanyId}
-              onChange={(event) => setFilterTableCompanyId(() => event.target.value)}
-              onChange={() => {}}
-              autoWidth
-              label="Company"
-            >
-            
-              {
-                Object(coopList).length === 0? (<></>) :
-                coopList.map((coop : ICooperative) =>{
-                console.log(coop)
-                console.log(coop.cooperativeCodeName)
-                return (
-                    <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
-                )
+           {localStorage.getItem('role') === "Administrator" ? 
+            <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+                <InputLabel id="filter-company-demo-simple-select-autowidth-label">Company</InputLabel>
+                <Select
+                labelId="filter-company-demo-demo-simple-select-autowidth-label"
+                id="filter-company-demo-demo-simple-select-autowidth"
+                value={filterTableCompanyId}
+                defaultValue={filterTableCompanyId}
+                onChange={(event) => setFilterTableCompanyId(event.target.value)}
+                autoWidth
+                label="Company"
+                >
+                
+                {
+                    Object(coopList).length === 0? (<></>) :
+                    coopList.map((coop : ICooperative) =>{
+                    console.log(coop)
+                    console.log(coop.cooperativeCodeName)
+                    return (
+                        <MenuItem value={coop.id}>{coop.cooperativeCodeName}</MenuItem>
+                    )
 
-                })
-              }
-            
-            </Select>
-    </FormControl> :
-   
-           </div>
-           :
-           null
-    }
+                    })
+                }
+                
+                </Select>
+            </FormControl> 
+                :
+                null
+           }
+
+         <BasicRangeShortcuts 
+         fromDate={fromDate}
+         setFromDate={setFromDate}
+         toDate={toDate}
+         setToDate={setToDate}
+          />
+
+            </div>
+               
            <div className="py-8 mt-1 sm:py-16 ">
   <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-12 md:space-y-0">
 

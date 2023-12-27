@@ -114,19 +114,21 @@ export function MasterCard(){
       },
     },
   
-    { 
-      field: 'createdAt', 
-      headerName: 'DATE CREATED', 
-      flex: 1,
-      minWidth: 0,
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      align: 'center',
-      editable: false,
-      valueFormatter: (params) => {
-        return moment(params.value).format('MMMM D, YYYY');
+    
+      {
+        field: 'createdAt',
+        headerName: 'DATE CREATED',
+        width: 180,
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+       headerAlign: 'center',
+        align: 'center',
+        renderCell: (params) => {
+        
+          const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+          return <div>{formattedDate}</div>;
+        },
       },
-    },
   
     // { 
     //   field: 'updatedAt', 
@@ -138,7 +140,7 @@ export function MasterCard(){
     //   align: 'center',
     //   editable: false,
     //   valueFormatter: (params) => {
-    //     return moment(params.value).format('MMMM D, YYYY');
+    //     const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
     //   },
     // }
    
@@ -582,6 +584,7 @@ const displayedOptions = useMemo(() => {
             label="Balance"
             type="number"
             fullWidth
+            inputProps={{ step: "any" }}
             variant="outlined"
             onChange={(event) => setBalance(event.target.value)}
           />

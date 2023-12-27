@@ -151,7 +151,7 @@ const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.ge
         align: 'center',
         editable: false,
         valueFormatter: (params) => {
-          return moment(params.value).format('MMMM D, YYYY');
+          const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
         },
       }
      

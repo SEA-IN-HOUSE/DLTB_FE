@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-
+//@ts-nocheck
 import HeaderCard from "../components/HeaderCard";
 import NavBar from "../components/NavBar";
 import Paper from "../components/Paper";
-import { DataGrid, GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
+import {GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, TextField } from "@mui/material";
@@ -14,12 +12,23 @@ import CloseIcon from '@mui/icons-material/Close';
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { BsDeviceSsd } from "react-icons/bs";
+import { BsPeopleFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 
-// "_id": "65530747f9eb5ec7c5ec8f75",
-// "deviceId": "1234",
-// "coopId": "1234",
+import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
+import '../styles/RemoveProWaterMark.css'
+import { styled} from '@mui/system';
+
+const StyledDataGrid = styled(DataGridPremium)(() => ({
+  "& .MuiDataGrid-sortIcon": {
+  opacity: 1,
+  color: "white",
+  },
+  "& .MuiDataGrid-menuIconButton": {
+  opacity: 1,
+  color: "white"
+  },
+  }));
 
 const columns: GridColDef[] = [
   
@@ -58,29 +67,7 @@ const columns: GridColDef[] = [
    
   },
 
-  { 
-    field: 'minimum_fare', 
-    headerName: 'MINIMUM FARE', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
-
-  { 
-    field: 'first_km', 
-    headerName: 'FIRST KM', 
-    flex: 1,
-        minWidth: 0,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center',
-    align: 'center',
-    editable: false,
-   
-  },
+  
 
 
   { 
@@ -93,7 +80,7 @@ const columns: GridColDef[] = [
     align: 'center',
     editable: false,
     valueFormatter: (params) => {
-      return moment(params.value).format('MMMM D, YYYY');
+      const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
     },
   },
 
@@ -107,7 +94,7 @@ const columns: GridColDef[] = [
 //     align: 'center',
 //     editable: false,
 //     valueFormatter: (params) => {
-//       return moment(params.value).format('MMMM D, YYYY');
+//       const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
 //     },
 //   }
  
@@ -290,10 +277,10 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             marginBottom: '2px',
           }}
           >
-          <Button variant="contained"  startIcon = {<BsDeviceSsd />} color="success"  onClick={ () =>{
+          <Button variant="contained"  startIcon = {<BsPeopleFill />} color="success"  onClick={ () =>{
             setIsModalOpen(true)
           }}>
-          Add device
+          Add Cooperative
         </Button>
   
         <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
@@ -379,42 +366,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             variant="outlined"
             onChange={(event) => setCoopName(event.target.value)}
           />
-           <TextField
-            autoFocus
-            margin="dense"
-            id="minimum_fare"
-            name ="minimum_fare"
-            label="Minimum Fare"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setMinimumFare(event.target.value)}
-          />
-
-        <TextField
-            autoFocus
-            margin="dense"
-            id="first_km"
-            name ="first_km"
-            label="First Km"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setFirstKm(event.target.value)}
-          />
-
-          
-        <TextField
-            autoFocus
-            margin="dense"
-            id="first_km"
-            name ="first_km"
-            label="First Km"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setFirstKm(event.target.value)}
-          />
+      
 
           <TextField
             autoFocus
@@ -428,30 +380,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             onChange={(event) => setCoopCodeName(event.target.value)}
           />
 
-          <TextField
-            autoFocus
-            margin="dense"
-            id="pricePerKm"
-            name ="Price Per Km"
-            label="pricePerKm Km"
-            type="number"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setPricePerKm(parseFloat(event.target.value))}
-          />
-
-<TextField
-            autoFocus
-            margin="dense"
-            id="discountPercent"
-            name ="Discount"
-            label="Discount"
-            type="number"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setDiscountPercent(parseInt(event.target.value))}
-          />
-
+        
         </DialogContent>
         
         <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
@@ -472,7 +401,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             height:'400'
             }}>
 
-            <DataGrid rows={tableRows} columns={columns}
+            <StyledDataGrid rows={tableRows} columns={columns}
             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
             slotProps={{
                 toolbar: {
