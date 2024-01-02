@@ -606,6 +606,8 @@ const renderEditPricePerKM= (params) => {
 
   const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
 
+  const [isNumeric, setIsNumeric] = useState(false);
+
   const [fromDate , setFromDate] = useState(null);
 
   const [toDate,  setToDate] = useState(null)
@@ -681,6 +683,7 @@ const routeColumns: GridColDef[] = [
     width: 180,
     headerAlign: 'center',
     align: 'center',
+    
     renderEditCell: renderEditBound
   },
   { 
@@ -715,47 +718,47 @@ const routeColumns: GridColDef[] = [
     align: 'center',
     renderEditCell: renderEditCode
   },
-  { 
-    field: 'minimum_fare', 
-    headerName: 'MINIMUM FARE', 
-    headerClassName: 'super-app-theme--header',
-      editable: true,
-      width: 180,
-      headerAlign: 'center',
-      align: 'center',
-   renderEditCell: renderEditMinimumFare
-  },
+  // { 
+  //   field: 'minimum_fare', 
+  //   headerName: 'MINIMUM FARE', 
+  //   headerClassName: 'super-app-theme--header',
+  //     editable: true,
+  //     width: 180,
+  //     headerAlign: 'center',
+  //     align: 'center',
+  //  renderEditCell: renderEditMinimumFare
+  // },
 
-  { 
-    field: 'discount', 
-    headerName: 'DISCOUNT', 
-    headerClassName: 'super-app-theme--header',
-    editable: true,
-    width: 180,
-    headerAlign: 'center',
-    align: 'center',
-    renderEditCell:renderEditDiscount
-  },
-  { 
-    field: 'first_km', 
-    headerName: 'FIRST KM', 
-    headerClassName: 'super-app-theme--header',
-      editable: true,
-      width: 180,
-      headerAlign: 'center',
-      align: 'center',
-   renderEditCell:renderEditFirstKM
-  },
-  { 
-    field: 'pricePerKM', 
-    headerName: 'PRICE PER KM', 
-    headerClassName: 'super-app-theme--header',
-      editable: true,
-      width: 180,
-      headerAlign: 'center',
-      align: 'center',
-   renderEditCell:renderEditPricePerKM
-  },
+  // { 
+  //   field: 'discount', 
+  //   headerName: 'DISCOUNT', 
+  //   headerClassName: 'super-app-theme--header',
+  //   editable: true,
+  //   width: 180,
+  //   headerAlign: 'center',
+  //   align: 'center',
+  //   renderEditCell:renderEditDiscount
+  // },
+  // { 
+  //   field: 'first_km', 
+  //   headerName: 'FIRST KM', 
+  //   headerClassName: 'super-app-theme--header',
+  //     editable: true,
+  //     width: 180,
+  //     headerAlign: 'center',
+  //     align: 'center',
+  //  renderEditCell:renderEditFirstKM
+  // },
+  // { 
+  //   field: 'pricePerKM', 
+  //   headerName: 'PRICE PER KM', 
+  //   headerClassName: 'super-app-theme--header',
+  //     editable: true,
+  //     width: 180,
+  //     headerAlign: 'center',
+  //     align: 'center',
+  //  renderEditCell:renderEditPricePerKM
+  // },
   {
     field: 'coopId', // Assuming you have a 'name' field in your data source
     headerName: 'COMPANY',
@@ -1030,7 +1033,7 @@ const routeColumns: GridColDef[] = [
         event?.preventDefault()
         // Define the request data as an object
         const requestData = {
-          coopId: coopId,
+          coopId: filterTableCompanyId,
           bound: bound, // Assuming empNo and cardId are variables in your scope
           origin: origin,
           code : route_code,
@@ -1337,6 +1340,7 @@ useEffect(() =>{
 
 
 useEffect(()=>{
+  setValue(0)
   GetFilterData()
 return () =>{}
 },[filterTableCompanyId])
@@ -1404,6 +1408,25 @@ console.log(responseGet)
       });
   }
 }
+
+const handleInputChange = (event) => {
+  const selectedValue = event.target.value;
+
+  // Find the corresponding coop object based on the selected value
+  const selectedCoop = coopList.find(coop => coop.id === selectedValue);
+
+  if (selectedCoop) {
+    // Set the filterTableCompanyId with the selected value
+    setFilterTableCompanyId(selectedCoop.id);
+
+    // Set isNumeric based on coop.isNumeric
+    setIsNumeric(selectedCoop.isNumeric); // Assuming setIsNumeric is a state setter for isNumeric
+  } else {
+    // Handle when the selected value does not match any coop
+    // For example:
+    console.log('Selected value does not match any coop');
+  }
+};
 
 
 useEffect(() =>{
@@ -1496,7 +1519,7 @@ return(
             will send updates occasionally. */}
           </DialogContentText>
 
-          <FormControl fullWidth margin="dense">
+          {/* <FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
   <Select
     labelId="demo-simple-select-label-coopId"
@@ -1519,7 +1542,7 @@ return(
     }
    
   </Select>
-</FormControl>
+</FormControl> */}
          
           <FormControl fullWidth sx ={{marginTop: 1}}>
         <InputLabel id="demo-simple-select-helper-label">Bound</InputLabel>
@@ -1553,17 +1576,7 @@ return(
             onChange={(event) => setOrigin(event.target.value)}
           />
 
-          <TextField
-            autoFocus
-            margin="dense"
-            id="route_code"
-            name ="route_code"
-            label="Route Code"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={(event) => setRouteCode(event.target.value)}
-          />
+         
           
           <TextField
             autoFocus
@@ -1576,8 +1589,19 @@ return(
             variant="outlined"
             onChange={(event) => setDestination(event.target.value)}
           />
+           <TextField
+            autoFocus
+            margin="dense"
+            id="route_code"
+            name ="route_code"
+            label="Route Code"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={(event) => setRouteCode(event.target.value)}
+          />
 
-          <TextField
+          {/* <TextField
             autoFocus
             margin="dense"
             id="discount"
@@ -1626,7 +1650,7 @@ return(
             variant="outlined"
             onChange={(event) => setPricePerKM(parseFloat(event.target.value))}
           />
-        
+         */}
         
          
         </DialogContent>
@@ -1695,7 +1719,7 @@ return(
             labelId="filter-company-demo-demo-simple-select-autowidth-label"
             id="filter-company-demo-demo-simple-select-autowidth"
             value={filterTableCompanyId}
-            onChange={(event) => setFilterTableCompanyId(event.target.value)}
+            onChange={handleInputChange}
             autoWidth
             label="Company"
           >
@@ -1847,6 +1871,7 @@ return(
                   routeId = {data.id}
                   coopId = {data.coopId}
                   coops = {coopList}
+                  isNumeric = {isNumeric}
                       />
                    </Box>
                 </CustomTabPanel>
@@ -1898,7 +1923,10 @@ function computeMutation(newRow, oldRow) {
    
     return `Station name from '${oldRow.stationName}' to '${newRow.stationName}'`;
   }
-
+  if (newRow.amount !== oldRow.statamountionName) {
+   
+    return `Amount from '${oldRow.amount}' to '${newRow.amount}'`;
+  }
   return null;
 }
 
@@ -2066,6 +2094,55 @@ const renderEditKm = (params) => {
     return <EditStatus {...params} />;
   };
 
+
+  function EditAmount(props) {
+    const { id, value, field } = props;
+    const apiRef = useGridApiContext();
+  
+    const handleChangeRow = async (event) => {
+      console.log(event.target.value);
+      await apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+      if (event.key === 'Enter') {
+      
+        apiRef.current.stopCellEditMode({ id, field });
+      }
+    };
+  
+  
+    return (
+      <>
+        <TextField
+          type="number" // specify the input type as number
+          value={value}
+          onChange={handleChangeRow}
+          putProps={{ step: "any" }}
+          autoFocus
+          fullWidth
+        />
+      </>
+    );
+  }
+  
+  EditAmount.propTypes = {
+    /**
+     * The column field of the cell that triggered the event.
+     */
+    field: PropTypes.string.isRequired,
+    /**
+     * The grid row id.
+     */
+    id: PropTypes.oneOfType([PropTypes.number]).isRequired,
+    /**
+     * The cell value.
+     * If the column has `valueGetter`, use `params.row` to directly access the fields.
+     */
+    value: PropTypes.any,
+  };
+  
+  const renderEditAmount = (params) => {
+    return <EditAmount {...params} />;
+  };
+
   const stationColumns: GridColDef[] = [
 
     { 
@@ -2166,6 +2243,108 @@ const renderEditKm = (params) => {
         );
       } },
     ];
+
+
+    const stationNumericColumns: GridColDef[] = [
+
+      { 
+        field: 'stationName', 
+        headerName: 'STATION NAME', 
+        flex: 1,
+            minWidth: 180,
+        headerAlign: 'center',
+        headerClassName: 'super-app-theme--header',
+        align: 'center',
+        editable: true,
+        renderEditCell: renderEditStationName,
+      },
+      { 
+        field: 'amount', 
+        headerName: 'AMOUNT', 
+        flex: 1,
+        minWidth: 180,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: true,
+       renderEditCell: renderEditAmount,
+      },
+   
+      { 
+        field: 'rowNo', 
+        headerName: 'ORDER', 
+        flex: 1,
+        minWidth: 180,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: true,
+        renderEditCell: renderEditRowNo,
+      },
+    /*
+      { 
+        field: 'routeId', 
+        headerName: 'ROUTE ID', 
+        flex: 1,
+        minWidth: 350,
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+       headerAlign: 'center',
+        align: 'center',
+       
+      },
+  */
+      {
+        field: 'coopId', // Assuming you have a 'name' field in your data source
+        headerName: 'COMPANY',
+        flex: 1,
+        minWidth: 180,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+        valueGetter: (params) => {
+          // Assuming your data source is an array of objects with 'coopId' and 'name' fields
+          const { coopId } = params.row;
+          // Assuming your data is stored in a variable named 'data'
+          const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+          return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
+        },
+      },
+   
+      { 
+        field: 'updatedAt', 
+        headerName: 'DATE CREATED', 
+        flex: 1,
+            minWidth: 180,
+        headerClassName: 'super-app-theme--header',
+        headerAlign: 'center',
+        align: 'center',
+        editable: false,
+        renderCell: (params) => {
+          
+            const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+            return <div>{formattedDate}</div>;
+          },
+      },
+      { field: 'actions', 
+        headerName: 'ACTIONS', 
+        width: 100, 
+        headerClassName: 'super-app-theme--header',
+        editable: false,
+       headerAlign: 'center',
+        align: 'center',
+        renderCell: (params) => {
+          return (
+            <IconButton aria-label="edit" size="small" onClick={() => {
+              setDeleteId(params.row.id);
+              setShowDeleteDialog(true)
+              }}>
+              <DeleteForeverIcon fontSize="small" color={"error"}/>
+          </IconButton>
+          );
+        } },
+      ];
 
     const stationRows: GridRowsProp = [
 
@@ -2355,6 +2534,7 @@ const [routeId, setRouteId] = useState("");
 
 const [rowNo, setRowNo] = useState(0);
 
+const [amount, setAmount] = useState(0);
 
 
 
@@ -2365,12 +2545,13 @@ const [rowNo, setRowNo] = useState(0);
         event?.preventDefault()
         // Define the request data as an object
         const requestData = {
-          coopId: coopId,
+          coopId: props.coopId,
           stationName: stationName, // Assuming empNo and cardId are variables in your scope
           km : km,
           viceVersaKM : viceVersaKM,
           routeId : props.routeId,
-          rowNo: rowNo
+          rowNo: rowNo,
+          amount: amount
         };
     
         const response = await axios.post(
@@ -2695,7 +2876,7 @@ const [rowNo, setRowNo] = useState(0);
             will send updates occasionally. */}
           </DialogContentText>
           
-          <FormControl fullWidth margin="dense">
+          {/* <FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
   <Select
     labelId="demo-simple-select-label-coopId"
@@ -2718,7 +2899,7 @@ const [rowNo, setRowNo] = useState(0);
     }
    
   </Select>
-</FormControl>
+</FormControl> */}
          
           <TextField
             autoFocus
@@ -2732,6 +2913,25 @@ const [rowNo, setRowNo] = useState(0);
             onChange={(event) => setStationName(event.target.value)}
           />
 
+          {
+          console.log(`this is isNumeric ${props.isNumeric}`)
+         
+          }
+          
+          {props.isNumeric === true ?
+          <TextField
+          autoFocus
+          margin="dense"
+          id="km"
+          name ="amount"
+          label="Amount"
+          type="number"
+          inputProps={{ step: "any" }}
+          fullWidth
+          variant="outlined"
+          onChange={(event) => setAmount(event.target.value)}
+        />
+        :
           <TextField
             autoFocus
             margin="dense"
@@ -2743,6 +2943,9 @@ const [rowNo, setRowNo] = useState(0);
             variant="outlined"
             onChange={(event) => setKm(event.target.value)}
           />
+           }
+
+          
 
           {/* <TextField
             autoFocus
@@ -2794,7 +2997,11 @@ const [rowNo, setRowNo] = useState(0);
   processRowUpdate={processRowUpdate}
   experimentalFeatures={{ newEditingApi: true }}
            initialState={{ pinnedColumns: { left: ['rowNo'], right: ['actions']} }}
-            rows={stationTableRows} columns={stationColumns}
+            rows={stationTableRows} columns={
+              props.isNumeric === true ?
+              stationNumericColumns :
+              stationColumns
+            }
             loading = {isLoading}
              slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
              sx={{

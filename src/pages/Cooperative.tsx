@@ -5,7 +5,7 @@ import Paper from "../components/Paper";
 import {GridColDef, GridRowsProp, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useEffect,  useState} from 'react'
 import Box from '@mui/material/Box';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, TextField } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField } from "@mui/material";
 //import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
 import '../styles/RemoveProWaterMark.css'
 import { styled} from '@mui/system';
+
 
 const StyledDataGrid = styled(DataGridPremium)(() => ({
   "& .MuiDataGrid-sortIcon": {
@@ -67,20 +68,31 @@ const columns: GridColDef[] = [
    
   },
 
-  
-
-
   { 
-    field: 'createdAt', 
-    headerName: 'DATE CREATED', 
+    field: 'isNumeric', 
+    headerName: 'NUMERIC', 
     flex: 1,
-    minWidth: 0,
+        minWidth: 0,
     headerClassName: 'super-app-theme--header',
     headerAlign: 'center',
     align: 'center',
     editable: false,
-    valueFormatter: (params) => {
+   
+  },
+
+
+  {
+    field: 'createdAt',
+    headerName: 'DATE CREATED',
+    width: 180,
+    headerClassName: 'super-app-theme--header',
+    editable: false,
+   headerAlign: 'center',
+    align: 'center',
+    renderCell: (params) => {
+    
       const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+      return <div>{formattedDate}</div>;
     },
   },
 
@@ -180,7 +192,7 @@ export function Cooperative(){
 
     // {"stationName" : "MOLINO" , "km": 2, "viceVersaKM" : 16, "routeId" : "65164826dea2d77f7b0a76dd"}
 
-    
+const [isNumeric, setIsNumeric] = useState(false);
 const [coopName, setCoopName] = useState("");
 const [coopCodeName, setCoopCodeName] = useState("");
 const [minimum_fare, setMinimumFare] = useState("");
@@ -203,7 +215,8 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             "minimumFare": minimum_fare,
             "pricePerKm" : pricePerKm,
             "discountPercent" : discountPercent,
-            "cooperativeCodeName" : coopCodeName
+            "cooperativeCodeName" : coopCodeName,
+            "isNumeric" : isNumeric,
         };
     
         const response = await axios.post(
@@ -321,11 +334,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
         draggable
         pauseOnHover
         theme="colored"
-        style={
-          {
-            width: "100%",
-          }
-        }
+        
         />
 
 <Dialog open={isModalOpen} onClose={() => setIsModalOpen(!isModalOpen)} fullWidth>
@@ -354,7 +363,23 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             {/* To subscribe to this website, please enter your email address here. We
             will send updates occasionally. */}
           </DialogContentText>
-         
+          <FormControl margin ="dense" fullWidth>
+            <InputLabel id="filter-company-demo-simple-select-autowidth-label-numeric">Numeric</InputLabel>
+            <Select
+              labelId="filter-company-demo-demo-simple-select-autowidth-label-numeric"
+              id="filter-company-demo-demo-simple-select-autowidth-numeric"
+              value={isNumeric}
+              onChange={(event) => setIsNumeric(event.target.value)}
+              autoWidth
+              fullWidth
+              label="Numeric"
+            >
+           
+           <MenuItem fullWidth value={true}>TRUE</MenuItem>
+           <MenuItem fullWidth value={false}>FALSE</MenuItem>
+            
+            </Select>
+    </FormControl> 
           <TextField
             autoFocus
             margin="dense"
@@ -398,7 +423,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             backgroundColor: '#161d6f',
             color:'white',
             },
-            height:'400'
+            height: 700
             }}>
 
             <StyledDataGrid rows={tableRows} columns={columns}

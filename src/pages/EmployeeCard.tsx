@@ -44,7 +44,17 @@ export function EmployeeCard()
   const [filterTableCompanyId, setFilterTableCompanyId] = useState(localStorage.getItem('companyId'));
 
   const columns: GridColDef[] = [
-  
+    { 
+      field: 'sNo', 
+      headerName: 'SNO', 
+      flex: 1,
+          minWidth: 0,
+      headerClassName: 'super-app-theme--header',
+      headerAlign: 'center',
+      align: 'center',
+      editable: false,
+     
+    },
     { 
       field: 'empNo', 
       headerName: 'EMPLOYEE NUMBER', 
@@ -57,17 +67,17 @@ export function EmployeeCard()
      
     },
   
-    { 
-      field: 'cardId', 
-      headerName: 'CARD ID', 
-      flex: 1,
-          minWidth: 0,
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      align: 'center',
-      editable: false,
+    // { 
+    //   field: 'cardId', 
+    //   headerName: 'CARD ID', 
+    //   flex: 1,
+    //       minWidth: 0,
+    //   headerClassName: 'super-app-theme--header',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   editable: false,
      
-    },
+    // },
     
     {
       field: 'coopId', // Assuming you have a 'name' field in your data source
@@ -102,21 +112,21 @@ export function EmployeeCard()
         },
       },
   
-    { 
-      field: 'updatedAt', 
-      headerName: 'LAST MODIFIED', 
-      flex: 1,
-          minWidth: 0,
-      headerClassName: 'super-app-theme--header',
-      headerAlign: 'center',
-      align: 'center',
-      editable: false,
-      renderCell: (params) => {
+    // { 
+    //   field: 'updatedAt', 
+    //   headerName: 'LAST MODIFIED', 
+    //   flex: 1,
+    //       minWidth: 0,
+    //   headerClassName: 'super-app-theme--header',
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   editable: false,
+    //   renderCell: (params) => {
         
-          const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
-          return <div>{formattedDate}</div>;
-        },
-    }
+    //       const formattedDate = moment(params.value).format('YYYY-MM-DD h:mm:ss a');
+    //       return <div>{formattedDate}</div>;
+    //     },
+    // }
   
     ];
 
@@ -268,7 +278,7 @@ async function GetAllEmployees(){
     }
 } 
 
-useLayoutEffect(() =>{
+useEffect(() =>{
   
   setEmployee([])
   GetAllEmployees();
@@ -288,8 +298,8 @@ useEffect(() =>{
         // Define the request data as an object
         const requestData = {
           empNo: parseFloat(empNo), // Assuming empNo and cardId are variables in your scope
-          cardId: filterTableCompanyId,
-          coopId: coopId
+          cardId: cardId,
+          coopId: filterTableCompanyId
         };
     
         const response = await axios.post(
@@ -303,7 +313,8 @@ useEffect(() =>{
         );
 
         const responseData = response.data;
-       
+       console.log(`This is the response: `)
+       console.log(responseData)
           if(responseData.messages[0].code === "0"){
           
             GetAllData();

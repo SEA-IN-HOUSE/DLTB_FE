@@ -20,8 +20,11 @@ import {useInterval} from '../components/useInterval'
 
 
 //DATAGRID PREMIUM HACK
-import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
+
 import { styled} from '@mui/system';
+import { DataGridPremium } from '@mui/x-data-grid-premium/DataGridPremium';
+import '../styles/RemoveProWaterMark.css'
+
 export interface IVehicle {
     _id: string,
     coopId: string
@@ -35,7 +38,16 @@ export interface IVehicle {
   ];
 
 
-
+  const StyledDataGrid = styled(DataGridPremium)(() => ({
+    "& .MuiDataGrid-sortIcon": {
+    opacity: 1,
+    color: "white",
+    },
+    "& .MuiDataGrid-menuIconButton": {
+    opacity: 1,
+    color: "white"
+    },
+    }));
 
 export function Vehicle(){
   
@@ -65,7 +77,7 @@ const columns: GridColDef[] = [
   
   { 
     field: 'vehicle_no', 
-    headerName: 'Bus No', 
+    headerName: 'VEHICLE NO', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
@@ -77,7 +89,7 @@ const columns: GridColDef[] = [
 
   { 
     field: 'plate_no', 
-    headerName: 'Plate No', 
+    headerName: 'PLATE NO', 
     flex: 1,
         minWidth: 0,
     headerClassName: 'super-app-theme--header',
@@ -85,6 +97,23 @@ const columns: GridColDef[] = [
     align: 'center',
     editable: false,
    
+  },
+  {
+    field: 'coopId', // Assuming you have a 'name' field in your data source
+    headerName: 'COMPANY',
+    flex: 1,
+    minWidth: 180,
+    headerClassName: 'super-app-theme--header',
+    headerAlign: 'center',
+    align: 'center',
+    editable: false,
+    valueGetter: (params) => {
+      // Assuming your data source is an array of objects with 'coopId' and 'name' fields
+      const { coopId } = params.row;
+      // Assuming your data is stored in a variable named 'data'
+      const matchingItem : any = coopList.find((item : ICooperative) => item.id === coopId);
+      return matchingItem ? matchingItem.cooperativeCodeName : ''; // Display the name or an empty string if not found
+    },
   },
 
   { 
@@ -144,6 +173,8 @@ const columns: GridColDef[] = [
                   return dateCreatedB - dateCreatedA; // Sort by dateCreated in descending order
                 })
               )
+            }else{
+              setTableRows([])
             }
        
 
@@ -473,35 +504,19 @@ const columns: GridColDef[] = [
             backgroundColor: '#161d6f',
             color:'white',
             },
-            height:'400'
+            height:700
             }}>
 
-            <DataGrid rows={tableRows} columns={columns}
+            <StyledDataGrid rows={tableRows} columns={columns}
             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
-            slotProps={{
-                toolbar: {
-                showQuickFilter: true,
-                quickFilterProps: {
-                    variant: 'filled',
-                    size: "medium"
-                },  
-              },
-            }}
-            sx={{
+           
+             slots={{toolbar: CustomToolbar, loadingOverlay: LinearProgress}}
+             sx={{
               '& .MuiDataGrid-cell': {
                 fontSize: '1rem',
                 padding: '15px',
               },
             }}
-            initialState={{ 
-
-              pagination: { 
-                paginationModel: { 
-                  pageSize: 5 
-                } 
-              }, 
-            }} 
-            pageSizeOptions={[5, 10, 25]}
             />
         </Box>
         </Paper>

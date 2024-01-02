@@ -463,7 +463,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
             will send updates occasionally. */}
           </DialogContentText>
           
-          <FormControl fullWidth margin="dense">
+          {/* <FormControl fullWidth margin="dense">
   <InputLabel id="demo-simple-select-label">Cooperative</InputLabel>
   <Select
     labelId="demo-simple-select-label-coopId"
@@ -487,7 +487,7 @@ const [isModalOpen, setIsModalOpen] = useState(false)
     }
    
   </Select>
-</FormControl>
+</FormControl> */}
          
           <TextField
             autoFocus

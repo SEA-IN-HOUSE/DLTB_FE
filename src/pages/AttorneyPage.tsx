@@ -43,6 +43,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FaCashRegister } from "react-icons/fa";
 
 import { styled} from '@mui/system';
+import MyUploader from "../components/DropZone";
+import FileUploader from "../components/FileUploader";
+
+
+
   const rows: GridRowsProp = [
    
   ];
@@ -258,7 +263,7 @@ const columns: GridColDef[] = [
 
   { 
     field: 'cash_collection', 
-    headerName: 'CASH OF COLLECTION', 
+    headerName: 'CASH COLLECTION', 
     headerClassName: 'super-app-theme--header',
     editable: false,
     width: 180,
@@ -504,11 +509,11 @@ function CustomToolbar() {
         >
           
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
-         {localStorage.getItem('role') === "Administrator" ? 
+         {/* {localStorage.getItem('role') === "Administrator" ? 
             <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
             :
             null
-          }
+          } */}
           
             <GridToolbarColumnsButton style ={{color:"#161d6f"}} />
             {/* <GridToolbarFilterButton style ={{color:"#161d6f"}} /> */}
@@ -582,13 +587,13 @@ function BankCustomToolbar() {
             marginBottom: '2px',
           }}
         >
-          
+{/*           
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
          {localStorage.getItem('role') === "Administrator" ? 
             <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
             :
             null
-          }
+          } */}
           <Button variant="contained"  startIcon = {<FaCashRegister  />} color="success"  onClick={ () =>{
           setIsModalOpen(true)
         }}>
@@ -871,6 +876,15 @@ const [remarks, setRemarks] = useState("");
 
 const [date, setDate] = useState(null);
 
+const [uploadedFiles, setUploadedFiles] = useState<PreviewFile[]>([]);
+
+  const handleFileChange = (files: PreviewFile[]) => {
+    // Set uploaded files in the parent component's state
+    console.log("Files")
+    console.log(files)
+    setUploadedFiles(files);
+  };
+
 
 async function AddData() {
 
@@ -879,41 +893,33 @@ async function AddData() {
 
     
       event?.preventDefault()
-      // Define the request data as an object
-  
-      // "reference_no": "1233234",
-      // "trace_no":"1233233",
-      // "transaction_date_and_time": "06/12/2023 05:03 pm",
-      // "batch_no": "231223233",
-      // "funding_account_no": "232323123",
-      // "sender_name": "string",
-      // "destination_bank": "string",
-      // "recipient_name": "string",
-      // "amount": 5000,
-      // "total_fee": 5000,
-      // "status": "POSTED",
-      // "remarks": ""
-      const requestData = {
-        "reference_no": referenceNo,
-        "trace_no": traceNo,
-        "transaction_date_and_time": date,
-        "batch_no": batchNo,
-        "funding_account_no": fundingAccountNo,
-        "sender_name": senderName,
-        "destination_bank": destinationBank,
-        "recipient_name": recipientName,
-        "amount": amount,
-        "total_fee": totalFee,
-        "status": status,
-        "remarks":remarks
-      };
-  
+      const formData = new FormData();
+      console.log("This is the file")
+      console.log(uploadedFiles[0])
+      // Append file to formData
+      formData.append('file', uploadedFiles[0]);
+
+      // Append other form fields to formData
+      formData.append('reference_no', referenceNo);
+      formData.append('trace_no', traceNo);
+      formData.append('transaction_date_and_time', date);
+      formData.append('batch_no', batchNo);
+      formData.append('funding_account_no', fundingAccountNo);
+      formData.append('sender_name', senderName);
+      formData.append('destination_bank', destinationBank);
+      formData.append('recipient_name', recipientName);
+      formData.append('amount', amount);
+      formData.append('total_fee', totalFee);
+      formData.append('status', status);
+      formData.append('remarks', remarks);
+
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/transaction-report`,
-        requestData, // Use the requestData object as the request data
+        formData, // Use formData as the request data
         {
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
+            'Content-Type': 'multipart/form-data', // Set content type for file upload
           },
         }
       );
@@ -979,6 +985,8 @@ async function AddData() {
   }
  
 }
+
+
 
 const [isReferenceNoError, setIsReferenceNoError] = useState(false);
 
@@ -1236,8 +1244,8 @@ return(
               value={amount}
               defaultValue={amount}
               variant="outlined"
-              // onChange={(event) => setAmount(parseFloat(event.target.value))}
-              disabled
+             onChange={(event) => setAmount(parseFloat(event.target.value))}
+           
           
             />
 
@@ -1280,6 +1288,8 @@ return(
               required
             />
 
+         
+
 <LocalizationProvider dateAdapter={AdapterDayjs} >
           <DemoContainer components={['DateTimePicker']} >
             <DateTimePicker label="Date Remitted" 
@@ -1289,7 +1299,20 @@ return(
             />
           </DemoContainer>
         </LocalizationProvider>
-
+        <div>
+  
+        {/* <MyUploader /> */}
+        <FileUploader onChange={handleFileChange} />
+          <div>
+            {/* <h2>Stored File:</h2>
+            {selectedFile && (
+              <div>
+                <p>File name: {selectedFile.name}</p>
+                <p>File size: {selectedFile.size} bytes</p>
+              </div>
+            )} */}
+          </div>
+        </div>
         </DialogContent>
     
         <DialogActions sx={{marginRight: 2, marginLeft: 2}}>
@@ -1316,7 +1339,7 @@ return(
             height: 'auto'
         }}
         >
-            <h1 className="mb-2 text-5xl  font-bold tracking-tight text-indigo-900">ATTORNEY</h1>
+            <h1 className="mb-2 text-5xl  font-bold tracking-tight text-indigo-900">Bank Transactions</h1>
         </div>
 
 

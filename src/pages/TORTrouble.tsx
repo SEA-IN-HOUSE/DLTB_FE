@@ -689,11 +689,9 @@ function CustomToolbar() {
         >
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
           {isSyncing ?  (<style>{keyframesStyle}</style>) : null}
-         {localStorage.getItem('role') === "Administrator" && filterTableCompanyId === import.meta.env.VITE_DLTB_COOP_ID? 
+        
             <Button variant="contained"  onClick ={SyncData} color="success" startIcon={<SyncIcon style={spinnerStyle} />}>{isSyncing ? "SYNCING..." : "SYNC"}</Button>
-            :
-            null
-          }
+           
          
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />

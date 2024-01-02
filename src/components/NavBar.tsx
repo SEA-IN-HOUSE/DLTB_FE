@@ -434,7 +434,7 @@ export default function NavBar ({children} : NavBarProps) : JSX.Element{
               )}
               <div className="mr-4"></div>
               <TbPigMoney  />
-              <span className="ml-3">Attorney</span>
+              <span className="ml-3">Bank Transactions</span>
               
           </a>
         </li>
